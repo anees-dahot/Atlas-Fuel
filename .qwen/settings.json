@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(www.mineralresources.com.au)",
+      "WebSearch"
+    ]
+  },
+  "$version": 3
+}
