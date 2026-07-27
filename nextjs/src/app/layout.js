@@ -23,6 +23,8 @@ export async function generateMetadata() {
   }
 }
 
+export const revalidate = 60
+
 export default async function RootLayout({ children }) {
   const errorSettings = await getErrorPages().catch(() => null)
 
