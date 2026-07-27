@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -145,6 +145,7 @@ export default function Certifications({ data }) {
   const sectionRef = useRef(null);
   const leftContentRef = useRef(null);
   const cardRefs = useRef([]);
+  const [selectedCertificate, setSelectedCertificate] = useState(null);
 
   // Merge: defaultData provides baseline, Sanity data overrides
   const content = { ...defaultData, ...data };
@@ -152,8 +153,6 @@ export default function Certifications({ data }) {
   const certificateImages = (content.certificateImages || [])
     .map((image) => (typeof image === 'string' ? image : image?.url || image?.asset?.url))
     .filter(Boolean);
-
-  console.log('[Certifications] certificateImages from Sanity:', certificateImages);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -186,14 +185,32 @@ export default function Certifications({ data }) {
     return () => ctx.revert();
   }, []);
 
+  useEffect(() => {
+    if (!selectedCertificate) return;
+
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') setSelectedCertificate(null);
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onKeyDown);
+    };
+  }, [selectedCertificate]);
+
   return (
-    <section
-      id="certifications"
-      ref={sectionRef}
-      className="py-16 lg:py-24 bg-cream"
-    >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+    <>
+      <section
+        id="certifications"
+        ref={sectionRef}
+        className="py-16 lg:py-24 bg-cream"
+      >
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Left Content */}
           <div ref={leftContentRef}>
             <div className="flex items-center gap-3 mb-4">
@@ -212,20 +229,29 @@ export default function Certifications({ data }) {
             {/* Certificate Images Row */}
             {certificateImages.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                {certificateImages.map((imageUrl, index) => (
-                  <div
+                {certificateImages.map((image, index) => {
+                  const imageUrl = typeof image === 'string' ? image : image.url;
+                  const imageAlt = typeof image === 'string'
+                    ? `Certificate ${index + 1}`
+                    : image.alt || `Certificate ${index + 1}`;
+                  return (
+                  <button
+                    type="button"
                     key={index}
-                    className="relative bg-white border-2 border-primary shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden h-32"
+                    onClick={() => setSelectedCertificate({ imageUrl, index })}
+                    className="relative bg-white border-2 border-primary shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow duration-300 overflow-hidden h-32 cursor-zoom-in"
+                    aria-label={`View certificate ${index + 1}`}
                   >
                     <Image
                       src={imageUrl}
-                      alt={`Certificate ${index + 1}`}
+                      alt={imageAlt}
                       fill
                       sizes="(min-width: 640px) 25vw, 50vw"
                       className="object-contain p-3"
                     />
-                  </div>
-                ))}
+                  </button>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -252,8 +278,41 @@ export default function Certifications({ data }) {
               </div>
             ))}
           </div>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {selectedCertificate && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 sm:p-8"
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Certificate ${selectedCertificate.index + 1}`}
+          onClick={() => setSelectedCertificate(null)}
+        >
+          <div
+            className="relative w-full max-w-5xl h-[85vh] bg-white shadow-2xl"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Image
+              src={selectedCertificate.imageUrl}
+              alt={`Certificate ${selectedCertificate.index + 1}`}
+              fill
+              sizes="100vw"
+              className="object-contain p-4 sm:p-8"
+              priority
+            />
+            <button
+              type="button"
+              onClick={() => setSelectedCertificate(null)}
+              className="absolute right-3 top-3 z-10 flex h-11 w-11 items-center justify-center rounded-full bg-black/80 text-2xl leading-none text-white hover:bg-black focus:outline-none focus:ring-2 focus:ring-white"
+              aria-label="Close certificate"
+            >
+              ×
+            </button>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

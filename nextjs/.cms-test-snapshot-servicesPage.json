@@ -1,0 +1,93 @@
+{
+  "_id": "servicesPage",
+  "_rev": "FETVH5yW1sX4sNw9UObU3M",
+  "_type": "servicesPage",
+  "heroSection": {
+    "description": "From mining to marine, agriculture to retail, Atlas Fuel delivers reliable, high-quality fuel solutions tailored to meet the unique needs of every industry we serve across Australia.",
+    "heroDescription": "Atlas Fuel Australia delivers premium fuel solutions tailored to meet the diverse needs of industries across the nation. From mining to marine, agriculture to retail, we power your operations with reliability and excellence.",
+    "heroSubtitle": "Our Services",
+    "heroTitle": "Comprehensive Fuel Solutions for Every Industry",
+    "subtitle": "Our Services",
+    "title": "Comprehensive Fuel Solutions for Every Industry"
+  },
+  "industriesGridSection": {
+    "description": "Delivering reliable fuel solutions across diverse industries nationwide",
+    "heading": "Sectors We Serve",
+    "industries": [
+      {"_key": "jifaebgTgGhKLbU9XDcNxi", "description": "Reliable fuel supply for mining operations with 24/7 on-site delivery.", "id": "mining", "link": "/services/mining-fuel", "title": "Mining"},
+      {"_key": "jifaebgTgGhKLbU9XDcNyR", "description": "Bunker refueling services for vessels worldwide.", "id": "marine", "link": "/services/marine-fuel", "title": "Marine"},
+      {"_key": "jifaebgTgGhKLbU9XDcNzA", "description": "Cost-effective fuel solutions for farming operations.", "id": "agriculture", "link": "/services/agriculture-fuel", "title": "Agriculture"},
+      {"_key": "jifaebgTgGhKLbU9XDcNzt", "description": "Fleet fueling solutions for logistics companies.", "id": "transport", "link": "/fuel-transportation", "title": "Transportation"},
+      {"_key": "jifaebgTgGhKLbU9XDcO0c", "description": "Partnership opportunities for fuel station owners.", "id": "retail", "link": "/services/fuel-retailers", "title": "Fuel Retailers"},
+      {"_key": "jifaebgTgGhKLbU9XDcO1L", "description": "Nationwide fuel distribution network across Australia.", "id": "distribution", "link": "/services/local-fuel-distributors", "title": "Distribution"}
+    ],
+    "sectionTag": "Industries"
+  },
+  "bunkerRefuelingSection": {
+    "content": "Atlas Fuel stands out as the most effective supplier for bunker refueling due to its commitment to providing high-quality fuel, reliable services, and competitive pricing. With years of experience in the industry, Atlas Fuel ensures efficient and timely delivery, even in the most challenging conditions, making it the preferred choice for clients worldwide. Their extensive network and customer-centric approach guarantee that clients receive the best refueling solutions for their vessels. For international clients, Atlas Fuel offers seamless communication through WhatsApp or can be reached via email at info@atlasfuel.com.au to discuss their specific needs and receive prompt assistance.",
+    "ctaText": "Contact Us for Marine Fuel",
+    "heading": "Bunker Refueling"
+  },
+  "ctaBanner": {
+    "buttonLink": "/contact",
+    "buttonText": "Get a Free Quote",
+    "heading": "Ready to Power Your Business?",
+    "text": "Contact us today for a free fuel quote and let our team build a solution tailored to your needs."
+  },
+  "doYouKnowSection": {
+    "content": "Atlas Fuel is a trusted partner for over 200 commercial diesel clients and retail businesses across Australia, providing reliable fuel solutions tailored to their unique needs. Our extensive network and logistical expertise ensure seamless delivery of high-quality fuel, no matter where our clients are located. With a strong commitment to efficiency, competitive pricing, and customer satisfaction, Atlas Fuel has become a leading choice for businesses that depend on uninterrupted fuel supply. Whether powering fleets, machinery, or retail outlets, we consistently deliver success by combining superior service with nationwide coverage.",
+    "heading": "Do You Know?"
+  },
+  "ownStationSection": {
+    "content": "If you own a fuel station, Atlas Fuel can provide you with Atlas Fuel branding, services tailored to enhance your station's visibility and appeal. Enquiring about Atlas Fuel branding can offer you a range of benefits, from distinctive branding that attracts more customers to operational support that helps streamline your business. Explore how Atlas Fuel branding can elevate your station's presence and customer satisfaction today by reaching out to inquire about their specialized services.",
+    "heading": "Own a Fuel Station?",
+    "primaryCTALink": "/franchising",
+    "primaryCTAText": "Learn More",
+    "secondaryCTALink": "/contact",
+    "secondaryCTAText": "Enquire Now"
+  },
+  "sectorsCoverSection": {
+    "content": "ATLAS specializes in offering fuel supply and logistics services, catering to various sectors such as the Mining industry, local farmers, retail fuel stations, and independent fuel companies. Our organizational structure is distinctive yet straightforward, and we take pride in being accessible to a wide range of customers.",
+    "heading": "Sectors We Cover",
+    "sectors": [
+      {"_key": "bddd41ef7a6b", "_type": "object", "description": "Remote deliveries, bulk fueling, on-site refueling for mining operations", "name": "Mining"},
+      {"_key": "0b6de393fb59", "_type": "object", "description": "Vessel support, port services, compliant marine diesel solutions", "name": "Marine"},
+      {"_key": "b399a11fcc33", "_type": "object", "description": "On-demand delivery, safe storage, clean energy options for farms", "name": "Agriculture"},
+      {"_key": "a16af3c9dd9d", "_type": "object", "description": "GPS-tracked fleet, bulk transport, emergency fuel delivery", "name": "Transportation"},
+      {"_key": "74da8b587eca", "_type": "object", "description": "Independent retailer support, flexible branding, growth solutions", "name": "Retail"},
+      {"_key": "e4e18d5e8474", "_type": "object", "description": "Local fuel distributor partnerships, fuel rescue, demand support", "name": "Distribution"}
+    ]
+  },
+  "servicesSection": {
+    "description": "Discover our comprehensive range of fuel and energy solutions designed to keep your operations running smoothly.",
+    "heading": "What We Offer",
+    "services": [
+      {"_key": "fe2e7545033c", "_type": "object", "description": "Bulk diesel supply for mining operations with 24/7 delivery and on-site storage solutions.", "link": "/services/mining-fuel", "title": "Mining Fuel"},
+      {"_key": "6f7bcd81deb0", "_type": "object", "description": "Bunkering services for ports and marine vessels nationwide with reliable delivery.", "link": "/services/marine-fuel", "title": "Marine Fuel"},
+      {"_key": "e238302d2646", "_type": "object", "description": "Supporting farmers with timely fuel delivery for seasonal demands and bulk storage.", "link": "/services/agriculture-fuel", "title": "Agriculture Fuel"},
+      {"_key": "7f0e0ce714d2", "_type": "object", "description": "Partner with us to operate world-class fuel stations with comprehensive support.", "link": "/services/fuel-retailers", "title": "Fuel Retailers"},
+      {"_key": "0073bc9c40a3", "_type": "object", "description": "Direct-to-site fuel delivery with secure storage solutions for industrial operations.", "link": "/services/onsite-bulk-diesel", "title": "Onsite Bulk Diesel"},
+      {"_key": "3df26ba72aee", "_type": "object", "description": "Join our network of trusted local fuel distributors across Australia.", "link": "/services/local-fuel-distributors", "title": "Local Fuel Distributors"}
+    ],
+    "subheading": "Tailored fuel solutions for every sector"
+  },
+  "statsSection": {
+    "heading": "Our Impact",
+    "stats": [
+      {"_key": "9fbab8bd9741", "_type": "object", "description": "Across Australia", "label": "Litres Delivered", "value": "100M+"},
+      {"_key": "c8d671dc0185", "_type": "object", "description": "In local communities", "label": "Jobs Connected", "value": "300+"},
+      {"_key": "abbd76b98ee8", "_type": "object", "description": "Delivery reliability", "label": "On-Time Rate", "value": "99.5%"},
+      {"_key": "3087c1c822f3", "_type": "object", "description": "Always available", "label": "Support", "value": "24/7"}
+    ]
+  },
+  "timelineSection": {
+    "heading": "How We Work",
+    "sectionLabel": "A streamlined process built around your needs",
+    "steps": [
+      {"_key": "bede83093515", "_type": "object", "description": "We assess your fuel requirements and develop a tailored solution for your specific industry and operational needs.", "step": "01", "title": "Consultation"},
+      {"_key": "01f65d605a3a", "_type": "object", "description": "Our logistics team creates a comprehensive delivery schedule with GPS tracking and real-time monitoring.", "step": "02", "title": "Planning"},
+      {"_key": "6612d47a6a00", "_type": "object", "description": "Our certified fleet delivers fuel safely and on time, every time, with zero downtime for your operations.", "step": "03", "title": "Delivery"}
+    ],
+    "subheading": "A simple, reliable process built around your needs"
+  }
+}

@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const defaultQuickLinks = [
   { name: "Atlas Fuel Prices", href: "/fuel-prices", icon: "dollar" },
-  { name: "Contact Fuel Stations", href: "/fuel-station-enquiry", icon: "map" },
+  { name: "Contact Fuel Stations", href: "/store-locator", icon: "map" },
   { name: "Call Head Office", href: "tel:+61863777644", icon: "phone" },
   { name: "Need Diesel?", href: "/commercial-diesel", icon: "truck" },
   { name: "H/O Address", href: "#", icon: "building" },
@@ -149,16 +149,26 @@ export default function Hero({ data, siteSettings }) {
   const ctaSecondaryLink =
     data?.ctaSecondaryLink || "mailto:info@atlasfuel.com.au";
   const videoTitle = data?.videoTitle || "Watch our video";
-  const videoSubtitle = data?.videoUrl
-    ? "Learn about the operation of Atlas Fuel Australia"
-    : "";
+  const videoSubtitle =
+    data?.videoSubtitle || "Learn about Atlas Fuel Australia";
 
   // Use quickLinks from siteSettings or fall back to defaults
-  const quickLinks = siteSettings?.heroQuickLinks?.length > 0
+  const sourceQuickLinks = siteSettings?.heroQuickLinks?.length > 0
     ? siteSettings.heroQuickLinks
     : data?.quickLinks?.length > 0
     ? data.quickLinks
     : defaultQuickLinks;
+  const quickLinks = sourceQuickLinks.map((link) => {
+    const name = link.name || link.label || "";
+    return {
+      ...link,
+      name,
+      href:
+        name.toLowerCase() === "contact fuel stations"
+          ? "/store-locator"
+          : link.href,
+    };
+  });
 
   // Use heroStats from data (query now fetches this)
   const heroStats = data?.heroStats || [];
@@ -224,7 +234,7 @@ export default function Hero({ data, siteSettings }) {
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <img
           src={imageUrl}
-          alt="Atlas Fuel"
+          alt={data?.heroImageAlt || "Atlas Fuel"}
           className="w-full h-full object-cover"
           style={{ objectPosition: '50% 85%' }}
         />
@@ -312,7 +322,7 @@ export default function Hero({ data, siteSettings }) {
                   {videoTitle}
                 </span>
                 <span className="block text-xs text-white/60">
-                  Learn about Atlas Fuel Australia
+                  {videoSubtitle}
                 </span>
               </div>
             </button>

@@ -2,18 +2,12 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "Gatsby Web (Frontend)",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "develop"],
-      "cwd": "web",
-      "port": 8000
-    },
-    {
-      "name": "Sanity Studio (CMS)",
+      "name": "Next.js (Atlas Fuel)",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev"],
-      "cwd": "studio",
-      "port": 3333
+      "cwd": "nextjs",
+      "port": 3000,
+      "autoPort": true
     }
   ]
 }

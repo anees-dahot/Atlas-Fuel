@@ -1,0 +1,28 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f4f4f4"/>
+  <rect x="40" y="40" width="720" height="520" fill="white" stroke="#2db234" stroke-width="8"/>
+
+  <!-- Logo Circle -->
+  <circle cx="400" cy="140" r="50" fill="#2db234" opacity="0.1"/>
+  <circle cx="400" cy="140" r="35" fill="none" stroke="#2db234" stroke-width="3"/>
+  <text x="400" y="150" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#2db234" text-anchor="middle">WA</text>
+
+  <!-- Title -->
+  <text x="400" y="240" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0a0a0a" text-anchor="middle">WESTERN AUSTRALIAN</text>
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="32" font-weight="bold" fill="#0a0a0a" text-anchor="middle">HEAVY VEHICLE ACCREDITATION</text>
+
+  <!-- Certificate Text -->
+  <text x="400" y="340" font-family="Arial, sans-serif" font-size="18" fill="#666" text-anchor="middle">This certifies that</text>
+  <text x="400" y="380" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2db234" text-anchor="middle">ATLAS FUEL AUSTRALIA</text>
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="16" fill="#666" text-anchor="middle">meets all requirements for heavy vehicle safety and compliance</text>
+
+  <!-- Footer -->
+  <line x1="200" y1="480" x2="340" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="270" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Authorized Signature</text>
+
+  <line x1="460" y1="480" x2="600" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="530" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Date: 2024</text>
+
+  <!-- Watermark -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="14" fill="#ccc" text-anchor="middle">PLACEHOLDER - Upload actual certificate in Sanity CMS</text>
+</svg>

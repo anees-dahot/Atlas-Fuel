@@ -1,0 +1,27 @@
+# Dependencies
+node_modules
+sanity/node_modules
+
+# Build outputs
+.next
+out
+dist
+
+# Sanity
+.sanity
+
+# Environment files
+.env*.local
+.env
+sanity/.env
+
+# Vercel
+.vercel
+
+# IDE
+.vscode
+.idea
+
+# OS files
+.DS_Store
+*.pem

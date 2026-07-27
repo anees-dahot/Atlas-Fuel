@@ -1,0 +1,30 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f4f4f4"/>
+  <rect x="40" y="40" width="720" height="520" fill="white" stroke="#2db234" stroke-width="8"/>
+
+  <!-- Logo with Shield -->
+  <circle cx="400" cy="140" r="50" fill="#2db234" opacity="0.1"/>
+  <path d="M 400 120 L 420 135 L 420 155 Q 400 165 380 155 L 380 135 Z" fill="none" stroke="#2db234" stroke-width="3"/>
+  <text x="400" y="180" font-family="Arial, sans-serif" font-size="16" font-weight="bold" fill="#2db234" text-anchor="middle">45001</text>
+
+  <!-- Title -->
+  <text x="400" y="240" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#0a0a0a" text-anchor="middle">ISO 45001:2018</text>
+  <text x="400" y="270" font-family="Arial, sans-serif" font-size="20" fill="#666" text-anchor="middle">Occupational Health &amp; Safety</text>
+  <text x="400" y="295" font-family="Arial, sans-serif" font-size="20" fill="#666" text-anchor="middle">Management Systems</text>
+
+  <!-- Certificate Text -->
+  <text x="400" y="345" font-family="Arial, sans-serif" font-size="18" fill="#666" text-anchor="middle">This is to certify that</text>
+  <text x="400" y="385" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2db234" text-anchor="middle">ATLAS FUEL AUSTRALIA PTY LTD</text>
+  <text x="400" y="420" font-family="Arial, sans-serif" font-size="14" fill="#666" text-anchor="middle">has implemented and maintains an OH&amp;S Management System</text>
+  <text x="400" y="440" font-family="Arial, sans-serif" font-size="14" fill="#666" text-anchor="middle">which complies with ISO 45001:2018 standard requirements</text>
+
+  <!-- Footer -->
+  <line x1="200" y1="480" x2="340" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="270" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Certification Body</text>
+
+  <line x1="460" y1="480" x2="600" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="530" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Valid: 2024-2027</text>
+
+  <!-- Watermark -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="14" fill="#ccc" text-anchor="middle">PLACEHOLDER - Upload actual certificate in Sanity CMS</text>
+</svg>

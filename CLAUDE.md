@@ -1,13 +1,15 @@
 # Atlas Fuel Website — Claude Code Instructions
 
 ## Project Overview
+
 Build a full production-ready website for **Atlas Fuel Australia** using **Gatsby + Sanity CMS**.
-The design must be inspired by **mineralresources.com.au** — same premium corporate feel, same style of animations, mega menu, and scroll transitions.
+The design must be inspired by **mineralresources.com.au** — same premium corporate feel, smame style of animations, mega menu, and scroll transitions.
 This is a demo-first project. The homepage must be completed first for client approval, then remaining pages.
 
 ---
 
 ## Tech Stack
+
 - **Frontend:** Gatsby v5 (React)
 - **CMS:** Sanity v3
 - **Styling:** CSS Modules + GSAP for animations
@@ -18,6 +20,7 @@ This is a demo-first project. The homepage must be completed first for client ap
 ---
 
 ## Brand Guidelines
+
 - **Primary Green:** `#2db234`
 - **Dark Green:** `#1a7a1f`
 - **Black:** `#0a0a0a`
@@ -29,6 +32,7 @@ This is a demo-first project. The homepage must be completed first for client ap
 ---
 
 ## Logo & Assets
+
 - Logo: Black "ATLAS" text with green globe icon above the "L", green italic "FUEL" text below right
 - Hero image: Aerial shot of two white Atlas Fuel tanker trucks on a red desert road with salt lake background
 - Both assets will be placed in `/static/images/` folder
@@ -36,6 +40,7 @@ This is a demo-first project. The homepage must be completed first for client ap
 ---
 
 ## Project Structure
+
 ```
 atlas-fuel/
 ├── studio/                  # Sanity Studio
@@ -95,7 +100,9 @@ atlas-fuel/
 ---
 
 ## Navigation / Menu Structure
+
 Replicate the MinRes mega menu style exactly:
+
 - Sticky header, dark background `#0a0a0a`, white links
 - Logo on the left
 - Nav links on the right: About Us | Services | Fuel Stations | Fuel Transportation | Careers | News | Contact
@@ -107,12 +114,15 @@ Replicate the MinRes mega menu style exactly:
 - Mobile: hamburger menu with slide-in drawer, accordion sub-menus
 
 ### Mega Menu Items:
+
 **About Us**
+
 - Who We Are
 - Leadership
 - Vision & Purpose
 
 **Services**
+
 - Mining Fuel
 - Marine Fuel
 - Agriculture Fuel
@@ -121,18 +131,22 @@ Replicate the MinRes mega menu style exactly:
 - Local Fuel Distributors
 
 **Fuel Stations**
+
 - Store Locator
 - Franchise Enquiry
 
 **Fuel Transportation**
+
 - Our Fleet
 - Logistics
 
 **Careers**
+
 - View Jobs
 - Why Atlas Fuel
 
 **News**
+
 - Latest News
 - Community
 
@@ -141,6 +155,7 @@ Replicate the MinRes mega menu style exactly:
 ## Homepage Sections (in order)
 
 ### 1. Hero Section
+
 - Full viewport height
 - Background: Atlas Fuel truck aerial image (the desert road shot)
 - Dark overlay gradient (bottom to top, subtle)
@@ -153,12 +168,14 @@ Replicate the MinRes mega menu style exactly:
 - Scroll indicator arrow at bottom
 
 ### 2. Intro / About Strip
+
 - Dark background `#0a0a0a`
 - Left: large heading "Driving Growth and Reliability"
 - Right: paragraph about Atlas Fuel + "Learn More" link
 - Subtle fade-in on scroll
 
 ### 3. Services Tab Section
+
 - White background
 - Small label: "What We Do"
 - Large heading: "Industries We Serve"
@@ -167,6 +184,7 @@ Replicate the MinRes mega menu style exactly:
 - Data comes from Sanity
 
 ### 4. About Section
+
 - Split layout: left = large image of Atlas Fuel truck/operations, right = text
 - Heading: "About Atlas Fuel"
 - Body: company description
@@ -174,6 +192,7 @@ Replicate the MinRes mega menu style exactly:
 - "Read More" green button
 
 ### 5. Stats Counter Section
+
 - Dark green background `#1a7a1f`
 - 4 animated counters on scroll:
   - 15+ Years in Operation
@@ -183,18 +202,21 @@ Replicate the MinRes mega menu style exactly:
 - Numbers count up when section enters viewport
 
 ### 6. Quote Section
+
 - Full width, black background
 - Large italic white quote:
-  *"Our purpose is to provide reliable and affordable petroleum products to help create a better world for everyone."*
+  _"Our purpose is to provide reliable and affordable petroleum products to help create a better world for everyone."_
 - Attribution: — Atlas Fuel Vision 2030
 
 ### 7. Sustainability / Community Section
+
 - Light grey background
 - Left: text about community & responsibility
 - Right: 2x2 image grid
 - "Learn More" link
 
 ### 8. News Section
+
 - White background
 - Heading: "Latest News"
 - 3 news cards in a row (image, category tag, title, date, excerpt)
@@ -202,12 +224,14 @@ Replicate the MinRes mega menu style exactly:
 - Cards data from Sanity newsPost schema
 
 ### 9. CTA Banner
+
 - Full width green `#2db234` background
 - Heading: "Ready to Power Your Business?"
 - Subtext: "Contact us today for a free fuel quote."
 - White button: "Get a Free Quote"
 
 ### 10. Footer
+
 - Dark `#0a0a0a` background
 - Top: Atlas Fuel logo + short description + social icons
 - 4 columns of links:
@@ -220,9 +244,11 @@ Replicate the MinRes mega menu style exactly:
 ---
 
 ## Animations (GSAP)
+
 Install: `npm install gsap`
 
 ### Hero Text Animation
+
 ```js
 // Staggered lines animate in on page load
 gsap.from(".hero-line", {
@@ -230,43 +256,46 @@ gsap.from(".hero-line", {
   opacity: 0,
   duration: 1,
   stagger: 0.2,
-  ease: "power3.out"
-})
+  ease: "power3.out",
+});
 ```
 
 ### Scroll Reveal (all sections)
+
 ```js
 // Use ScrollTrigger for every section
-gsap.registerPlugin(ScrollTrigger)
+gsap.registerPlugin(ScrollTrigger);
 gsap.from(".reveal", {
   scrollTrigger: ".reveal",
   y: 60,
   opacity: 0,
   duration: 0.9,
-  ease: "power2.out"
-})
+  ease: "power2.out",
+});
 ```
 
 ### Stats Counter
+
 ```js
 gsap.to(counter, {
   scrollTrigger: { trigger: counter, start: "top 80%" },
   innerHTML: targetNumber,
   duration: 2,
   snap: { innerHTML: 1 },
-  ease: "power1.out"
-})
+  ease: "power1.out",
+});
 ```
 
 ### Mega Menu
+
 ```js
 // Slide down on hover
 gsap.from(".mega-menu", {
   y: -20,
   opacity: 0,
   duration: 0.3,
-  ease: "power2.out"
-})
+  ease: "power2.out",
+});
 ```
 
 ---
@@ -274,78 +303,83 @@ gsap.from(".mega-menu", {
 ## Sanity Schemas
 
 ### siteSettings.js
+
 ```js
 export default {
-  name: 'siteSettings',
-  title: 'Site Settings',
-  type: 'document',
+  name: "siteSettings",
+  title: "Site Settings",
+  type: "document",
   fields: [
-    { name: 'phone', type: 'string' },
-    { name: 'email', type: 'string' },
-    { name: 'address', type: 'string' },
-    { name: 'logo', type: 'image' },
-  ]
-}
+    { name: "phone", type: "string" },
+    { name: "email", type: "string" },
+    { name: "address", type: "string" },
+    { name: "logo", type: "image" },
+  ],
+};
 ```
 
 ### service.js
+
 ```js
 export default {
-  name: 'service',
-  title: 'Service',
-  type: 'document',
+  name: "service",
+  title: "Service",
+  type: "document",
   fields: [
-    { name: 'title', type: 'string' },
-    { name: 'slug', type: 'slug', options: { source: 'title' } },
-    { name: 'category', type: 'string' }, // mining, marine, agriculture etc
-    { name: 'description', type: 'text' },
-    { name: 'image', type: 'image' },
-    { name: 'content', type: 'array', of: [{ type: 'block' }] }, // rich text
-  ]
-}
+    { name: "title", type: "string" },
+    { name: "slug", type: "slug", options: { source: "title" } },
+    { name: "category", type: "string" }, // mining, marine, agriculture etc
+    { name: "description", type: "text" },
+    { name: "image", type: "image" },
+    { name: "content", type: "array", of: [{ type: "block" }] }, // rich text
+  ],
+};
 ```
 
 ### newsPost.js
+
 ```js
 export default {
-  name: 'newsPost',
-  title: 'News Post',
-  type: 'document',
+  name: "newsPost",
+  title: "News Post",
+  type: "document",
   fields: [
-    { name: 'title', type: 'string' },
-    { name: 'slug', type: 'slug', options: { source: 'title' } },
-    { name: 'publishedAt', type: 'datetime' },
-    { name: 'category', type: 'string' },
-    { name: 'excerpt', type: 'text' },
-    { name: 'mainImage', type: 'image' },
-    { name: 'body', type: 'array', of: [{ type: 'block' }] },
-  ]
-}
+    { name: "title", type: "string" },
+    { name: "slug", type: "slug", options: { source: "title" } },
+    { name: "publishedAt", type: "datetime" },
+    { name: "category", type: "string" },
+    { name: "excerpt", type: "text" },
+    { name: "mainImage", type: "image" },
+    { name: "body", type: "array", of: [{ type: "block" }] },
+  ],
+};
 ```
 
 ### homePage.js
+
 ```js
 export default {
-  name: 'homePage',
-  title: 'Home Page',
-  type: 'document',
+  name: "homePage",
+  title: "Home Page",
+  type: "document",
   fields: [
-    { name: 'heroHeading', type: 'string' },
-    { name: 'heroSubtitle', type: 'string' },
-    { name: 'heroImage', type: 'image' },
-    { name: 'aboutHeading', type: 'string' },
-    { name: 'aboutText', type: 'text' },
-    { name: 'aboutImage', type: 'image' },
-    { name: 'quoteText', type: 'text' },
-    { name: 'ctaHeading', type: 'string' },
-    { name: 'ctaSubtext', type: 'string' },
-  ]
-}
+    { name: "heroHeading", type: "string" },
+    { name: "heroSubtitle", type: "string" },
+    { name: "heroImage", type: "image" },
+    { name: "aboutHeading", type: "string" },
+    { name: "aboutText", type: "text" },
+    { name: "aboutImage", type: "image" },
+    { name: "quoteText", type: "text" },
+    { name: "ctaHeading", type: "string" },
+    { name: "ctaSubtext", type: "string" },
+  ],
+};
 ```
 
 ---
 
 ## Setup Commands
+
 Run these in order:
 
 ```bash
@@ -367,6 +401,7 @@ npm create sanity@latest -- --template clean --create-project "Atlas Fuel" --dat
 ---
 
 ## Deployment
+
 - Frontend: Push to GitHub → connect to Vercel → auto deploy
 - Sanity Studio: `npx sanity deploy` → gives a free studio.sanity.io URL for client
 - Environment variables on Vercel:
@@ -377,6 +412,7 @@ npm create sanity@latest -- --template clean --create-project "Atlas Fuel" --dat
 ---
 
 ## Priority Order (Build This First)
+
 1. Project setup (Gatsby + Sanity linked)
 2. Global styles + CSS variables
 3. Header + Mega Menu
@@ -389,6 +425,7 @@ npm create sanity@latest -- --template clean --create-project "Atlas Fuel" --dat
 ---
 
 ## Important Notes
+
 - Always use `gatsby-plugin-image` for images, never raw `<img>` tags
 - All content must be editable from Sanity Studio
 - Mobile responsive at 320px, 768px, 1024px, 1440px breakpoints

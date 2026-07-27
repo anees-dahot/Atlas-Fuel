@@ -1,126 +1,98 @@
 import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
+import { parseBody } from 'next-sanity/webhook'
+
+const routeByType = {
+  homePage: '/',
+  aboutPage: '/about',
+  servicesPage: '/services',
+  miningFuelPage: '/services/mining-fuel',
+  marineFuelPage: '/services/marine-fuel',
+  agricultureFuelPage: '/services/agriculture-fuel',
+  fuelRetailersPage: '/services/fuel-retailers',
+  onsiteBulkDieselPage: '/services/onsite-bulk-diesel',
+  localFuelDistributorsPage: '/services/local-fuel-distributors',
+  fuelStationsPage: '/fuel-stations',
+  fuelTransportationPage: '/fuel-transportation',
+  careersPage: '/careers',
+  communityPage: '/community',
+  contactPage: '/contact',
+  commercialDieselPage: '/commercial-diesel',
+  fuelStationEnquiryPage: '/fuel-station-enquiry',
+  productsPage: '/products',
+  storeLocatorPage: '/store-locator',
+  franchisingPage: '/franchising',
+  fuelPricesPage: '/fuel-prices',
+  atlasCarRacingPage: '/atlas-car-racing',
+  newsListingPage: '/news',
+}
+
+const globalTypes = new Set([
+  'siteSettings',
+  'megaMenu',
+  'footerNavigation',
+  'errorPages',
+])
+
+const productTypes = new Set([
+  'fuelProduct',
+  'additionalProduct',
+  'unleaded91',
+  'premium95',
+  'premium98',
+  'diesel',
+])
 
 export async function POST(request) {
   try {
-    const body = await request.json()
+    const { isValidSignature, body } = await parseBody(
+      request,
+      process.env.SANITY_REVALIDATE_SECRET,
+      true
+    )
 
-    // Verify secret token for security
-    const secret = request.headers.get('x-sanity-webhook-secret')
-    if (secret !== process.env.SANITY_REVALIDATE_SECRET) {
-      return NextResponse.json({ message: 'Invalid secret' }, { status: 401 })
+    if (!isValidSignature) {
+      return NextResponse.json({ message: 'Invalid signature' }, { status: 401 })
     }
 
-    // Get the document type from Sanity webhook
-    const documentType = body._type
-
-    console.log('🔄 Revalidating:', documentType, body.slug?.current || body._id)
-
-    // Revalidate based on document type
-    switch (documentType) {
-      case 'homePage':
-        revalidatePath('/')
-        break
-
-      case 'aboutPage':
-        revalidatePath('/about')
-        break
-
-      case 'servicesPage':
-        revalidatePath('/services')
-        break
-
-      case 'miningFuelPage':
-        revalidatePath('/services/mining-fuel')
-        break
-
-      case 'marineFuelPage':
-        revalidatePath('/services/marine-fuel')
-        break
-
-      case 'agricultureFuelPage':
-        revalidatePath('/services/agriculture-fuel')
-        break
-
-      case 'fuelRetailersPage':
-        revalidatePath('/services/fuel-retailers')
-        break
-
-      case 'onsiteBulkDieselPage':
-        revalidatePath('/services/onsite-bulk-diesel')
-        break
-
-      case 'localFuelDistributorsPage':
-        revalidatePath('/services/local-fuel-distributors')
-        break
-
-      case 'fuelStationsPage':
-        revalidatePath('/fuel-stations')
-        break
-
-      case 'fuelTransportationPage':
-        revalidatePath('/fuel-transportation')
-        break
-
-      case 'careersPage':
-        revalidatePath('/careers')
-        break
-
-      case 'communityPage':
-        revalidatePath('/community')
-        break
-
-      case 'contactPage':
-        revalidatePath('/contact')
-        break
-
-      case 'commercialDieselPage':
-        revalidatePath('/commercial-diesel')
-        break
-
-      case 'franchisingPage':
-        revalidatePath('/franchising')
-        break
-
-      case 'storeLocatorPage':
-        revalidatePath('/store-locator')
-        break
-
-      case 'newsListingPage':
-        revalidatePath('/news')
-        break
-
-      case 'newsPost':
-        // Revalidate news listing page
-        revalidatePath('/news')
-        // Revalidate specific news post if slug exists
-        if (body.slug?.current) {
-          revalidatePath(`/news/${body.slug.current}`)
-        }
-        break
-
-      case 'siteSettings':
-      case 'megaMenu':
-      case 'footerNavigation':
-        // Revalidate all pages since these affect header/footer globally
-        revalidatePath('/', 'layout')
-        break
-
-      default:
-        // If unknown type, revalidate homepage just to be safe
-        revalidatePath('/')
+    if (!body?._type) {
+      return NextResponse.json({ message: 'Missing document type' }, { status: 400 })
     }
 
-    return NextResponse.json({
-      revalidated: true,
-      type: documentType,
-      now: Date.now()
-    })
+    revalidateTag(body._type)
+
+    if (globalTypes.has(body._type)) {
+      revalidatePath('/', 'layout')
+      return NextResponse.json({ revalidated: ['all routes'] })
+    }
+
+    if (body._type === 'newsPost') {
+      const paths = ['/', '/news']
+      if (body.slug?.current) paths.push(`/news/${body.slug.current}`)
+      paths.forEach((path) => revalidatePath(path))
+      return NextResponse.json({ revalidated: paths })
+    }
+
+    if (productTypes.has(body._type)) {
+      revalidateTag('legacyFuelProduct')
+      revalidatePath('/products')
+      return NextResponse.json({ revalidated: ['/products'] })
+    }
+
+    const path = routeByType[body._type]
+    if (!path) {
+      return NextResponse.json(
+        { message: `No route configured for ${body._type}` },
+        { status: 202 }
+      )
+    }
+
+    revalidatePath(path)
+    return NextResponse.json({ revalidated: [path] })
   } catch (error) {
-    console.error('❌ Revalidation error:', error)
-    return NextResponse.json({
-      message: 'Error revalidating',
-      error: error.message
-    }, { status: 500 })
+    return NextResponse.json(
+      { message: 'Error revalidating', error: error.message },
+      { status: 500 }
+    )
   }
 }

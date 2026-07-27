@@ -1,0 +1,29 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#f4f4f4"/>
+  <rect x="40" y="40" width="720" height="520" fill="white" stroke="#2db234" stroke-width="8"/>
+
+  <!-- Logo -->
+  <circle cx="400" cy="140" r="50" fill="#2db234" opacity="0.1"/>
+  <text x="400" y="135" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2db234" text-anchor="middle">ISO</text>
+  <text x="400" y="155" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="#2db234" text-anchor="middle">9001</text>
+
+  <!-- Title -->
+  <text x="400" y="240" font-family="Arial, sans-serif" font-size="36" font-weight="bold" fill="#0a0a0a" text-anchor="middle">ISO 9001:2015</text>
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="20" fill="#666" text-anchor="middle">Quality Management Systems</text>
+
+  <!-- Certificate Text -->
+  <text x="400" y="340" font-family="Arial, sans-serif" font-size="18" fill="#666" text-anchor="middle">This is to certify that</text>
+  <text x="400" y="380" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#2db234" text-anchor="middle">ATLAS FUEL AUSTRALIA PTY LTD</text>
+  <text x="400" y="415" font-family="Arial, sans-serif" font-size="14" fill="#666" text-anchor="middle">has implemented and maintains a Quality Management System</text>
+  <text x="400" y="435" font-family="Arial, sans-serif" font-size="14" fill="#666" text-anchor="middle">which complies with ISO 9001:2015 standard requirements</text>
+
+  <!-- Footer -->
+  <line x1="200" y1="480" x2="340" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="270" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Certification Body</text>
+
+  <line x1="460" y1="480" x2="600" y2="480" stroke="#2db234" stroke-width="2"/>
+  <text x="530" y="500" font-family="Arial, sans-serif" font-size="12" fill="#666" text-anchor="middle">Valid: 2024-2027</text>
+
+  <!-- Watermark -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="14" fill="#ccc" text-anchor="middle">PLACEHOLDER - Upload actual certificate in Sanity CMS</text>
+</svg>
