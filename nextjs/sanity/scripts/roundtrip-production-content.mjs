@@ -119,6 +119,7 @@ const routes = {
   atlasCarRacingPage: '/atlas-car-racing',
   newsListingPage: '/news',
   siteSettings: '/',
+  themeSettings: '/',
   megaMenu: '/',
   footerNavigation: '/',
   errorPages: '/route-that-does-not-exist-cms-roundtrip',
@@ -190,6 +191,8 @@ const optionValue = (field, path) => {
 
 const stringValue = (field, path, marker) => {
   if (field.name === 'source') return 'external'
+  if (path[0] === 'themeSettings' && field.name === 'headingFamily') return 'Bebas Neue'
+  if (path[0] === 'themeSettings' && field.name === 'bodyFamily') return 'Inter'
   const listedValue = optionValue(field, path)
   if (listedValue !== undefined) return listedValue
 
@@ -205,7 +208,10 @@ const stringValue = (field, path, marker) => {
   ) {
     return `/contact?cmsrt=${marker}`
   }
-  if (name.includes('color')) return '#ff0066'
+  if (name.includes('color') || path[1] === 'colors') {
+    const color = (Number.parseInt(hash(path), 36) % 0xffffff).toString(16).padStart(6, '0')
+    return `#${color}`
+  }
   if (name.includes('icon')) return 'truck'
   if (name.includes('date')) return '26 July 2026'
   if (name.includes('time')) return '09:00–17:00'
@@ -244,7 +250,20 @@ const buildValue = (field, path, assetId, evidence, arrayIndex = 0) => {
     case 'string':
     case 'text': {
       const value = stringValue(field, path, marker)
-      if (value.includes(marker)) evidence.push({...evidenceEntry, value})
+      if (value.includes(marker)) {
+        evidence.push({...evidenceEntry, value})
+      } else if (
+        path[0] === 'themeSettings' &&
+        (path[1] === 'colors' || field.name?.endsWith('Family'))
+      ) {
+        const grayShade = field.name?.match(/^gray(\d+)$/)?.[1]
+        const renderedValue = grayShade
+          ? `--cms-gray-${grayShade}-rgb:${[1, 3, 5]
+              .map((offset) => Number.parseInt(value.slice(offset, offset + 2), 16))
+              .join(' ')}`
+          : value
+        evidence.push({...evidenceEntry, marker: renderedValue, value})
+      }
       return value
     }
     case 'url': {
@@ -254,8 +273,18 @@ const buildValue = (field, path, assetId, evidence, arrayIndex = 0) => {
       evidence.push({...evidenceEntry, value})
       return value
     }
-    case 'number':
+    case 'number': {
+      if (path[0] === 'themeSettings') {
+        const value = field.name === 'headingWeight' ? 800 : 300
+        evidence.push({
+          ...evidenceEntry,
+          marker: `--cms-${field.name === 'headingWeight' ? 'heading' : 'body'}-weight:${value}`,
+          value,
+        })
+        return value
+      }
       return 9000 + (Number.parseInt(hash(path), 36) % 999)
+    }
     case 'boolean':
       return true
     case 'datetime':
