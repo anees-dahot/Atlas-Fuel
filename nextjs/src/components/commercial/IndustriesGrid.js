@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
+import { cleanCmsValue, cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const icons = {
@@ -13,7 +15,7 @@ const icons = {
 }
 
 export default function IndustriesGrid({ data = {} }) {
-  const industries = data.industries || [
+  const industries = data.industries ?? [
     { title: 'Mining Fuel', description: 'We deliver high-quality fuel solutions to power industries, businesses, and communities across Australia.', icon: 'pickaxe' },
     { title: 'Marine Fuel', description: 'From mining and agriculture to transport and marine, our services are customized to meet every sector\'s needs.', icon: 'anchor' },
     { title: 'Agriculture', description: 'Our offerings include bulk fuel supply, on-site refueling, logistics, and retail solutions for seamless operations.', icon: 'wheat' },
@@ -38,26 +40,30 @@ export default function IndustriesGrid({ data = {} }) {
     <section ref={sectionRef} className="py-20 lg:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16 ig-header">
-          <span className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4 block">{data.eyebrow || 'Our Expertise'}</span>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight">{data.heading || 'Industries We Serve'}</h2>
+          <span className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4 block">{data.eyebrow ?? 'Our Expertise'}</span>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight" style={cmsTextStyle(data, 'heading')}>{data.heading ?? 'Industries We Serve'}</h2>
         </div>
 
         <div className="ig-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {industries.map((industry, index) => (
-            <div key={index} className="ig-card group bg-white overflow-hidden border border-gray-100 hover:border-primary/30 hover:shadow-xl transition-all duration-300">
-              {industry.imageUrl && (
-                <div className="h-48 overflow-hidden">
-                  <img
-                    src={industry.imageUrl}
-                    alt={industry.imageAlt || industry.title}
+            <div key={industry._key || industry.title || index} className="ig-card group bg-white overflow-hidden border border-gray-100 hover:border-primary/30 hover:shadow-xl transition-all duration-300">
+              {(industry.image || industry.imageUrl) && (
+                <div className="relative h-48 overflow-hidden">
+                  <CmsImage
+                    value={industry.image ?? industry.imageUrl}
+                    alt={industry.imageAlt ?? industry.alt ?? industry.title}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               )}
               <div className="p-8">
-                <div className="w-16 h-16 bg-gray-50 flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  {icons[industry.icon]}
-                </div>
+                {cleanCmsValue(industry.icon) && (
+                  <div className="w-16 h-16 bg-gray-50 flex items-center justify-center mb-6 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                    {icons[cleanCmsValue(industry.icon)] ?? icons.fuel}
+                  </div>
+                )}
                 <h3 className="text-xl font-bold text-gray-900 uppercase tracking-wide mb-3">{industry.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{industry.description}</p>
               </div>

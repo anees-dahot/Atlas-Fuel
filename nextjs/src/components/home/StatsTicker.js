@@ -28,7 +28,7 @@ const defaultStats = [
 ]
 
 export default function StatsTicker({ data }) {
-  const stats = data && data.stats && data.stats.length > 0 ? data.stats : defaultStats
+  const stats = Array.isArray(data?.stats) ? data.stats : defaultStats
 
   return (
     <div className="bg-gray-900 py-3.5 overflow-hidden border-y border-gray-800">

@@ -1,22 +1,28 @@
 import { getAtlasCarRacingPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import { loadPageMetadata } from '@/lib/metadata'
 import AtlasCarRacingClient from './AtlasCarRacingClient'
 
-export const metadata = {
-  title: 'Atlas Performance Fleet | Atlas Fuel Australia',
-  description: 'The Atlas Fuel custom-built Nissan GTR — a symbol of speed, engineering excellence, and community commitment across Western Australia.',
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getAtlasCarRacingPage,
+    getSiteSettings,
+    path: '/atlas-car-racing',
+    fallbackTitle: 'Atlas Performance Fleet | Atlas Fuel Australia',
+    fallbackDescription: 'The Atlas Fuel custom-built Nissan GTR — a symbol of speed, engineering excellence, and community commitment across Western Australia.',
+  })
 }
 
 const fallbackData = {
   heroTag: 'Atlas Performance Fleet',
-  heroTagColor: '#10b981',
+  heroTagColor: 'var(--cms-primary)',
   heroTagSize: '14px',
   heroTitle: 'Power. Precision. Community.',
-  heroTitleColor: '#000000',
+  heroTitleColor: 'var(--cms-text)',
   heroTitleSize: '72px',
   heroSubtitle: 'The Atlas Fuel custom-built Nissan GTR — a symbol of speed, engineering excellence, and our commitment to the communities we serve across Western Australia.',
-  heroSubtitleColor: '#374151',
+  heroSubtitleColor: 'rgb(var(--cms-gray-700-rgb))',
   heroSubtitleSize: '18px',
   heroPlate: '1FAS659',
   heroImageUrl: '/images/truck-new.jpg',
@@ -32,10 +38,10 @@ const fallbackData = {
     {label: 'Coverage', value: 'Western Australia'},
   ],
   meetGtrHeading: 'Meet the Atlas GTR',
-  meetGtrHeadingColor: '#1e3a8a',
+  meetGtrHeadingColor: 'var(--cms-text)',
   meetGtrHeadingSize: '48px',
   meetGtrDescription: 'The Atlas Fuel custom-built Nissan GTR R35 is more than a high-performance machine — it\'s our statement of passion, precision, and community commitment. Purpose-built for promotional impact, the GTR plays a central role in strengthening strong Western Australian local brand partnerships, supporting charity organisations, and showcasing Atlas Fuel at premier racing events across WA. From charity fundraisers to motorsport showcases, the GTR connects our brand with the community, drives awareness, and fuels excitement wherever it goes. It\'s not just about racing — it\'s about creating lasting relationships, bringing people together, and making an impact that lasts.',
-  meetGtrDescriptionColor: '#4b5563',
+  meetGtrDescriptionColor: 'var(--cms-muted)',
   meetGtrDescriptionSize: '18px',
   meetGtrCtaText: 'Sponsorship Enquiry',
   meetGtrCtaLink: '/contact',
@@ -46,7 +52,7 @@ const fallbackData = {
     {imageUrl: '/images/fuel-stations.jpg', alt: 'Atlas GTR at city event'},
   ],
   galleryHeading: 'The GTR In Action',
-  galleryHeadingColor: '#1e3a8a',
+  galleryHeadingColor: 'var(--cms-text)',
   galleryHeadingSize: '48px',
   galleryEyebrow: 'Performance Gallery',
   galleryImages: [
@@ -57,7 +63,7 @@ const fallbackData = {
     {imageUrl: '/images/atlas-fuel-hero-1c.webp', alt: 'Atlas GTR Australia Day 2025', caption: 'Australia Day 2025'},
   ],
   pillarsHeading: 'Purpose of the Fleet',
-  pillarsHeadingColor: '#1e3a8a',
+  pillarsHeadingColor: 'var(--cms-text)',
   pillarsHeadingSize: '48px',
   pillarsEyebrow: 'More Than Racing',
   pillars: [
@@ -67,29 +73,29 @@ const fallbackData = {
     {icon: 'charity', title: 'Charity & Fundraising', description: 'The Atlas GTR has been central to fundraising initiatives, supporting local charities and organisations that make a real difference in Australian communities.'},
   ],
   sponsorshipHeading: 'GTR Sponsorship Opportunities',
-  sponsorshipHeadingColor: '#1e3a8a',
+  sponsorshipHeadingColor: 'var(--cms-text)',
   sponsorshipHeadingSize: '48px',
   sponsorshipDescription: 'As a passionate fuel supplier, Atlas takes great pride in performance vehicles. Our initiative to create the custom Nissan GTR is driven by our love for car enthusiasts and our passion for high-performance petroleum products. We are open to collaborating with other like-minded brands. GTR sponsorship opportunities are available now — get in touch to discuss livery placement, event appearances, and co-branded activations.',
-  sponsorshipDescriptionColor: '#4b5563',
+  sponsorshipDescriptionColor: 'var(--cms-muted)',
   sponsorshipDescriptionSize: '18px',
   sponsorshipCtaText: 'Enquire About Sponsorship',
   sponsorshipCtaLink: '/contact',
   sponsorshipEyebrow: 'Partnership',
   sponsorshipBenefits: ['Livery placement & co-branding', 'Event appearances across WA', 'Social media feature content', 'Charity event participation'],
   pradoHeading: 'Atlas Prado — Diesel Test Vehicle',
-  pradoHeadingColor: '#1e3a8a',
+  pradoHeadingColor: 'var(--cms-text)',
   pradoHeadingSize: '48px',
   pradoDescription: 'The Atlas Fuel Prado is our benchmark vehicle for premium diesel testing, engineered to showcase the superior performance, efficiency, and reliability of our fuel through real-world trials. The Prado demonstrates how Atlas Premium Diesel delivers cleaner combustion, smoother acceleration, and longer engine life — meaning lower running costs and exceptional value with every litre.',
-  pradoDescriptionColor: '#4b5563',
+  pradoDescriptionColor: 'var(--cms-muted)',
   pradoDescriptionSize: '18px',
   pradoImageUrl: '/images/what-we-do-fuel-transportation.webp',
   pradoImageAlt: 'Atlas Fuel at the station',
   pradoEyebrow: 'Premium Diesel',
   contactHeading: 'Talk to Our Team',
-  contactHeadingColor: '#1e3a8a',
+  contactHeadingColor: 'var(--cms-text)',
   contactHeadingSize: '48px',
   contactDescription: 'Interested in sponsorship, event bookings, or international partnerships? We\'re available 24/7 to discuss opportunities.',
-  contactDescriptionColor: '#4b5563',
+  contactDescriptionColor: 'var(--cms-muted)',
   contactDescriptionSize: '18px',
   contactEyebrow: 'Get Involved',
   contactMethods: [
@@ -114,12 +120,17 @@ export default async function AtlasCarRacingPage() {
 
   const data = mergeWithFallback(fallbackData, {
     ...sanity,
-    specs: sanity?.heroSection?.specs,
-    meetGtrImages: sanity?.meetGtrSection?.images,
-    galleryImages: sanity?.gallerySection?.images,
-    pillars: sanity?.pillarsSection?.pillars,
-    sponsorshipBenefits: sanity?.sponsorshipSection?.benefits,
-    contactMethods: sanity?.contactSection?.methods,
+    specs: sanity?.heroSection?.specs ?? sanity?.specs,
+    meetGtrImages:
+      sanity?.meetGtrSection?.images ?? sanity?.meetGtrImages,
+    galleryImages:
+      sanity?.gallerySection?.images ?? sanity?.galleryImages,
+    pillars: sanity?.pillarsSection?.pillars ?? sanity?.pillars,
+    sponsorshipBenefits:
+      sanity?.sponsorshipSection?.benefits ??
+      sanity?.sponsorshipBenefits,
+    contactMethods:
+      sanity?.contactSection?.methods ?? sanity?.contactMethods,
   })
   const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
 

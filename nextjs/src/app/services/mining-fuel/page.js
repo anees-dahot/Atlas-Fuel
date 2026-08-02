@@ -1,7 +1,18 @@
 import { getMiningFuelPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import MiningFuelClient from './MiningFuelClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getMiningFuelPage,
+    getSiteSettings,
+    path: '/services/mining-fuel',
+    fallbackTitle: 'Mining Fuel Solutions | Atlas Fuel Australia',
+    fallbackDescription: 'Reliable bulk and onsite fuel delivery for mining operations across Australia.',
+  })
+}
 
 export default async function MiningFuelPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -87,6 +98,14 @@ export default async function MiningFuelPage() {
     content: 'Every Atlas Fuel driver meets the highest industry standards. Our rigorous training and certification programs ensure your fuel is transported by qualified professionals who prioritize safety above all else.',
   }
 
+  const fallbackExcellence = {
+    sectionTag: 'Our Philosophy',
+    tagline: 'Unrivalled. Unmatched. Unstoppable.',
+    content: 'These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence.',
+    ctaText: 'Read More',
+    ctaLink: '/about',
+  }
+
   const fallbackProcess = {
     heading: 'How We Work',
     subheading: 'A simple, reliable process built around your mining needs.',
@@ -121,11 +140,12 @@ export default async function MiningFuelPage() {
   const process = mergeWithFallback(fallbackProcess, sanity?.processTimelineSection)
   const fleet = mergeWithFallback(fallbackFleet, sanity?.fleetComplianceSection)
   const drivers = mergeWithFallback(fallbackDrivers, sanity?.driversComplianceSection)
+  const excellence = mergeWithFallback(fallbackExcellence, sanity?.excellenceSection)
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
-    primaryCta: { text: sanity?.enquireSection?.primaryCTAText || fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink || fallbackEnquire.primaryCta.link },
-    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText || fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink || fallbackEnquire.secondaryCta.link },
+    primaryCta: { text: sanity?.enquireSection?.primaryCTAText ?? fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink ?? fallbackEnquire.primaryCta.link },
+    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText ?? fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink ?? fallbackEnquire.secondaryCta.link },
   }
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 
@@ -141,6 +161,7 @@ export default async function MiningFuelPage() {
         process={process}
         fleet={fleet}
         drivers={drivers}
+        excellence={excellence}
         enquire={enquire}
         siteSettings={siteSettings}
       />

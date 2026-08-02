@@ -2,15 +2,15 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function TransportationSector({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Transportation Sector'
-  const content = data.content || 'Atlas Fuel Australia also stands as a leading provider of competitive fuel prices for the transportation sector. Recognizing the critical role that transportation plays in the movement of goods across the country, Atlas Fuel offers cost-effective solutions tailored to the needs of logistics and transport companies. By providing high-quality fuels at the best possible prices, Atlas Fuel helps businesses in the transportation industry reduce their operating costs and maximize efficiency. With a focus on reliability and customer service, Atlas Fuel Australia ensures that transport companies can keep their fleets running smoothly, while maintaining budget-conscious operations that support their bottom line.'
-  const imageUrl = data.imageUrl || '/images/hero-trucks.jpg'
-  const stats = data.stats || []
+  const heading = data.heading ?? 'Transportation Sector'
+  const content = data.content ?? 'Atlas Fuel Australia also stands as a leading provider of competitive fuel prices for the transportation sector. Recognizing the critical role that transportation plays in the movement of goods across the country, Atlas Fuel offers cost-effective solutions tailored to the needs of logistics and transport companies. By providing high-quality fuels at the best possible prices, Atlas Fuel helps businesses in the transportation industry reduce their operating costs and maximize efficiency. With a focus on reliability and customer service, Atlas Fuel Australia ensures that transport companies can keep their fleets running smoothly, while maintaining budget-conscious operations that support their bottom line.'
+  const stats = Array.isArray(data.stats) ? data.stats : []
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -67,10 +67,15 @@ export default function TransportationSector({ data = {} }) {
             )}
           </div>
           <div className="relative h-[400px] overflow-hidden shadow-xl">
-            <img
-              src={imageUrl}
-              alt="Atlas Fuel Transportation"
-              className="w-full h-full object-cover"
+            <CmsImage
+              value={data.imageImage ?? data.image ?? data.imageUrl}
+              fallbackSrc="/images/hero-trucks.jpg"
+              alt={data.imageAlt ?? data.imageUrlAlt ?? 'Atlas Fuel Transportation'}
+              width={1200}
+              height={800}
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
           </div>

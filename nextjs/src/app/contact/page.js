@@ -1,7 +1,20 @@
 import { getContactPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import ContactClient from './ContactClient'
+
+export async function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getContactPage,
+    getSiteSettings,
+    path: '/contact',
+    fallbackTitle: 'Contact | Atlas Fuel Australia',
+    fallbackDescription:
+      'Contact Atlas Fuel Australia for fuel supply, pricing, stations, and business enquiries.',
+    fallbackImage: '/images/atlas-fuel-hero-1b.webp',
+  })
+}
 
 export default async function ContactPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -11,17 +24,17 @@ export default async function ContactPage() {
 
   const fallbackContact = {
     heroTitle: 'Get in Touch',
-    heroTitleColor: '#000000',
+    heroTitleColor: 'var(--cms-text)',
     heroTitleSize: '72px',
     heroTitleBorderEnabled: false,
-    heroTitleBorderColor: '#000000',
+    heroTitleBorderColor: 'var(--cms-text)',
     heroTitleBorderWidth: '1px',
     heroTitleShadowColor: '',
     heroDescription: "Have a question or need a fuel solution? Our team is here to help. Contact us today and we'll respond within 24 hours.",
-    heroDescriptionColor: '#000000',
+    heroDescriptionColor: 'var(--cms-text)',
     heroDescriptionSize: '18px',
     heroDescriptionBorderEnabled: false,
-    heroDescriptionBorderColor: '#000000',
+    heroDescriptionBorderColor: 'var(--cms-text)',
     heroDescriptionBorderWidth: '1px',
     heroDescriptionShadowColor: '',
     heroImageUrl: '/images/atlas-fuel-hero-1b.webp',
@@ -33,14 +46,17 @@ export default async function ContactPage() {
     sundayHours: 'Closed',
     emergencySupport: '24/7 Available',
     formHeading: 'Send us a message',
-    formHeadingColor: '#000000',
+    formHeadingColor: 'var(--cms-text)',
     formHeadingSize: '30px',
     formHeadingBorderEnabled: false,
-    formHeadingBorderColor: '#000000',
+    formHeadingBorderColor: 'var(--cms-text)',
     formHeadingBorderWidth: '1px',
     formHeadingShadowColor: '',
     submitButtonText: 'Send Message',
+    submittingButtonText: 'Sending…',
     successMessage: 'Thank you for your message. We will get back to you within 24 hours.',
+    errorMessage: 'Your message could not be submitted. Please try again.',
+    emailFallbackText: 'Email us instead',
     fields: [
       {name: 'firstName', label: 'First Name *', type: 'text', placeholder: 'John', required: true},
       {name: 'lastName', label: 'Last Name *', type: 'text', placeholder: 'Smith', required: true},

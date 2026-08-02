@@ -3,15 +3,16 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function SustainableFueling({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Sustainable Fueling for a Greener Future'
-  const content = data.content || `At Atlas Fuel, we are committed to supporting sustainable agriculture through eco-friendly fuel options and responsible delivery practices. Our low-emission fuels and efficient supply chains help you reduce your environmental footprint while maintaining high productivity on the farm. Partner with Atlas to not only power your fields today, but also protect the land for generations to come.`
-  const ctaText = data.ctaText || 'Read More'
-  const ctaLink = data.ctaLink || '/about'
+  const heading = data.heading ?? 'Sustainable Fueling for a Greener Future'
+  const content = data.content ?? `At Atlas Fuel, we are committed to supporting sustainable agriculture through eco-friendly fuel options and responsible delivery practices. Our low-emission fuels and efficient supply chains help you reduce your environmental footprint while maintaining high productivity on the farm. Partner with Atlas to not only power your fields today, but also protect the land for generations to come.`
+  const ctaText = data.ctaText ?? 'Read More'
+  const ctaLink = data.ctaLink ?? '/about'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -54,10 +55,16 @@ export default function SustainableFueling({ data = {} }) {
       
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <div className="sustainable-content text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 leading-tight">
+          <h2
+            className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 leading-tight"
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
+          >
             {heading}
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-10">
+          <p
+            className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-10"
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
+          >
             {content}
           </p>
         </div>
@@ -66,6 +73,7 @@ export default function SustainableFueling({ data = {} }) {
           <Link
             href={ctaLink}
 className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors"
+            style={cmsTextStyle(data, 'ctaText', '#ffffff', '14px')}
           >
             {ctaText}
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -2,13 +2,14 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function PartnershipSection({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const content = data.content || `Atlas Fuel builds smart, strategic partnerships that connect local distributors with the strength of a national supply chain. By tapping into our established relationships with Australia's leading fuel providers, we offer streamlined access, stable pricing, and reliable product availability—enabling our partners to operate with confidence and consistency, no matter the market conditions.`
-  const tagline = data.tagline || 'ATLAS FUEL IS YOUR MOST RELIABLE PARTNER'
+  const content = data.content ?? `Atlas Fuel builds smart, strategic partnerships that connect local distributors with the strength of a national supply chain. By tapping into our established relationships with Australia's leading fuel providers, we offer streamlined access, stable pricing, and reliable product availability—enabling our partners to operate with confidence and consistency, no matter the market conditions.`
+  const tagline = data.tagline ?? 'ATLAS FUEL IS YOUR MOST RELIABLE PARTNER'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -51,12 +52,12 @@ export default function PartnershipSection({ data = {} }) {
       
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         <div className="partnership-content">
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-8">
+          <p className="text-lg md:text-xl text-gray-600 leading-relaxed mb-8" style={cmsTextStyle(data, 'content', '#4b5563', '20px')}>
             {content}
           </p>
         </div>
         
-        <h2 className="partnership-tagline text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 leading-tight">
+        <h2 className="partnership-tagline text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-8 leading-tight" style={cmsTextStyle(data, 'tagline', '#111827', '48px')}>
           {tagline}
         </h2>
       </div>

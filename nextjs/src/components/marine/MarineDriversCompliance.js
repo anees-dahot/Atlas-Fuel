@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from '@/components/services/cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const driverRequirements = [
@@ -15,8 +17,15 @@ const driverRequirements = [
 export default function MarineDriversCompliance({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Drivers Compliance'
-  const content = data.content || 'Our drivers are fully certified and trained to handle marine fuel deliveries with the highest safety standards and regulatory compliance.'
+  const heading = data.heading ?? 'Drivers Compliance'
+  const content = data.content ?? 'Our drivers are fully certified and trained to handle marine fuel deliveries with the highest safety standards and regulatory compliance.'
+  const sectionTag = data.sectionTag ?? 'Professional Standards'
+  const certificationsHeading = data.certificationsHeading ?? 'Driver Certifications'
+  const requirements = Array.isArray(data.requirements) ? data.requirements : driverRequirements
+  const note = data.note ?? 'All drivers undergo regular training and certification updates to maintain compliance with Australian regulations.'
+  const imageAlt = data.imageAlt ?? data.imageUrlAlt ?? 'Atlas Fuel Drivers'
+  const badgeValue = data.badgeValue ?? data.badgeTitle ?? '100% Certified'
+  const badgeLabel = data.badgeLabel ?? data.badgeSubtitle ?? 'All drivers fully accredited'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -87,42 +96,47 @@ export default function MarineDriversCompliance({ data = {} }) {
                 <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                 <circle cx="12" cy="7" r="4" />
               </svg>
-              Driver Certifications
+              {certificationsHeading}
             </h3>
             <ul className="space-y-4">
-              {driverRequirements.map((item, index) => (
-                <li key={index} className="drivers-item flex items-start gap-3">
+              {requirements.map((item, index) => (
+                <li key={item._key || index} className="drivers-item flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mt-0.5">
                     <svg className="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </span>
-                  <span className="text-gray-700">{item}</span>
+                  <span className="text-gray-700">{typeof item === 'string' ? item : item.title}</span>
                 </li>
               ))}
             </ul>
             <div className="mt-8 pt-6 border-t border-gray-100">
               <p className="text-sm text-gray-500">
-                All drivers undergo regular training and certification updates to maintain compliance with Australian regulations.
+                {note}
               </p>
             </div>
           </div>
 
           <div className="order-1 lg:order-2">
             <span className="inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">
-              Professional Standards
+              {sectionTag}
             </span>
-            <h2 className="drivers-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8">
+            <h2 className="drivers-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
               {heading}
             </h2>
-            <p className="drivers-content text-lg text-gray-600 leading-relaxed mb-8">
+            <p className="drivers-content text-lg text-gray-600 leading-relaxed mb-8" style={cmsTextStyle(data, 'content', '#4b5563', '18px')}>
               {content}
             </p>
             <div className="drivers-image relative aspect-video overflow-hidden">
-              <img
-                src="/images/marine-bunkering.jpg"
-                alt="Atlas Fuel Drivers"
-                className="w-full h-full object-cover"
+              <CmsImage
+                value={data.imageImage ?? data.image ?? data.imageUrl}
+                fallbackSrc="/images/marine-bunkering.jpg"
+                alt={imageAlt}
+                width={1280}
+                height={720}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
               <div className="absolute bottom-6 left-6 right-6">
@@ -134,8 +148,8 @@ export default function MarineDriversCompliance({ data = {} }) {
                     </svg>
                   </div>
                   <div>
-                    <div className="font-bold">100% Certified</div>
-                    <div className="text-sm text-gray-700">All drivers fully accredited</div>
+                    <div className="font-bold">{badgeValue}</div>
+                    <div className="text-sm text-gray-700">{badgeLabel}</div>
                   </div>
                 </div>
               </div>

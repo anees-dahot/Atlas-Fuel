@@ -2,27 +2,28 @@
 
 import React from 'react'
 import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
 
 export default function DieselSection({ data = {} }) {
-  const heading = data.heading || 'Diesel Fuel'
-  const headingColor = data.headingColor || '#000000'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const heading = data.heading ?? 'Diesel Fuel'
+  const headingColor = data.headingColor ?? 'var(--cms-text)'
+  const headingSize = data.headingSize ?? '48px'
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
 
-  const description = data.description || 'Our high-quality diesel fuel is formulated to deliver optimal performance for diesel engines. Whether you\'re operating commercial vehicles, heavy machinery, or agricultural equipment, Atlas Fuel diesel provides the power and efficiency you need.'
-  const descriptionColor = data.descriptionColor || '#000000'
-  const descriptionSize = data.descriptionSize || '18px'
-  const descriptionBorderEnabled = data.descriptionBorderEnabled || false
-  const descriptionBorderColor = data.descriptionBorderColor || '#000000'
-  const descriptionBorderWidth = data.descriptionBorderWidth || '1px'
-  const descriptionShadowColor = data.descriptionShadowColor || ''
+  const description = data.description ?? 'Our high-quality diesel fuel is formulated to deliver optimal performance for diesel engines. Whether you\'re operating commercial vehicles, heavy machinery, or agricultural equipment, Atlas Fuel diesel provides the power and efficiency you need.'
+  const descriptionColor = data.descriptionColor ?? 'var(--cms-text)'
+  const descriptionSize = data.descriptionSize ?? '18px'
+  const descriptionBorderEnabled = data.descriptionBorderEnabled ?? false
+  const descriptionBorderColor = data.descriptionBorderColor ?? 'var(--cms-text)'
+  const descriptionBorderWidth = data.descriptionBorderWidth ?? '1px'
+  const descriptionShadowColor = data.descriptionShadowColor ?? ''
 
-  const ctaText = data.ctaText || 'Learn More'
-  const ctaLink = data.ctaLink || '/contact'
-  const imageUrl = data.imageUrl || '/images/hero-trucks.jpg'
+  const ctaText = data.ctaText ?? 'Learn More'
+  const ctaLink = data.ctaLink ?? '/contact'
+  const imageUrl = data.imageUrl ?? '/images/hero-trucks.jpg'
 
   return (
     <section className="py-16 lg:py-24 bg-white">
@@ -52,7 +53,7 @@ export default function DieselSection({ data = {} }) {
             >
               {description}
             </p>
-            <Link
+            {ctaText && ctaLink && <Link
               href={ctaLink}
               className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark transition-colors"
             >
@@ -61,15 +62,17 @@ export default function DieselSection({ data = {} }) {
                 <line x1="5" y1="12" x2="19" y2="12"/>
                 <polyline points="12 5 19 12 12 19"/>
               </svg>
-            </Link>
+            </Link>}
           </div>
 
           {/* Right: Image */}
           <div>
             <div className="relative h-[400px] lg:h-[500px] bg-gray-100 overflow-hidden">
-              <img
-                src={imageUrl}
-                alt={heading}
+              <CmsImage
+                value={data.image ?? imageUrl}
+                alt={data.imageAlt ?? heading}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="w-full h-full object-cover"
               />
             </div>

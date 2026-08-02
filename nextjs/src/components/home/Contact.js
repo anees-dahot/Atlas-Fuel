@@ -43,7 +43,7 @@ export default function Contact({ data = {} }) {
               'text-3xl md:text-4xl lg:text-5xl font-bold text-foreground uppercase tracking-tight transition-all duration-700 delay-100',
               isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
             )}
-            style={{ fontFamily: 'var(--font-heading)' }}
+            style={{ fontFamily: 'var(--cms-font-heading)' }}
           >
             Contact Atlas Fuel
           </h2>

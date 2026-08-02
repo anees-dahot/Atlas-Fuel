@@ -2,12 +2,13 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function EquipmentGrowth({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const content = data.content || `Your equipment is the engine of your growth—and Atlas Fuel is the energy behind your success. From planting to harvest, our reliable fuel solutions help you scale up production and embrace new opportunities. With Atlas, you can focus on cultivating your future, confident that your energy needs are in expert hands.`
+  const content = data.content ?? `Your equipment is the engine of your growth—and Atlas Fuel is the energy behind your success. From planting to harvest, our reliable fuel solutions help you scale up production and embrace new opportunities. With Atlas, you can focus on cultivating your future, confident that your energy needs are in expert hands.`
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -36,7 +37,10 @@ export default function EquipmentGrowth({ data = {} }) {
       
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <div className="equipment-content text-center">
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
+          <p
+            className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto"
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
+          >
             {content}
           </p>
         </div>

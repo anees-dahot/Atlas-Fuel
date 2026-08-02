@@ -1,6 +1,7 @@
 import { getFuelTransportationPage, getSiteSettings } from '@/lib/sanity'
 import { hasContent, mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import { loadPageMetadata } from '@/lib/metadata'
 import FuelTransportationClient from './FuelTransportationClient'
 
 const fallbackSiteSettings = {
@@ -12,24 +13,24 @@ const fallbackSiteSettings = {
 
 const fallbackData = {
   heroSubtitle: 'Fuel Transportation',
-  heroSubtitleColor: '#10b981',
+  heroSubtitleColor: 'var(--cms-primary)',
   heroSubtitleSize: '14px',
   heroSubtitleBorderEnabled: false,
-  heroSubtitleBorderColor: '#000000',
+  heroSubtitleBorderColor: 'var(--cms-text)',
   heroSubtitleBorderWidth: '1px',
   heroSubtitleShadowColor: '',
   heroTitle: 'Reliable Logistics Australia',
-  heroTitleColor: '#ffffff',
+  heroTitleColor: 'var(--cms-background)',
   heroTitleSize: '72px',
   heroTitleBorderEnabled: false,
-  heroTitleBorderColor: '#ffffff',
+  heroTitleBorderColor: 'var(--cms-background)',
   heroTitleBorderWidth: '1px',
   heroTitleShadowColor: '',
   heroDescription: 'Atlas Fuel operates a modern, GPS-tracked fleet delivering fuel safely and efficiently to any location across Australia. Our state-of-the-art logistics network ensures on-time delivery every time.',
-  heroDescriptionColor: '#ffffff',
+  heroDescriptionColor: 'var(--cms-background)',
   heroDescriptionSize: '18px',
   heroDescriptionBorderEnabled: false,
-  heroDescriptionBorderColor: '#ffffff',
+  heroDescriptionBorderColor: 'var(--cms-background)',
   heroDescriptionBorderWidth: '1px',
   heroDescriptionShadowColor: '',
   heroImageUrl: '/images/what-we-do-fuel-transportation.webp',
@@ -46,17 +47,17 @@ const fallbackData = {
   ],
   fleetSectionLabel: 'Our Fleet',
   fleetHeading: 'Modern Fleet, Reliable Service',
-  fleetHeadingColor: '#000000',
+  fleetHeadingColor: 'var(--cms-text)',
   fleetHeadingSize: '48px',
   fleetHeadingBorderEnabled: false,
-  fleetHeadingBorderColor: '#000000',
+  fleetHeadingBorderColor: 'var(--cms-text)',
   fleetHeadingBorderWidth: '1px',
   fleetHeadingShadowColor: '',
   fleetDescription: 'Our fleet of certified tankers is equipped with the latest technology for safe, efficient fuel delivery across Australia.',
-  fleetDescriptionColor: '#000000',
+  fleetDescriptionColor: 'var(--cms-text)',
   fleetDescriptionSize: '18px',
   fleetDescriptionBorderEnabled: false,
-  fleetDescriptionBorderColor: '#000000',
+  fleetDescriptionBorderColor: 'var(--cms-text)',
   fleetDescriptionBorderWidth: '1px',
   fleetDescriptionShadowColor: '',
   fleetItems: [
@@ -69,10 +70,10 @@ const fallbackData = {
   ],
   servicesSectionLabel: 'Our Services',
   servicesHeading: 'Transportation Services',
-  servicesHeadingColor: '#000000',
+  servicesHeadingColor: 'var(--cms-text)',
   servicesHeadingSize: '48px',
   servicesHeadingBorderEnabled: false,
-  servicesHeadingBorderColor: '#000000',
+  servicesHeadingBorderColor: 'var(--cms-text)',
   servicesHeadingBorderWidth: '1px',
   servicesHeadingShadowColor: '',
   servicesItems: [
@@ -83,17 +84,17 @@ const fallbackData = {
   ],
   coverageSectionLabel: 'Where We Operate',
   coverageHeading: 'Coverage Areas',
-  coverageHeadingColor: '#000000',
+  coverageHeadingColor: 'var(--cms-text)',
   coverageHeadingSize: '48px',
   coverageHeadingBorderEnabled: false,
-  coverageHeadingBorderColor: '#000000',
+  coverageHeadingBorderColor: 'var(--cms-text)',
   coverageHeadingBorderWidth: '1px',
   coverageHeadingShadowColor: '',
   coverageDescription: 'From urban centers to remote mine sites, our fleet delivers across Australia\'s most challenging terrains.',
-  coverageDescriptionColor: '#000000',
+  coverageDescriptionColor: 'var(--cms-text)',
   coverageDescriptionSize: '18px',
   coverageDescriptionBorderEnabled: false,
-  coverageDescriptionBorderColor: '#000000',
+  coverageDescriptionBorderColor: 'var(--cms-text)',
   coverageDescriptionBorderWidth: '1px',
   coverageDescriptionShadowColor: '',
   coverageAreas: [
@@ -103,17 +104,17 @@ const fallbackData = {
   ],
   teamSectionLabel: 'Our Team',
   teamHeading: 'Professional Drivers, Exceptional Service',
-  teamHeadingColor: '#000000',
+  teamHeadingColor: 'var(--cms-text)',
   teamHeadingSize: '48px',
   teamHeadingBorderEnabled: false,
-  teamHeadingBorderColor: '#000000',
+  teamHeadingBorderColor: 'var(--cms-text)',
   teamHeadingBorderWidth: '1px',
   teamHeadingShadowColor: '',
   teamDescription: 'Every Atlas Fuel driver is fully licensed, certified, and trained to the highest industry standards. Our team takes pride in delivering fuel safely and on time, every time.',
-  teamDescriptionColor: '#000000',
+  teamDescriptionColor: 'var(--cms-text)',
   teamDescriptionSize: '18px',
   teamDescriptionBorderEnabled: false,
-  teamDescriptionBorderColor: '#000000',
+  teamDescriptionBorderColor: 'var(--cms-text)',
   teamDescriptionBorderWidth: '1px',
   teamDescriptionShadowColor: '',
   teamStats: [
@@ -136,10 +137,10 @@ const fallbackData = {
   ],
   processSectionLabel: 'Our Process',
   processHeading: 'How We Work',
-  processHeadingColor: '#000000',
+  processHeadingColor: 'var(--cms-text)',
   processHeadingSize: '48px',
   processHeadingBorderEnabled: false,
-  processHeadingBorderColor: '#000000',
+  processHeadingBorderColor: 'var(--cms-text)',
   processHeadingBorderWidth: '1px',
   processHeadingShadowColor: '',
   processSteps: [
@@ -150,17 +151,17 @@ const fallbackData = {
   ],
   safetySectionLabel: 'Safety & Compliance',
   safetyHeading: 'Your Partner in Safety',
-  safetyHeadingColor: '#000000',
+  safetyHeadingColor: 'var(--cms-text)',
   safetyHeadingSize: '48px',
   safetyHeadingBorderEnabled: false,
-  safetyHeadingBorderColor: '#000000',
+  safetyHeadingBorderColor: 'var(--cms-text)',
   safetyHeadingBorderWidth: '1px',
   safetyHeadingShadowColor: '',
   safetyDescription: 'Atlas Fuel Australia places paramount importance on the safety of our employees and the communities we serve. Our commitment to safety is reflected in rigorous procedures designed to mitigate risks at every stage.',
-  safetyDescriptionColor: '#000000',
+  safetyDescriptionColor: 'var(--cms-text)',
   safetyDescriptionSize: '18px',
   safetyDescriptionBorderEnabled: false,
-  safetyDescriptionBorderColor: '#000000',
+  safetyDescriptionBorderColor: 'var(--cms-text)',
   safetyDescriptionBorderWidth: '1px',
   safetyDescriptionShadowColor: '',
   safetyImageUrl: '/images/partner-in-safety.webp',
@@ -176,10 +177,10 @@ const fallbackData = {
   ],
   fleetGallerySectionLabel: 'Fleet Compliance',
   fleetGalleryHeading: 'Excellence in Every Detail',
-  fleetGalleryHeadingColor: '#000000',
+  fleetGalleryHeadingColor: 'var(--cms-text)',
   fleetGalleryHeadingSize: '48px',
   fleetGalleryHeadingBorderEnabled: false,
-  fleetGalleryHeadingBorderColor: '#000000',
+  fleetGalleryHeadingBorderColor: 'var(--cms-text)',
   fleetGalleryHeadingBorderWidth: '1px',
   fleetGalleryHeadingShadowColor: '',
   fleetGalleryImages: [
@@ -194,21 +195,37 @@ const fallbackData = {
   ],
   excellenceSectionLabel: 'Our Philosophy',
   excellenceTagline: 'Unrivalled. Unmatched. Unstoppable.',
-  excellenceTaglineColor: '#000000',
+  excellenceTaglineColor: 'var(--cms-text)',
   excellenceTaglineSize: '24px',
   excellenceTaglineBorderEnabled: false,
-  excellenceTaglineBorderColor: '#000000',
+  excellenceTaglineBorderColor: 'var(--cms-text)',
   excellenceTaglineBorderWidth: '1px',
   excellenceTaglineShadowColor: '',
   excellenceContent: 'These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence.',
-  excellenceContentColor: '#000000',
+  excellenceContentColor: 'var(--cms-text)',
   excellenceContentSize: '18px',
   excellenceContentBorderEnabled: false,
-  excellenceContentBorderColor: '#000000',
+  excellenceContentBorderColor: 'var(--cms-text)',
   excellenceContentBorderWidth: '1px',
   excellenceContentShadowColor: '',
   excellenceCtaText: 'Read More',
   excellenceCtaLink: '/about',
+}
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelTransportationPage,
+    getSiteSettings,
+    path: '/fuel-transportation',
+    fallbackTitle: 'Fuel Transportation | Atlas Fuel Australia',
+    fallbackDescription:
+      'Reliable GPS-tracked bulk fuel transportation and logistics across Australia.',
+    fallbackImage: {
+      imageUrl:
+        'https://atlasfuel.com.au/images/what-we-do-fuel-transportation.webp',
+      alt: 'Atlas Fuel transportation fleet',
+    },
+  })
 }
 
 export default async function FuelTransportationPage() {
@@ -229,7 +246,7 @@ export default async function FuelTransportationPage() {
     ['hero', 'heroSection'],
   ]
 
-  const data = Object.fromEntries(
+  const mappedData = Object.fromEntries(
     Object.entries(fallbackData).map(([field, fallback]) => {
       const match = sections.find(([prefix]) => field.startsWith(prefix))
       if (!match) return [field, mergeWithFallback(fallback, sanity?.[field])]
@@ -238,7 +255,7 @@ export default async function FuelTransportationPage() {
       const suffix = field.slice(prefix.length)
       const sectionField = `${suffix.charAt(0).toLowerCase()}${suffix.slice(1)}`
       const nestedValue = sectionField === 'imageAlt'
-        ? sanity?.[sectionName]?.imageUrlAlt
+        ? sanity?.[sectionName]?.imageUrlAlt ?? sanity?.[sectionName]?.imageAlt
         : sanity?.[sectionName]?.[sectionField]
       const legacyValue = sanity?.[field]
 
@@ -251,6 +268,17 @@ export default async function FuelTransportationPage() {
       ]
     })
   )
+  const data = {
+    ...mappedData,
+    heroImage:
+      sanity?.heroSection?.imageImage ??
+      sanity?.heroImage ??
+      mappedData.heroImageUrl,
+    safetyImage:
+      sanity?.safetySection?.image ??
+      sanity?.safetyImage ??
+      mappedData.safetyImageUrl,
+  }
 
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 

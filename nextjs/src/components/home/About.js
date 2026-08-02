@@ -2,6 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import CmsImage from '@/components/common/CmsImage'
 
 const fallbackPoints = [
   '100% Australian owned and operated',
@@ -35,22 +36,21 @@ export default function About({ data = {} }) {
   const keyPointsRef = useRef(null)
   const keyPointRefs = useRef([])
 
-  const tagline = data?.tagline || 'Unrivalled. Unmatched. Unstoppable.'
-  const heading = data?.heading || 'About Us'
+  const tagline = data?.tagline ?? 'Unrivalled. Unmatched. Unstoppable.'
+  const heading = data?.heading ?? 'About Us'
   const body =
-    data?.body ||
+    data?.body ??
     'These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence.'
   // Use Sanity keyPoints if provided (even if empty), fallback only if null/undefined
-  const keyPoints =
-    data?.keyPoints !== null && data?.keyPoints !== undefined
-      ? data.keyPoints
-      : fallbackPoints
-  const image1Url = data?.image1Url || '/images/what-we-do-fuel-transportation.webp'
-  const image2Url = data?.image2Url || '/images/hero-trucks.jpg'
-  const stat1Value = data?.stat1Value || '2015'
-  const stat1Label = data?.stat1Label || 'Established'
-  const stat2Value = data?.stat2Value || '100M+'
-  const stat2Label = data?.stat2Label || 'Litres Delivered'
+  const keyPoints = Array.isArray(data?.keyPoints) ? data.keyPoints : fallbackPoints
+  const image1Url = data?.image1Url ?? '/images/what-we-do-fuel-transportation.webp'
+  const image2Url = data?.image2Url ?? '/images/hero-trucks.jpg'
+  const stat1Value = data?.stat1Value ?? '2015'
+  const stat1Label = data?.stat1Label ?? 'Established'
+  const stat2Value = data?.stat2Value ?? '100M+'
+  const stat2Label = data?.stat2Label ?? 'Litres Delivered'
+  const ctaText = data?.ctaText ?? 'Read More'
+  const ctaLink = data?.ctaLink ?? '/about'
 
   // Intersection Observer for initial reveal
   useEffect(() => {
@@ -217,22 +217,24 @@ className="py-16 lg:py-24 bg-white overflow-hidden"
               ))}
             </div>
 
-            <Link
-              href="/about"
-              className="group inline-flex items-center gap-2 font-bold uppercase tracking-wide hover:gap-4 transition-all"
-            >
-              <span className={data?.ctaTextColor || "text-primary"} style={getStyle(data, 'ctaText')}>Read More</span>
-              <svg
-                className="w-5 h-5 group-hover:translate-x-1 transition-transform"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {ctaText && ctaLink && (
+              <Link
+                href={ctaLink}
+                className="group inline-flex items-center gap-2 font-bold uppercase tracking-wide hover:gap-4 transition-all"
               >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
+                <span className={data?.ctaTextColor ?? "text-primary"} style={getStyle(data, 'ctaText')}>{ctaText}</span>
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+            )}
           </div>
 
           {/* Right: Image Grid with Stat Cards */}
@@ -240,9 +242,11 @@ className="py-16 lg:py-24 bg-white overflow-hidden"
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4">
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
-                  <img
-                    src={image1Url}
-                    alt={data?.image1Alt || "Atlas Fuel depot"}
+                  <CmsImage
+                    value={data?.image1 ?? image1Url}
+                    alt={data?.image1Alt ?? "Atlas Fuel depot"}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 50vw"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                   />
                 </div>
@@ -261,11 +265,13 @@ className="py-16 lg:py-24 bg-white overflow-hidden"
                   <div className="text-sm text-white/70" style={getStyle(data, 'stat2Label')}>{stat2Label}</div>
                 </div>
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
-                  <img
-                    src={image2Url}
-                    alt={data?.image2Alt || "Atlas Fuel fleet"}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                  />
+                <CmsImage
+                    value={data?.image2 ?? image2Url}
+                    alt={data?.image2Alt ?? "Atlas Fuel fleet"}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, 50vw"
+                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                />
                 </div>
               </div>
             </div>

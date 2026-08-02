@@ -1,6 +1,6 @@
 "use client";
-import Image from "next/image";
 import Link from "next/link";
+import CmsImage from "@/components/common/CmsImage";
 
 const defaultCards = [
   {
@@ -10,6 +10,7 @@ const defaultCards = [
       "Quickly find your nearest local Atlas Fuel station and experience world-class service wherever you are.",
     imageUrl: "/images/store-locator.jpg",
     link: "/store-locator",
+    ctaText: "Read More",
   },
   {
     title: "Atlas Performance Fleet",
@@ -18,6 +19,7 @@ const defaultCards = [
       "Discover our high-performance fleet engineered for speed, strength, and reliable nationwide fuel delivery.",
     imageUrl: "/images/what-we-do-retail.webp",
     link: "/atlas-car-racing",
+    ctaText: "Read More",
   },
   {
     title: "Work With Us",
@@ -26,6 +28,7 @@ const defaultCards = [
       "Join Atlas Fuel and build a rewarding career powering growth across Australia every single day.",
     imageUrl: "/images/work-with-us.jpg",
     link: "/careers",
+    ctaText: "Read More",
   },
 ];
 
@@ -104,14 +107,12 @@ export default function FeatureBoxes({ data }) {
             >
               {/* Image Container */}
               <div className="relative h-52 overflow-hidden">
-                <Image
-                  src={
-                    card.imageUrl ||
-                    card.image?.asset?.url ||
-                    "/images/what-we-do-fuel-transportation.webp"
-                  }
+                <CmsImage
+                  value={card.image || card.imageUrl}
+                  fallbackSrc="/images/what-we-do-fuel-transportation.webp"
                   alt={card.imageAlt || card.title || "Feature"}
                   fill
+                  sizes="(min-width: 768px) 33vw, 100vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 {/* Green Label */}
@@ -135,7 +136,7 @@ export default function FeatureBoxes({ data }) {
                   {card.subtitle || ""}
                 </p>
                 <div className="flex items-center gap-2 text-primary font-semibold text-xs uppercase tracking-wider group-hover:gap-3 transition-all">
-                  Read More
+                  {card.ctaText || "Read More"}
                   <svg
                     className="w-4 h-4"
                     viewBox="0 0 24 24"

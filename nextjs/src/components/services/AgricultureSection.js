@@ -2,28 +2,22 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function AgricultureSection({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Agriculture'
-  const content = data.content || 'Atlas Fuel Australia prides itself on delivering the best prices to its agriculture customers. With a commitment to supporting Australia\'s farming communities, Atlas Fuel ensures competitive rates that help farmers manage their operational costs effectively. Whether it\'s supplying diesel for machinery or other fuel needs essential to agriculture, Atlas Fuel Australia combines reliability with cost-efficiency, ensuring that farmers can focus on their crops and livestock without financial strain. Their dedication to customer satisfaction and understanding of agricultural needs makes them a trusted partner in the industry, fostering long-term relationships built on reliability and competitive pricing.'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Agriculture'
+  const content = data.content ?? 'Atlas Fuel Australia prides itself on delivering the best prices to its agriculture customers. With a commitment to supporting Australia\'s farming communities, Atlas Fuel ensures competitive rates that help farmers manage their operational costs effectively. Whether it\'s supplying diesel for machinery or other fuel needs essential to agriculture, Atlas Fuel Australia combines reliability with cost-efficiency, ensuring that farmers can focus on their crops and livestock without financial strain. Their dedication to customer satisfaction and understanding of agricultural needs makes them a trusted partner in the industry, fostering long-term relationships built on reliability and competitive pricing.'
+  const stats = Array.isArray(data.stats)
+    ? data.stats
+    : [
+        { value: 'Best Prices', label: 'For agriculture customers' },
+        { value: 'Reliable', label: 'Fuel supply when needed' },
+        { value: 'Flexible', label: 'Delivery options' },
+        { value: 'Trusted', label: 'Partner for farmers' },
+      ]
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -62,47 +56,27 @@ export default function AgricultureSection({ data = {} }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="order-2 lg:order-1">
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-8">
+            <div className="bg-gradient-to-br from-primary/5 to-primary/10 p-8">
               <div className="grid grid-cols-2 gap-6">
-                <div className="bg-white p-6 shadow-sm border border-gray-100">
-                  <div className="text-3xl font-bold text-primary mb-2">Best Prices</div>
-                  <div className="text-gray-600 text-sm">For agriculture customers</div>
-                </div>
-                <div className="bg-white p-6 shadow-sm border border-gray-100">
-                  <div className="text-3xl font-bold text-primary mb-2">Reliable</div>
-                  <div className="text-gray-600 text-sm">Fuel supply when needed</div>
-                </div>
-                <div className="bg-white p-6 shadow-sm border border-gray-100">
-                  <div className="text-3xl font-bold text-primary mb-2">Flexible</div>
-                  <div className="text-gray-600 text-sm">Delivery options</div>
-                </div>
-                <div className="bg-white p-6 shadow-sm border border-gray-100">
-                  <div className="text-3xl font-bold text-primary mb-2">Trusted</div>
-                  <div className="text-gray-600 text-sm">Partner for farmers</div>
-                </div>
+                {stats.map((stat, index) => (
+                  <div key={stat._key || index} className="bg-white p-6 shadow-sm border border-gray-100">
+                    <div className="text-3xl font-bold text-primary mb-2" style={cmsTextStyle(stat, 'value', '#2db234', '30px')}>{stat.value}</div>
+                    <div className="text-gray-600 text-sm" style={cmsTextStyle(stat, 'label', '#4b5563', '14px')}>{stat.label}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
           <div className="order-1 lg:order-2">
             <h2
               className="agri-heading font-bold mb-6"
-              style={{
-                color: headingColor,
-                fontSize: headingSize,
-                border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-                textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'heading', '#111827', '48px')}
             >
               {heading}
             </h2>
             <p
               className="agri-content leading-relaxed"
-              style={{
-                color: contentColor,
-                fontSize: contentSize,
-                border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-                textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
             >
               {content}
             </p>

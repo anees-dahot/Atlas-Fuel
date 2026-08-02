@@ -2,13 +2,14 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function DieselHarvests({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Diesel That Drives Harvests'
-  const content = data.content || `From tractors to tankers, we keep your farm moving without missing a beat. Our reliable diesel fuels every season, from planting to harvest with power you can count on. No delays, no downtime, just smooth, strong energy delivering results where it matters most.`
+  const heading = data.heading ?? 'Diesel That Drives Harvests'
+  const content = data.content ?? `From tractors to tankers, we keep your farm moving without missing a beat. Our reliable diesel fuels every season, from planting to harvest with power you can count on. No delays, no downtime, just smooth, strong energy delivering results where it matters most.`
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -37,10 +38,16 @@ export default function DieselHarvests({ data = {} }) {
       
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <div className="diesel-content text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+          <h2
+            className="text-4xl md:text-5xl font-bold text-gray-900 mb-8"
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
+          >
             {heading}
           </h2>
-          <p className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
+          <p
+            className="text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto"
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
+          >
             {content}
           </p>
         </div>

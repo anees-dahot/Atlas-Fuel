@@ -2,36 +2,32 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function ComplianceSection({ data = {} }) {
   const sectionRef = useRef(null)
-  const [activeTab, setActiveTab] = useState('atlas')
+  const [activeTab, setActiveTab] = useState(null)
   
-  const complianceTabs = data.certifications ? data.certifications.map((cert, index) => ({
-    id: index.toString(),
+  const complianceTabs = (data.certifications ?? [
+    {
+      name: 'Atlas Compliance',
+      label: 'At Atlas Fuel, compliance is more than a requirement — it is the foundation of how we operate.',
+    },
+  ]).map((cert, index) => ({
+    id: cert._key ?? index.toString(),
     title: cert.name,
-    content: cert.label
-  })) : [
-    {
-      id: 'atlas',
-      title: 'Atlas Compliance',
-      content: 'At Atlas Fuel, compliance is more than a requirement — it\'s the foundation of how we operate. We uphold the highest standards of safety, quality, and accountability through rigorous adherence to ISO certifications, WAHVA standards, and all regulatory obligations. Our commitment to compliance ensures trust with our partners, protection for our people, and responsible business practices that support every community we serve across Australia.'
-    },
-    {
-      id: 'fleet',
-      title: 'Fleet Compliance',
-      content: 'Atlas Fuel\'s fleet compliance sets the benchmark for safety, reliability, and professionalism on every journey nationwide. By meeting WAHVA standards and strict regulatory requirements, our vehicles and drivers operate with full accountability, ensuring trust, efficiency, sustainability, and consistent performance across Australia\'s diverse roads, industries, communities, environments, and future growth opportunities everywhere.'
-    },
-    {
-      id: 'drivers',
-      title: 'Drivers Compliance',
-      content: 'At Atlas Fuel, driver compliance is the cornerstone of our safe, dependable, and responsible operations. By following WAHVA standards, national regulations, and continuous training initiatives, our drivers embody professionalism and consistency, delivering trusted service, operational efficiency, and sustainable performance across Australia\'s roads, sectors, communities, environments, and future opportunities.'
-    }
-  ]
+    content: cert.description ?? cert.label,
+    image: cert.image ?? cert.imageUrl,
+    imageAlt: cert.imageAlt ?? cert.alt ?? cert.name,
+  }))
+  const activeId = complianceTabs.some((tab) => tab.id === activeTab)
+    ? activeTab
+    : complianceTabs[0]?.id
   
-  const heading = data.heading || 'Atlas Compliance'
-  const description = data.description || 'Atlas Fuel stands proudly certified across ISO, WAHVA, and regulatory standards, proving our unwavering commitment to quality, safety, and responsible operations.'
+  const heading = data.heading ?? 'Atlas Compliance'
+  const description = data.description ?? 'Atlas Fuel stands proudly certified across ISO, WAHVA, and regulatory standards, proving our unwavering commitment to quality, safety, and responsible operations.'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -49,9 +45,9 @@ export default function ComplianceSection({ data = {} }) {
     <section ref={sectionRef} className="py-20 lg:py-24 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <div className="cs-header text-center mb-12">
-          <span className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4 block">{data.eyebrow || 'Standards & Safety'}</span>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-6">{heading}</h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <span className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4 block">{data.eyebrow ?? 'Standards & Safety'}</span>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-6" style={cmsTextStyle(data, 'heading')}>{heading}</h2>
+          <p className="text-lg text-gray-600 max-w-3xl mx-auto" style={cmsTextStyle(data, 'description')}>
             {description}
           </p>
         </div>
@@ -63,7 +59,7 @@ export default function ComplianceSection({ data = {} }) {
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`px-6 py-3 font-bold uppercase tracking-wide transition-all duration-300 ${
-                  activeTab === tab.id
+                  activeId === tab.id
                     ? 'bg-primary text-white shadow-lg'
                     : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-200'
                 }`}
@@ -78,10 +74,21 @@ export default function ComplianceSection({ data = {} }) {
               <div
                 key={tab.id}
                 className={`transition-all duration-500 ${
-                  activeTab === tab.id ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 absolute pointer-events-none'
+                  activeId === tab.id ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 absolute pointer-events-none'
                 }`}
               >
                 <h3 className="text-2xl font-bold text-gray-900 uppercase tracking-wide mb-6">{tab.title}</h3>
+                {tab.image && (
+                  <div className="relative h-56 mb-6 overflow-hidden">
+                    <CmsImage
+                      value={tab.image}
+                      alt={tab.imageAlt}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="object-contain"
+                    />
+                  </div>
+                )}
                 <p className="text-lg text-gray-600 leading-relaxed">{tab.content}</p>
               </div>
             ))}

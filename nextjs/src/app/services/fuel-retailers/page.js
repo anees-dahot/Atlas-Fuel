@@ -1,7 +1,18 @@
 import { getFuelRetailersPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import FuelRetailersClient from './FuelRetailersClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelRetailersPage,
+    getSiteSettings,
+    path: '/services/fuel-retailers',
+    fallbackTitle: 'Fuel Retailer Supply | Atlas Fuel Australia',
+    fallbackDescription: 'Reliable fuel supply, flexible branding and operational support for independent retailers.',
+  })
+}
 
 export default async function FuelRetailersPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -104,6 +115,18 @@ export default async function FuelRetailersPage() {
     secondaryCta: { text: 'Learn More', link: '/fuel-prices' },
   }
 
+  const fallbackProcess = {
+    sectionTag: 'How It Works',
+    heading: 'Our Simple Process',
+    subheading: 'Four easy steps to build a reliable retail fuel partnership',
+    steps: [
+      { step: '01', title: 'Contact Us', description: 'Tell us about your station, volumes, branding and supply requirements.' },
+      { step: '02', title: 'Custom Solution', description: 'We create a tailored supply and support plan for your retail business.' },
+      { step: '03', title: 'Plan Supply', description: 'Our logistics team coordinates pricing, scheduling and dependable deliveries.' },
+      { step: '04', title: 'Ongoing Support', description: 'Atlas supports your station with responsive service as your business grows.' },
+    ],
+  }
+
   // Merge Sanity data with fallbacks - include all styling fields
   const retailerHero = mergeWithFallback(fallbackRetailerHero, sanity?.retailerHeroSection)
   const support = mergeWithFallback(fallbackSupport, sanity?.supportSection)
@@ -113,11 +136,12 @@ export default async function FuelRetailersPage() {
   const compliance = mergeWithFallback(fallbackCompliance, sanity?.complianceSection)
   const fleet = mergeWithFallback(fallbackFleet, sanity?.fleetComplianceSection)
   const drivers = mergeWithFallback(fallbackDrivers, sanity?.driversComplianceSection)
+  const process = mergeWithFallback(fallbackProcess, sanity?.processTimelineSection)
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
-    primaryCta: { text: sanity?.enquireSection?.primaryCTAText || fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink || fallbackEnquire.primaryCta.link },
-    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText || fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink || fallbackEnquire.secondaryCta.link },
+    primaryCta: { text: sanity?.enquireSection?.primaryCTAText ?? fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink ?? fallbackEnquire.primaryCta.link },
+    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText ?? fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink ?? fallbackEnquire.secondaryCta.link },
   }
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 
@@ -132,6 +156,7 @@ export default async function FuelRetailersPage() {
         compliance={compliance}
         fleet={fleet}
         drivers={drivers}
+        process={process}
         enquire={enquire}
         siteSettings={siteSettings}
       />

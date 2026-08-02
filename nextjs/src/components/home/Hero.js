@@ -1,6 +1,8 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import CmsImage from "@/components/common/CmsImage";
+import CmsVideo from "@/components/common/CmsVideo";
 
 const defaultQuickLinks = [
   { name: "Atlas Fuel Prices", href: "/fuel-prices", icon: "dollar" },
@@ -125,12 +127,11 @@ const icons = {
 };
 
 function extractLines(title) {
-  if (!title) return ["Welcome to", "ATLAS FUEL", "AUSTRALIA"];
-  if (typeof title === "string") return title.split("\n").filter(Boolean);
+  if (title === null || title === undefined)
+    return ["Welcome to", "ATLAS FUEL", "AUSTRALIA"];
+  if (typeof title === "string") return title.split("\n");
   if (Array.isArray(title))
-    return title
-      .filter((b) => b.children?.[0]?.text)
-      .map((b) => b.children[0].text);
+    return title.map((block) => block.children?.[0]?.text ?? "");
   return ["Welcome to", "ATLAS FUEL", "AUSTRALIA"];
 }
 
@@ -138,28 +139,30 @@ const sizeMap = { '1': '12px', '2': '16px', '3': '20px', '4': '24px', '5': '32px
 
 export default function Hero({ data, siteSettings }) {
   const lines = extractLines(data?.title);
-  const imageUrl = data?.heroImageUrl || "/images/hero-trucks.jpg";
-  const eyebrow = data?.eyebrow || "On-Site Fuel Solutions";
+  const imageUrl = data?.heroImageUrl ?? "/images/hero-trucks.jpg";
+  const eyebrow = data?.eyebrow ?? "On-Site Fuel Solutions";
   const desc =
-    data?.description ||
+    data?.description ??
     "Atlas Fuel Australia delivers reliable, efficient fuel solutions nationwide. We cater to businesses of all sizes, ensuring quality and sustainability.";
-  const ctaPrimary = data?.ctaPrimary || "Contact Fuel Station";
-  const ctaPrimaryLink = data?.ctaPrimaryLink || "/contact";
-  const ctaSecondary = data?.ctaSecondary || "New Bulk Fuel Enquiry";
+  const ctaPrimary = data?.ctaPrimary ?? "Contact Fuel Station";
+  const ctaPrimaryLink = data?.ctaPrimaryLink ?? "/contact";
+  const ctaSecondary = data?.ctaSecondary ?? "New Bulk Fuel Enquiry";
   const ctaSecondaryLink =
-    data?.ctaSecondaryLink || "mailto:info@atlasfuel.com.au";
-  const videoTitle = data?.videoTitle || "Watch our video";
+    data?.ctaSecondaryLink ?? "mailto:info@atlasfuel.com.au";
+  const videoTitle = data?.videoTitle ?? "Watch our video";
   const videoSubtitle =
-    data?.videoSubtitle || "Learn about Atlas Fuel Australia";
+    data?.videoSubtitle ?? "Learn about Atlas Fuel Australia";
+  const video = data?.video ?? {};
+  const activeVideoUrl = video.url ?? data?.videoUrl;
+  const videoUploadUrl = video.uploadUrl ?? video.file?.asset?.url;
 
-  // Use quickLinks from siteSettings or fall back to defaults
-  const sourceQuickLinks = siteSettings?.heroQuickLinks?.length > 0
-    ? siteSettings.heroQuickLinks
-    : data?.quickLinks?.length > 0
+  const sourceQuickLinks = Array.isArray(data?.quickLinks)
     ? data.quickLinks
+    : Array.isArray(siteSettings?.heroQuickLinks)
+    ? siteSettings.heroQuickLinks
     : defaultQuickLinks;
   const quickLinks = sourceQuickLinks.map((link) => {
-    const name = link.name || link.label || "";
+    const name = link.name ?? link.label ?? "";
     return {
       ...link,
       name,
@@ -170,8 +173,7 @@ export default function Hero({ data, siteSettings }) {
     };
   });
 
-  // Use heroStats from data (query now fetches this)
-  const heroStats = data?.heroStats || [];
+  const heroStats = Array.isArray(data?.heroStats) ? data.heroStats : [];
 
   const eyebrowStyle = {
     ...(data?.eyebrowSize && { fontSize: sizeMap[data.eyebrowSize] }),
@@ -232,9 +234,12 @@ export default function Hero({ data, siteSettings }) {
   return (
     <section className="relative flex items-start" style={{ minHeight: '80svh' }}>
       <div className="absolute inset-0 -z-10 overflow-hidden">
-        <img
-          src={imageUrl}
-          alt={data?.heroImageAlt || "Atlas Fuel"}
+        <CmsImage
+          value={data?.heroImage ?? imageUrl}
+          alt={data?.heroImageAlt ?? "Atlas Fuel"}
+          fill
+          priority
+          sizes="100vw"
           className="w-full h-full object-cover"
           style={{ objectPosition: '50% 85%' }}
         />
@@ -272,41 +277,57 @@ export default function Hero({ data, siteSettings }) {
             {desc}
           </p>
           <div className="mt-4 sm:mt-6 flex flex-col sm:flex-wrap sm:flex-row gap-3 sm:gap-4">
-            <Link
-              href={ctaPrimaryLink || "#"}
-              className="group inline-flex items-center justify-center gap-3 px-5 sm:px-6 py-3 bg-primary text-white font-bold uppercase tracking-wide transition-all duration-300 hover:bg-primary-dark text-sm sm:text-base"
-            >
-              <span className={data?.ctaPrimaryColor || ""} style={primaryCTAStyle}>{ctaPrimary}</span>
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {ctaPrimary && ctaPrimaryLink && (
+              <Link
+                href={ctaPrimaryLink}
+                className="group inline-flex items-center justify-center gap-3 px-5 sm:px-6 py-3 bg-primary text-white font-bold uppercase tracking-wide transition-all duration-300 hover:bg-primary-dark text-sm sm:text-base"
               >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
-            <a
-              href={ctaSecondaryLink || "#"}
-              className="group inline-flex items-center justify-center gap-3 px-5 sm:px-6 py-3 bg-gray-100 border border-gray-300 text-gray-900 font-bold uppercase tracking-wide transition-all duration-300 hover:bg-gray-200 hover:border-gray-400 text-sm sm:text-base"
-            >
-              <svg
-                className="w-4 h-4 sm:w-5 sm:h-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+                <span className={data?.ctaPrimaryColor ?? ""} style={primaryCTAStyle}>{ctaPrimary}</span>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5 transition-transform duration-300 group-hover:translate-x-1"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+            )}
+            {ctaSecondary && ctaSecondaryLink && (
+              <a
+                href={ctaSecondaryLink}
+                className="group inline-flex items-center justify-center gap-3 px-5 sm:px-6 py-3 bg-gray-100 border border-gray-300 text-gray-900 font-bold uppercase tracking-wide transition-all duration-300 hover:bg-gray-200 hover:border-gray-400 text-sm sm:text-base"
               >
-                <rect x="2" y="4" width="20" height="16" />
-                <path d="M22 7l-10 6L2 7" />
-              </svg>
-              <span className={data?.ctaSecondaryColor || ""} style={secondaryCTAStyle}>{ctaSecondary}</span>
-            </a>
+                <svg
+                  className="w-4 h-4 sm:w-5 sm:h-5"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <rect x="2" y="4" width="20" height="16" />
+                  <path d="M22 7l-10 6L2 7" />
+                </svg>
+                <span className={data?.ctaSecondaryColor ?? ""} style={secondaryCTAStyle}>{ctaSecondary}</span>
+              </a>
+            )}
           </div>
           <div className="mt-4 sm:mt-6">
-            <button className="group flex items-center gap-4 text-white/80 hover:text-white transition-colors duration-300">
+            <CmsVideo
+              url={activeVideoUrl}
+              uploadUrl={videoUploadUrl}
+              poster={video.poster}
+              title={video.title ?? videoTitle}
+              caption={video.caption}
+              transcript={video.transcript}
+              transcriptLabel={video.transcriptLabel}
+              autoplay={video.autoplay ?? true}
+              muted={video.muted ?? false}
+              loop={video.loop ?? false}
+              className="group flex items-center gap-4 text-white/80 hover:text-white transition-colors duration-300"
+            >
               <span className="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 shrink-0">
                 <svg
                   className="w-5 h-5 text-white ml-0.5"
@@ -319,13 +340,13 @@ export default function Hero({ data, siteSettings }) {
               </span>
               <div className="text-left">
                 <span className="block text-sm font-semibold uppercase tracking-wider">
-                  {videoTitle}
+                  {video.title ?? videoTitle}
                 </span>
                 <span className="block text-xs text-white/60">
                   {videoSubtitle}
                 </span>
               </div>
-            </button>
+            </CmsVideo>
           </div>
         </div>
       </div>
@@ -334,10 +355,10 @@ export default function Hero({ data, siteSettings }) {
         {/* Glassmorphism grid boxes */}
         <div className="max-w-7xl mx-auto px-6 pb-6 pt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-            {quickLinks.map((link) => (
+            {quickLinks.filter((link) => link.name && link.href).map((link) => (
               <a
                 key={link.name}
-                href={link.href || "#"}
+                href={link.href}
                 className={cn(
                   "group flex items-center gap-3 px-4 py-3 transition-all duration-300",
                   link.isEmergency
@@ -361,7 +382,7 @@ export default function Hero({ data, siteSettings }) {
                         : "text-primary group-hover:text-white",
                     )}
                   >
-                    {icons[link.icon]}
+                    {icons[link.icon] || icons.fuel}
                   </span>
                 </div>
                 <span className="text-xs font-semibold uppercase tracking-wide leading-tight">
@@ -386,11 +407,12 @@ export default function Hero({ data, siteSettings }) {
                   <line x1="12" y1="5" x2="12" y2="19" />
                   <polyline points="19 12 12 19 5 12" />
                 </svg>
-                <span className="text-sm font-medium">Sectors We Cover</span>
+                <span className="text-sm font-medium">
+                  {data?.quickLinksLabel ?? "Sectors We Cover"}
+                </span>
               </div>
               <div className="hidden md:flex items-center gap-8">
-                {heroStats.length > 0 ? (
-                  heroStats.map((stat, idx) => (
+                {heroStats.map((stat, idx) => (
                     <div key={idx} className="group flex items-center gap-3 hover:gap-4 transition-all duration-300 cursor-default">
                       <div className="w-1 h-8 bg-primary rounded-full group-hover:h-10 group-hover:bg-primary-dark transition-all duration-300"></div>
                       <div>
@@ -400,32 +422,7 @@ export default function Hero({ data, siteSettings }) {
                         <div className="text-xs text-gray-500">{stat.label}</div>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <>
-                    <div className="group flex items-center gap-3 hover:gap-4 transition-all duration-300 cursor-default">
-                      <div className="w-1 h-8 bg-primary rounded-full group-hover:h-10 group-hover:bg-primary-dark transition-all duration-300"></div>
-                      <div>
-                        <div className="text-lg font-bold font-heading group-hover:text-primary transition-colors duration-300">300+</div>
-                        <div className="text-xs text-gray-500">Jobs Connected</div>
-                      </div>
-                    </div>
-                    <div className="group flex items-center gap-3 hover:gap-4 transition-all duration-300 cursor-default">
-                      <div className="w-1 h-8 bg-primary rounded-full group-hover:h-10 group-hover:bg-primary-dark transition-all duration-300"></div>
-                      <div>
-                        <div className="text-lg font-bold font-heading group-hover:text-primary transition-colors duration-300">8+</div>
-                        <div className="text-xs text-gray-500">Sectors Servicing</div>
-                      </div>
-                    </div>
-                    <div className="group flex items-center gap-3 hover:gap-4 transition-all duration-300 cursor-default">
-                      <div className="w-1 h-8 bg-primary rounded-full group-hover:h-10 group-hover:bg-primary-dark transition-all duration-300"></div>
-                      <div>
-                        <div className="text-lg font-bold font-heading group-hover:text-primary transition-colors duration-300">100%</div>
-                        <div className="text-xs text-gray-500">Australian Owned</div>
-                      </div>
-                    </div>
-                  </>
-                )}
+                  ))}
               </div>
             </div>
           </div>

@@ -3,16 +3,17 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function ExcellenceSection({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const sectionTag = data.sectionTag || 'Our Philosophy'
-  const tagline = data.tagline || 'Unrivalled. Unmatched. Unstoppable.'
-  const content = data.content || `These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence. From our performance fleet to our world-class service stations, every step we take reflects a relentless drive to set new standards in the fuel industry. For our customers, our partners, and our communities, Atlas Fuel is more than a brand — it's a promise of strength, progress, and a future powered without limits.`
-  const ctaText = data.ctaText || 'Read More'
-  const ctaLink = data.ctaLink || '/about'
+  const sectionTag = data.sectionTag ?? 'Our Philosophy'
+  const tagline = data.tagline ?? 'Unrivalled. Unmatched. Unstoppable.'
+  const content = data.content ?? `These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence. From our performance fleet to our world-class service stations, every step we take reflects a relentless drive to set new standards in the fuel industry. For our customers, our partners, and our communities, Atlas Fuel is more than a brand — it's a promise of strength, progress, and a future powered without limits.`
+  const ctaText = data.ctaText ?? 'Read More'
+  const ctaLink = data.ctaLink ?? '/about'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -66,39 +67,24 @@ export default function ExcellenceSection({ data = {} }) {
       <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
         <div className="flex items-center gap-3 mb-4 justify-center">
           <div className="w-10 h-0.5 bg-primary flex-shrink-0" />
-          <span className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]">
+          <span
+            className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]"
+            style={cmsTextStyle(data, 'sectionTag', '#2db234', '11px')}
+          >
             {sectionTag}
           </span>
         </div>
         
         <h2
           className="excellence-tagline font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-8"
-          style={{
-            color: data.taglineColor || undefined,
-            fontSize: data.taglineSize || undefined,
-            WebkitTextStroke: data.taglineBorderEnabled
-              ? `${data.taglineBorderWidth || '1px'} ${data.taglineBorderColor || 'currentColor'}`
-              : undefined,
-            textShadow: data.taglineShadowColor
-              ? `0 2px 4px ${data.taglineShadowColor}`
-              : undefined,
-          }}
+          style={cmsTextStyle(data, 'tagline', '#111827', '48px')}
         >
           {tagline}
         </h2>
         
         <p
           className="excellence-content text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto mb-10"
-          style={{
-            color: data.contentColor || undefined,
-            fontSize: data.contentSize || undefined,
-            WebkitTextStroke: data.contentBorderEnabled
-              ? `${data.contentBorderWidth || '1px'} ${data.contentBorderColor || 'currentColor'}`
-              : undefined,
-            textShadow: data.contentShadowColor
-              ? `0 2px 4px ${data.contentShadowColor}`
-              : undefined,
-          }}
+          style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
         >
           {content}
         </p>
@@ -107,6 +93,7 @@ export default function ExcellenceSection({ data = {} }) {
           <Link
             href={ctaLink}
             className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300"
+            style={cmsTextStyle(data, 'ctaText', '#ffffff', '13px')}
           >
             {ctaText}
             <svg className="w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

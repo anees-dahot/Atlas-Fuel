@@ -2,17 +2,19 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from '@/components/services/cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function MarineCommercial({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const tagline = data.tagline || 'Commercial & Offshore'
-  const heading = data.heading || 'Commercial and Offshore Operations'
-  const description = data.description || 'Atlas Fuel Australia has built a reputation as the trusted partner for commercial and offshore marine operations across the country.'
-  const ctaText = data.ctaText || 'Enquire Now'
-  const ctaLink = data.ctaLink || '/contact'
-  const imageUrl = data.imageUrl || '/images/marine-bunkering.jpg'
+  const tagline = data.tagline ?? 'Commercial & Offshore'
+  const heading = data.heading ?? 'Commercial and Offshore Operations'
+  const description = data.description ?? 'Atlas Fuel Australia has built a reputation as the trusted partner for commercial and offshore marine operations across the country.'
+  const ctaText = data.ctaText ?? 'Enquire Now'
+  const ctaLink = data.ctaLink ?? '/contact'
+  const secondaryDescription = data.secondaryDescription ?? ''
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -91,10 +93,15 @@ export default function MarineCommercial({ data = {} }) {
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
           <div className="marine-commercial-image relative order-2 lg:order-1">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={imageUrl}
-                alt="Commercial Marine Operations"
-                className="w-full h-full object-cover"
+              <CmsImage
+                value={data.imageImage ?? data.image ?? data.imageUrl}
+                fallbackSrc="/images/marine-bunkering.jpg"
+                alt={data.imageAlt ?? data.imageUrlAlt ?? 'Commercial Marine Operations'}
+                width={1200}
+                height={900}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-transparent" />
             </div>
@@ -107,21 +114,20 @@ export default function MarineCommercial({ data = {} }) {
           </div>
 
           <div className="order-1 lg:order-2">
-            <span className="marine-commercial-tagline inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">
+            <span className="marine-commercial-tagline inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4" style={cmsTextStyle(data, 'tagline', '#2db234', '14px')}>
               {tagline}
             </span>
-            <h2 className="marine-commercial-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8 leading-tight">
+            <h2 className="marine-commercial-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8 leading-tight" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
               {heading}
             </h2>
             <div className="marine-commercial-content space-y-6 text-lg text-gray-600 leading-relaxed mb-10">
-              <p>{description}</p>
-              <p>
-                Our advanced logistics network, premium products, and round-the-clock service ensure your vessels are always ready to perform. We don&apos;t just deliver fuel — we deliver reliability, peace of mind, and a partnership that grows with your business.
-              </p>
+              <p style={cmsTextStyle(data, 'description', '#4b5563', '18px')}>{description}</p>
+              {secondaryDescription && <p style={cmsTextStyle(data, 'secondaryDescription', '#4b5563', '18px')}>{secondaryDescription}</p>}
             </div>
             <a
               href={ctaLink}
               className="marine-commercial-cta inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wider hover:bg-primary-dark transition-all duration-300"
+              style={cmsTextStyle(data, 'ctaText', '#ffffff', '14px')}
             >
               {ctaText}
               <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const iconSvgs = {
@@ -23,30 +24,14 @@ const fallbackIndustries = [
   { id: 'distribution', title: 'Distribution',   description: 'Nationwide fuel distribution network across Australia.',                   link: '/services/local-fuel-distributors' },
 ]
 
-const sizeMap = { '1': '12px', '2': '16px', '3': '20px', '4': '24px', '5': '32px', '6': '48px', '7': '70px' }
-
 export default function VisualIndustriesGrid({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const sectionTag  = data.sectionTag  || 'Industries'
-  const heading     = data.heading     || 'Sectors We Serve'
-  const description = data.description || 'Delivering reliable fuel solutions across diverse industries nationwide'
-  const industries  = data.industries?.length ? data.industries : fallbackIndustries
-
-  const headingStyle = {
-    ...(data.headingSize && { fontSize: sizeMap[data.headingSize] }),
-    ...(data.headingBorderEnabled && {
-      WebkitTextStroke: `${data.headingBorderWidth} ${data.headingBorderColor}`,
-      ...(data.headingShadowColor && { textShadow: `0 0 10px ${data.headingShadowColor}` }),
-    }),
-  }
-  const descStyle = {
-    ...(data.descriptionSize && { fontSize: sizeMap[data.descriptionSize] }),
-    ...(data.descriptionBorderEnabled && {
-      WebkitTextStroke: `${data.descriptionBorderWidth} ${data.descriptionBorderColor}`,
-      ...(data.descriptionShadowColor && { textShadow: `0 0 10px ${data.descriptionShadowColor}` }),
-    }),
-  }
+  const sectionTag = data.sectionTag ?? 'Industries'
+  const heading = data.heading ?? 'Sectors We Serve'
+  const description = data.description ?? 'Delivering reliable fuel solutions across diverse industries nationwide'
+  const industries = Array.isArray(data.industries) ? data.industries : fallbackIndustries
+  const ctaLabel = data.ctaLabel ?? 'Explore'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -66,57 +51,42 @@ export default function VisualIndustriesGrid({ data = {} }) {
     <section ref={sectionRef} className="py-16 lg:py-24 bg-cream">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="tag">{sectionTag}</span>
+          <span className="tag" style={cmsTextStyle(data, 'sectionTag', '#2db234', '14px')}>{sectionTag}</span>
           <h2
-            className={`industries-grid-heading ${data.headingColor || 'text-gray-900'} font-heading text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wide leading-tight mb-4`}
-            style={headingStyle}
+            className="industries-grid-heading text-gray-900 font-heading text-4xl md:text-5xl lg:text-6xl font-bold uppercase tracking-wide leading-tight mb-4"
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
           >
             {heading}
           </h2>
           <p
-            className={`${data.descriptionColor || 'text-gray-600'} text-xl max-w-3xl mx-auto`}
-            style={descStyle}
+            className="text-gray-600 text-xl max-w-3xl mx-auto"
+            style={cmsTextStyle(data, 'description', '#4b5563', '20px')}
           >
             {description}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {industries.map((industry, i) => {
-            const titleStyle = {
-              ...(industry.titleSize && { fontSize: sizeMap[industry.titleSize] }),
-              ...(industry.titleBorderEnabled && {
-                WebkitTextStroke: `${industry.titleBorderWidth} ${industry.titleBorderColor}`,
-                ...(industry.titleShadowColor && { textShadow: `0 0 10px ${industry.titleShadowColor}` }),
-              }),
-            }
-            const industryDescStyle = {
-              ...(industry.descriptionSize && { fontSize: sizeMap[industry.descriptionSize] }),
-              ...(industry.descriptionBorderEnabled && {
-                WebkitTextStroke: `${industry.descriptionBorderWidth} ${industry.descriptionBorderColor}`,
-                ...(industry.descriptionShadowColor && { textShadow: `0 0 10px ${industry.descriptionShadowColor}` }),
-              }),
-            }
-            return (
-              <Link key={i} href={industry.link || '#'} className="industry-card group">
+          {industries.map((industry, i) => (
+              <Link key={industry._key || i} href={industry.link ?? '#'} className="industry-card group">
                 <div className="h-full bg-white p-8 border border-gray-100 transition-all duration-300 hover:border-primary/30 hover:shadow-xl hover:-translate-y-1">
                   <div className="w-14 h-14 bg-gray-100 flex items-center justify-center text-gray-600 mb-6 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    {iconSvgs[industry.id] || iconSvgs.distribution}
+                    {iconSvgs[industry.id] ?? iconSvgs.distribution}
                   </div>
                   <h3
-                    className={`${industry.titleColor || 'text-gray-900'} text-xl font-semibold mb-3`}
-                    style={titleStyle}
+                    className="text-gray-900 text-xl font-semibold mb-3"
+                    style={cmsTextStyle(industry, 'title', '#111827', '20px')}
                   >
                     {industry.title}
                   </h3>
                   <p
-                    className={`${industry.descriptionColor || 'text-gray-600'} leading-relaxed mb-6`}
-                    style={industryDescStyle}
+                    className="text-gray-600 leading-relaxed mb-6"
+                    style={cmsTextStyle(industry, 'description', '#4b5563', '16px')}
                   >
                     {industry.description}
                   </p>
                   <div className="flex items-center text-gray-500 font-medium group-hover:text-primary transition-colors duration-300">
-                    <span>Explore</span>
+                    <span>{industry.ctaText ?? ctaLabel}</span>
                     <svg className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />
@@ -124,8 +94,7 @@ export default function VisualIndustriesGrid({ data = {} }) {
                   </div>
                 </div>
               </Link>
-            )
-          })}
+          ))}
         </div>
       </div>
     </section>

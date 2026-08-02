@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const driverRequirements = [
@@ -15,23 +17,19 @@ const driverRequirements = [
 export default function DriversCompliance({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Drivers Compliance'
-  const content = data.content || 'Every Atlas Fuel driver meets the highest industry standards. Our rigorous training and certification programs ensure your fuel is transported by qualified professionals who prioritize safety above all else.'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Drivers Compliance'
+  const content = data.content ?? 'Every Atlas Fuel driver meets the highest industry standards. Our rigorous training and certification programs ensure your fuel is transported by qualified professionals who prioritize safety above all else.'
+  const sectionTag = data.sectionTag ?? 'Our Drivers'
+  const requirements = Array.isArray(data.requirements) ? data.requirements : driverRequirements
+  const imageAlt = data.imageAlt ?? data.imageUrlAlt ?? 'Atlas Fuel Professional Drivers'
+  const stats = Array.isArray(data.stats)
+    ? data.stats
+    : [
+        { value: '100%', label: 'Certified Drivers' },
+        { value: '0', label: 'Safety Incidents' },
+      ]
+  const badgeTitle = data.badgeTitle ?? 'Professional'
+  const badgeSubtitle = data.badgeSubtitle ?? 'Drivers Only'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -91,35 +89,25 @@ export default function DriversCompliance({ data = {} }) {
                   <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                   <circle cx="12" cy="7" r="4" />
                 </svg>
-                Our Drivers
+                {sectionTag}
               </span>
               <h2
                 className="font-bold mb-6"
-                style={{
-                  color: headingColor,
-                  fontSize: headingSize,
-                  border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-                  textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-                }}
+                style={cmsTextStyle(data, 'heading', '#111827', '48px')}
               >
                 {heading}
               </h2>
               <p
-                style={{
-                  color: contentColor,
-                  fontSize: contentSize,
-                  border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-                  textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-                }}
+                style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
               >
                 {content}
               </p>
             </div>
 
             <div className="drivers-list space-y-4">
-              {driverRequirements.map((req, index) => (
+              {requirements.map((req, index) => (
                 <div
-                  key={index}
+                  key={req._key || index}
                   className="drivers-item group flex items-start gap-4 p-4 bg-cream hover:bg-gray-100 transition-colors border border-gray-200"
                 >
                   <div className="flex-shrink-0 w-10 h-10 bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -128,9 +116,9 @@ export default function DriversCompliance({ data = {} }) {
                     </svg>
                   </div>
                   <div className="flex-1">
-                    <h3 className="font-bold text-gray-900">{req.title}</h3>
-                    <p className="text-primary text-sm font-medium">{req.subtitle}</p>
-                    <p className="text-gray-600 text-sm mt-1">{req.description}</p>
+                    <h3 className="font-bold text-gray-900" style={cmsTextStyle(req, 'title', '#111827', '16px')}>{req.title}</h3>
+                    <p className="text-primary text-sm font-medium" style={cmsTextStyle(req, 'subtitle', '#2db234', '14px')}>{req.subtitle}</p>
+                    <p className="text-gray-600 text-sm mt-1" style={cmsTextStyle(req, 'description', '#4b5563', '14px')}>{req.description}</p>
                   </div>
                 </div>
               ))}
@@ -140,32 +128,34 @@ export default function DriversCompliance({ data = {} }) {
           {/* Right Image/Visual */}
           <div className="drivers-image relative">
             <div className="relative overflow-hidden shadow-lg">
-              <img
-                src="/images/truck-new.jpg"
-                alt="Atlas Fuel Professional Drivers"
-                className="w-full h-[500px] object-cover"
+              <CmsImage
+                value={data.imageImage ?? data.image ?? data.imageUrl}
+                fallbackSrc="/images/truck-new.jpg"
+                alt={imageAlt}
+                width={720}
+                height={500}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="h-[500px] w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent" />
               
               {/* Stats overlay */}
               <div className="absolute bottom-8 left-8 right-8">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-white/10 p-4 border border-white/20">
-                    <div className="text-3xl font-bold text-white">100%</div>
-                    <div className="text-white/80 text-sm">Certified Drivers</div>
-                  </div>
-                  <div className="bg-white/10 p-4 border border-white/20">
-                    <div className="text-3xl font-bold text-white">0</div>
-                    <div className="text-white/80 text-sm">Safety Incidents</div>
-                  </div>
+                <div className={`grid gap-4 ${stats.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+                  {stats.map((stat, index) => (
+                    <div key={stat._key || index} className="bg-white/10 p-4 border border-white/20">
+                      <div className="text-3xl font-bold text-white" style={cmsTextStyle(stat, 'value', '#ffffff', '30px')}>{stat.value}</div>
+                      <div className="text-white/80 text-sm" style={cmsTextStyle(stat, 'label', 'rgba(255,255,255,0.8)', '14px')}>{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
             
             {/* Floating badge */}
             <div className="absolute -top-4 -right-4 bg-primary text-white px-6 py-3 shadow-lg">
-              <div className="font-bold text-lg">Professional</div>
-              <div className="text-sm text-white/80">Drivers Only</div>
+              <div className="font-bold text-lg">{badgeTitle}</div>
+              <div className="text-sm text-white/80">{badgeSubtitle}</div>
             </div>
           </div>
         </div>

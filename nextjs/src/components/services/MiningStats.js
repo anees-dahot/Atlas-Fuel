@@ -2,6 +2,8 @@
 import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Link from 'next/link'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const stats = [
@@ -19,15 +21,19 @@ const iconSvgs = {
 }
 
 function AnimatedCounter({ value, suffix, prefix, duration = 2 }) {
+  const numericValue = Number(value)
+  const isNumeric = Number.isFinite(numericValue)
   const [count, setCount] = useState(0)
   const ref = useRef(null)
 
   useEffect(() => {
+    if (!isNumeric) return
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
           let start = 0
-          const end = value
+          const end = numericValue
           const increment = end / (duration * 60)
           const timer = setInterval(() => {
             start += increment
@@ -45,18 +51,24 @@ function AnimatedCounter({ value, suffix, prefix, duration = 2 }) {
     )
     if (ref.current) observer.observe(ref.current)
     return () => observer.disconnect()
-  }, [value, duration])
+  }, [numericValue, duration, isNumeric])
 
   return (
     <span ref={ref}>
-      {prefix}{count}{suffix}
+      {isNumeric ? `${prefix || ''}${count}${suffix || ''}` : value}
     </span>
   )
 }
 
 export default function MiningStats({ data = {} }) {
   const sectionRef = useRef(null)
-  const statsData = data.stats || stats
+  const statsData = Array.isArray(data.stats) ? data.stats : stats
+  const sectionTag = data.sectionTag ?? 'Proven Track Record'
+  const heading = data.displayHeading ?? data.heading ?? 'Trusted by Mining Operations Nationwide'
+  const description = data.description ?? 'Our numbers speak for themselves. We have been powering Australia\'s mining industry with reliable fuel solutions.'
+  const footerText = data.footerText ?? ''
+  const ctaText = data.ctaText ?? ''
+  const ctaLink = data.ctaLink ?? ''
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -102,34 +114,44 @@ export default function MiningStats({ data = {} }) {
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
             </svg>
-            Proven Track Record
+            {sectionTag}
           </span>
-          <h2 className="sec-title mb-4">
-            Trusted by Mining Operations Nationwide
+          <h2 className="sec-title mb-4" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
+            {heading}
           </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Our numbers speak for themselves. We have been powering Australia&apos;s mining industry with reliable fuel solutions.
+          <p className="text-xl text-gray-600 max-w-3xl mx-auto" style={cmsTextStyle(data, 'description', '#4b5563', '20px')}>
+            {description}
           </p>
         </div>
 
         <div className="stats-grid grid grid-cols-2 lg:grid-cols-4 gap-6">
           {statsData.map((stat, index) => (
             <div
-              key={index}
+              key={stat._key || index}
               className="stat-card bg-white p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/20 transition-all duration-300 text-center group"
             >
               <div className="w-14 h-14 bg-gray-100 flex items-center justify-center">
                 <div className="w-7 h-7 text-primary">
-                  {iconSvgs[stat.icon]}
+                  {iconSvgs[stat.icon] || iconSvgs.drop}
                 </div>
               </div>
-              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              <div className="text-4xl md:text-5xl font-bold text-gray-900 mb-2" style={cmsTextStyle(stat, 'value', '#111827', '48px')}>
                 <AnimatedCounter value={stat.value} suffix={stat.suffix} prefix={stat.prefix} />
               </div>
-              <div className="text-gray-500">{stat.label}</div>
+              <div className="text-gray-500" style={cmsTextStyle(stat, 'label', '#6b7280', '16px')}>{stat.label}</div>
             </div>
           ))}
         </div>
+        {(footerText || (ctaText && ctaLink)) && (
+          <div className="mt-10 flex flex-col items-center justify-center gap-5 text-center sm:flex-row">
+            {footerText && <p className="text-gray-600">{footerText}</p>}
+            {ctaText && ctaLink && (
+              <Link href={ctaLink} className="btn-primary">
+                {ctaText}
+              </Link>
+            )}
+          </div>
+        )}
       </div>
     </section>
   )

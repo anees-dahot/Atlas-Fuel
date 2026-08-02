@@ -3,32 +3,43 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CTABanner from '@/components/shared/CTABanner'
+import {FormStatus, useFormSubmission} from '@/components/forms/FormStatus'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function ContactClient({ data, siteSettings }) {
   const pageRef = useRef(null)
+  const {status, submit, isSubmitting} = useFormSubmission({
+    endpoint: '/api/contact',
+    successMessage:
+      data.successMessage ??
+      'Thank you for your message. We will get back to you within 24 hours.',
+    errorMessage:
+      data.errorMessage ??
+      'Your message could not be submitted. Please try again.',
+  })
 
   // Dynamic styling props
-  const heroTitleColor = data.heroTitleColor || '#000000'
-  const heroTitleSize = data.heroTitleSize || '72px'
-  const heroTitleBorderEnabled = data.heroTitleBorderEnabled || false
-  const heroTitleBorderColor = data.heroTitleBorderColor || '#000000'
-  const heroTitleBorderWidth = data.heroTitleBorderWidth || '1px'
-  const heroTitleShadowColor = data.heroTitleShadowColor || ''
+  const heroTitleColor = data.heroTitleColor ?? 'var(--cms-text)'
+  const heroTitleSize = data.heroTitleSize ?? '72px'
+  const heroTitleBorderEnabled = data.heroTitleBorderEnabled ?? false
+  const heroTitleBorderColor = data.heroTitleBorderColor ?? 'var(--cms-text)'
+  const heroTitleBorderWidth = data.heroTitleBorderWidth ?? '1px'
+  const heroTitleShadowColor = data.heroTitleShadowColor ?? ''
 
-  const heroDescriptionColor = data.heroDescriptionColor || '#000000'
-  const heroDescriptionSize = data.heroDescriptionSize || '18px'
-  const heroDescriptionBorderEnabled = data.heroDescriptionBorderEnabled || false
-  const heroDescriptionBorderColor = data.heroDescriptionBorderColor || '#000000'
-  const heroDescriptionBorderWidth = data.heroDescriptionBorderWidth || '1px'
-  const heroDescriptionShadowColor = data.heroDescriptionShadowColor || ''
+  const heroDescriptionColor = data.heroDescriptionColor ?? 'var(--cms-text)'
+  const heroDescriptionSize = data.heroDescriptionSize ?? '18px'
+  const heroDescriptionBorderEnabled = data.heroDescriptionBorderEnabled ?? false
+  const heroDescriptionBorderColor = data.heroDescriptionBorderColor ?? 'var(--cms-text)'
+  const heroDescriptionBorderWidth = data.heroDescriptionBorderWidth ?? '1px'
+  const heroDescriptionShadowColor = data.heroDescriptionShadowColor ?? ''
 
-  const formHeadingColor = data.formHeadingColor || '#000000'
-  const formHeadingSize = data.formHeadingSize || '30px'
-  const formHeadingBorderEnabled = data.formHeadingBorderEnabled || false
-  const formHeadingBorderColor = data.formHeadingBorderColor || '#000000'
-  const formHeadingBorderWidth = data.formHeadingBorderWidth || '1px'
-  const formHeadingShadowColor = data.formHeadingShadowColor || ''
+  const formHeadingColor = data.formHeadingColor ?? 'var(--cms-text)'
+  const formHeadingSize = data.formHeadingSize ?? '30px'
+  const formHeadingBorderEnabled = data.formHeadingBorderEnabled ?? false
+  const formHeadingBorderColor = data.formHeadingBorderColor ?? 'var(--cms-text)'
+  const formHeadingBorderWidth = data.formHeadingBorderWidth ?? '1px'
+  const formHeadingShadowColor = data.formHeadingShadowColor ?? ''
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -87,10 +98,15 @@ export default function ContactClient({ data, siteSettings }) {
         {/* Hero Section */}
         <section className="section-heading relative flex items-start overflow-hidden" style={{ minHeight: '80svh' }}>
           <div className="absolute inset-0">
-            <img
+            <CmsImage
+              value={data.heroImage ?? data.heroImageImage}
               src={data.heroImageUrl}
-              alt="Atlas Fuel"
-              className="w-full h-full object-cover"
+              fallbackSrc="/images/atlas-fuel-hero-1b.webp"
+              alt={data.heroImageUrlAlt ?? data.heroImageAlt ?? data.heroTitle ?? 'Atlas Fuel'}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
             />
           </div>
           <div className="relative z-10 max-w-[1440px] mx-auto px-8 lg:px-12">
@@ -98,7 +114,7 @@ export default function ContactClient({ data, siteSettings }) {
               <div className="flex items-center gap-4 mb-4">
                 <div className="h-0.5 w-16 bg-primary" />
                 <span className="text-primary text-xs sm:text-sm font-bold uppercase tracking-[0.2em]">
-                  Contact Us
+                  {data.heroEyebrow ?? data.heroSubtitle ?? 'Contact Us'}
                 </span>
               </div>
               <h1
@@ -145,7 +161,7 @@ export default function ContactClient({ data, siteSettings }) {
                 >
                   {data.formHeading}
                 </h2>
-                <form className="space-y-6">
+                <form className="space-y-6" onSubmit={submit}>
                   {data.fields.map((field, index) => (
                     <div key={field._key || field.name || index}>
                       <label htmlFor={field.name} className="block text-sm font-semibold text-gray-700 mb-2">{field.label}</label>
@@ -161,13 +177,21 @@ export default function ContactClient({ data, siteSettings }) {
                       )}
                     </div>
                   ))}
-                  
+                  <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+                    <label htmlFor="contact-website">Website</label>
+                    <input id="contact-website" name="website" type="text" tabIndex="-1" autoComplete="off" />
+                  </div>
                   <button
                     type="submit"
-                    className="w-full px-6 py-4 bg-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark transition-colors"
+                    disabled={isSubmitting}
+                    className="w-full px-6 py-4 bg-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark transition-colors disabled:cursor-wait disabled:opacity-60"
                   >
-                    {data.submitButtonText}
+                    {isSubmitting ? (data.submittingButtonText ?? 'Sending…') : data.submitButtonText}
                   </button>
+                  <FormStatus
+                    status={status}
+                    emailLinkText={data.emailFallbackText ?? 'Email us instead'}
+                  />
                 </form>
               </div>
 
@@ -176,7 +200,7 @@ export default function ContactClient({ data, siteSettings }) {
                 <div>
                   <h2 className="text-3xl font-bold text-gray-900 mb-6">{data.infoHeading}</h2>
                   <div className="space-y-6">
-                    <div className="flex items-start gap-4">
+                    {(data.address || data.country) && <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
@@ -188,9 +212,9 @@ export default function ContactClient({ data, siteSettings }) {
                         <p className="text-gray-600">{data.address}</p>
                         <p className="text-gray-600">{data.country}</p>
                       </div>
-                    </div>
+                    </div>}
                     
-                    <div className="flex items-start gap-4">
+                    {data.phone && <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6.87-6.87 19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
@@ -198,12 +222,12 @@ export default function ContactClient({ data, siteSettings }) {
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 mb-1">{data.phoneLabel}</h3>
-                        <a href={`tel:${data.phone}`} className="text-primary hover:underline">{data.phone}</a>
+                        <a href={`tel:${data.phone.replace(/[^\d+]/g, '')}`} className="text-primary hover:underline">{data.phone}</a>
                         <p className="text-gray-600 text-sm mt-1">{data.phoneNote}</p>
                       </div>
-                    </div>
+                    </div>}
                     
-                    <div className="flex items-start gap-4">
+                    {data.email && <div className="flex items-start gap-4">
                       <div className="w-12 h-12 bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                           <rect x="2" y="4" width="20" height="16" rx="2"/>
@@ -215,7 +239,7 @@ export default function ContactClient({ data, siteSettings }) {
                         <a href={`mailto:${data.email}`} className="text-primary hover:underline">{data.email}</a>
                         <p className="text-gray-600 text-sm mt-1">{data.emailNote}</p>
                       </div>
-                    </div>
+                    </div>}
                   </div>
                 </div>
 
@@ -244,25 +268,29 @@ export default function ContactClient({ data, siteSettings }) {
 
                 {/* Quick Actions */}
                 <div className="space-y-4">
-                  <a
-                    href={`tel:${data.phone}`}
-                    className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark transition-colors"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6.87-6.87 19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-                    </svg>
-                    {data.callButtonText}
-                  </a>
-                  <a 
-                    href={data.stationButtonLink}
-                    className="flex items-center justify-center gap-2 w-full px-6 py-4 border-2 border-primary text-primary text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors"
-                  >
-                    <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                      <circle cx="12" cy="10" r="3"/>
-                    </svg>
-                    {data.stationButtonText}
-                  </a>
+                  {data.phone && data.callButtonText && (
+                    <a
+                      href={`tel:${data.phone.replace(/[^\d+]/g, '')}`}
+                      className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-primary text-white text-sm font-bold uppercase tracking-wider hover:bg-primary-dark transition-colors"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.87-6.87 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 2 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.904.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                      </svg>
+                      {data.callButtonText}
+                    </a>
+                  )}
+                  {data.stationButtonText && data.stationButtonLink && (
+                    <a
+                      href={data.stationButtonLink}
+                      className="flex items-center justify-center gap-2 w-full px-6 py-4 border-2 border-primary text-primary text-sm font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors"
+                    >
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                        <circle cx="12" cy="10" r="3"/>
+                      </svg>
+                      {data.stationButtonText}
+                    </a>
+                  )}
                 </div>
               </div>
             </div>
@@ -270,37 +298,44 @@ export default function ContactClient({ data, siteSettings }) {
         </section>
 
         {/* Map Section */}
+        {(data.mapEmbedUrl || data.mapHeading || data.directionsLink) && (
         <section className="bg-gray-100">
-          <div className="w-full h-[500px]">
-            <iframe
-              src={data.mapEmbedUrl}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen=""
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
+          {data.mapEmbedUrl && (
+            <div className="w-full h-[500px]">
+              <iframe
+                src={data.mapEmbedUrl}
+                title={data.mapHeading ?? 'Atlas Fuel location map'}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          )}
           <div className="max-w-[1440px] mx-auto px-8 lg:px-12 py-8">
             <div className="bg-white p-6 shadow-lg max-w-md">
-              <h3 className="text-xl font-bold text-gray-900 mb-4">{data.mapHeading}</h3>
-              <p className="text-gray-600 mb-4">{data.address}</p>
-              <a
-                href={data.directionsLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/>
-                  <circle cx="12" cy="10" r="3"/>
-                </svg>
-                {data.directionsButtonText}
-              </a>
+              {data.mapHeading && <h3 className="text-xl font-bold text-gray-900 mb-4">{data.mapHeading}</h3>}
+              {data.address && <p className="text-gray-600 mb-4">{data.address}</p>}
+              {data.directionsButtonText && data.directionsLink && (
+                <a
+                  href={data.directionsLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white font-semibold hover:bg-primary-dark transition-colors"
+                >
+                  <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+                    <circle cx="12" cy="10" r="3"/>
+                  </svg>
+                  {data.directionsButtonText}
+                </a>
+              )}
             </div>
           </div>
         </section>
+        )}
         <CTABanner data={siteSettings} />
       </main>
     </>

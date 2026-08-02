@@ -1,18 +1,10 @@
 export const hasContent = (value) =>
   value !== undefined &&
-  value !== null &&
-  value !== '' &&
-  (!Array.isArray(value) || value.length > 0)
+  value !== null
 
 export function mergeWithFallback(fallback, content) {
   if (Array.isArray(fallback)) {
-    if (!Array.isArray(content) || content.length === 0) return fallback
-
-    return content
-      .filter((item) => item !== undefined && item !== null)
-      .map((item, index) =>
-        mergeWithFallback(fallback[index] ?? fallback[0] ?? item, item)
-      )
+    return Array.isArray(content) ? content : fallback
   }
 
   if (

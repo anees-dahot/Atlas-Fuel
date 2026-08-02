@@ -3,33 +3,20 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function OnsitePartner({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Your Trusted Onsite Fuel Partner'
-  const description = data.description || 'At Atlas Fuel, we\'re more than a supplier — we\'re your trusted onsite fuel partner, committed to keeping your business moving without interruption.'
-  const ctaPrimary = data.ctaPrimary || 'Learn More'
-  const ctaPrimaryLink = data.ctaPrimaryLink || '/fuel-prices'
-  const ctaSecondary = data.ctaSecondary || 'Enquire Now'
-  const ctaSecondaryLink = data.ctaSecondaryLink || '/contact'
-  const imageUrl = data.imageUrl || '/images/onsite-diesel.jpg'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '18px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Your Trusted Onsite Fuel Partner'
+  const description = data.description ?? 'At Atlas Fuel, we\'re more than a supplier — we\'re your trusted onsite fuel partner, committed to keeping your business moving without interruption.'
+  const ctaPrimary = data.ctaPrimary ?? 'Learn More'
+  const ctaPrimaryLink = data.ctaPrimaryLink ?? '/fuel-prices'
+  const ctaSecondary = data.ctaSecondary ?? 'Enquire Now'
+  const ctaSecondaryLink = data.ctaSecondaryLink ?? '/contact'
+  const sectionTag = data.sectionTag ?? 'Trusted Partner'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -113,29 +100,19 @@ export default function OnsitePartner({ data = {} }) {
           <div className="order-2 lg:order-1">
             <div className="partner-badge inline-flex items-center gap-2 px-4 py-2 bg-primary/10 mb-6">
               <span className="w-2 h-2 bg-primary" />
-              <span className="text-primary text-sm font-bold tracking-wide uppercase">Trusted Partner</span>
+              <span className="text-primary text-sm font-bold tracking-wide uppercase">{sectionTag}</span>
             </div>
 
             <h2
               className="partner-title font-bold mb-8 leading-tight"
-              style={{
-                color: headingColor,
-                fontSize: headingSize,
-                border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-                textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'heading', '#111827', '48px')}
             >
               {heading}
             </h2>
 
             <p
               className="partner-description leading-relaxed mb-8"
-              style={{
-                color: contentColor,
-                fontSize: contentSize,
-                border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-                textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'description', '#4b5563', '18px')}
             >
               {description}
             </p>
@@ -167,11 +144,16 @@ export default function OnsitePartner({ data = {} }) {
           {/* Right - Image */}
           <div className="order-1 lg:order-2">
             <div className="partner-image relative">
-              <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
-                <img 
-                  src={imageUrl} 
-                  alt="Onsite Fuel Partner" 
-                  className="w-full h-full object-cover"
+              <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                <CmsImage
+                  value={data.imageImage ?? data.image ?? data.imageUrl}
+                  fallbackSrc="/images/onsite-diesel.jpg"
+                  alt={data.imageAlt ?? data.imageUrlAlt ?? 'Onsite Fuel Partner'}
+                  width={1200}
+                  height={900}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
               </div>
               {/* Decorative elements */}

@@ -1,7 +1,18 @@
 import { getAgricultureFuelPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import AgricultureFuelClient from './AgricultureFuelClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getAgricultureFuelPage,
+    getSiteSettings,
+    path: '/services/agriculture-fuel',
+    fallbackTitle: 'Agriculture Fuel Solutions | Atlas Fuel Australia',
+    fallbackDescription: 'Dependable fuel delivery, storage and support for Australian farms and agribusiness.',
+  })
+}
 
 export default async function AgricultureFuelPage() {
   const [sanity, globalSettings] = await Promise.all([

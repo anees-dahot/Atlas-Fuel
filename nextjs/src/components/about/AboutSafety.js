@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const sizeMap = {
@@ -51,17 +52,19 @@ const defaultCerts = [
 
 export default function AboutSafety({ data = {} }) {
   const sectionRef = useRef(null)
-  const imageRef   = useRef(null)
 
-  const certs = data.certificationCards && data.certificationCards.length > 0 ? data.certificationCards : defaultCerts
+  const certs = Array.isArray(data.certificationCards)
+    ? data.certificationCards
+    : defaultCerts
 
-  const heading = data.heading || 'Your Partner in Safety'
-  const headingColor = data.headingColor || 'text-gray-900'
+  const eyebrow = data.eyebrow ?? 'Safety First'
+  const heading = data.heading ?? 'Your Partner in Safety'
+  const headingColor = data.headingColor ?? 'text-gray-900'
   const headingSize = data.headingSize ? { fontSize: sizeMap[data.headingSize] } : {}
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
   const headingStyle = {
     ...headingSize,
     ...(headingBorderEnabled && {
@@ -70,13 +73,13 @@ export default function AboutSafety({ data = {} }) {
     }),
   }
 
-  const content = data.content || "Atlas Fuel Australia places paramount importance on the safety of our employees and the communities we serve, particularly when handling dangerous goods such as petroleum products. Our commitment to safety is reflected in rigorous and comprehensive safe work procedures designed to mitigate risks and ensure the wellbeing of our workforce. Our teams undergo extensive training, equipping them with the knowledge and skills necessary to handle dangerous goods with precision and care. We adhere strictly to industry regulations and best practices, implementing robust safety protocols at every stage of the petroleum product supply chain."
-  const contentColor = data.contentColor || 'text-gray-600'
+  const content = data.content ?? "Atlas Fuel Australia places paramount importance on the safety of our employees and the communities we serve, particularly when handling dangerous goods such as petroleum products. Our commitment to safety is reflected in rigorous and comprehensive safe work procedures designed to mitigate risks and ensure the wellbeing of our workforce. Our teams undergo extensive training, equipping them with the knowledge and skills necessary to handle dangerous goods with precision and care. We adhere strictly to industry regulations and best practices, implementing robust safety protocols at every stage of the petroleum product supply chain."
+  const contentColor = data.contentColor ?? 'text-gray-600'
   const contentSize = data.contentSize ? { fontSize: sizeMap[data.contentSize] } : {}
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#000000'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || ''
+  const contentBorderEnabled = data.contentBorderEnabled ?? false
+  const contentBorderColor = data.contentBorderColor ?? 'var(--cms-text)'
+  const contentBorderWidth = data.contentBorderWidth ?? '1px'
+  const contentShadowColor = data.contentShadowColor ?? ''
   const contentStyle = {
     ...contentSize,
     ...(contentBorderEnabled && {
@@ -85,7 +88,8 @@ export default function AboutSafety({ data = {} }) {
     }),
   }
 
-  const imageUrl = data.safetyImageUrl || '/images/partner-in-safety.webp'
+  const imageUrl = data.safetyImageUrl ?? '/images/partner-in-safety.webp'
+  const imageOverlayLabel = data.imageOverlayLabel ?? 'ISO Certified Operations'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -121,7 +125,7 @@ export default function AboutSafety({ data = {} }) {
           <div className="asaf-content order-2 lg:order-1">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-0.5 bg-primary" />
-              <span className="text-primary text-sm font-bold uppercase tracking-widest">Safety First</span>
+              <span className="text-primary text-sm font-bold uppercase tracking-widest">{eyebrow}</span>
             </div>
             <h2 className={`${headingColor} text-3xl md:text-4xl lg:text-5xl font-heading font-bold uppercase tracking-tight leading-tight mb-8`} style={headingStyle}>
               {heading}
@@ -131,7 +135,7 @@ export default function AboutSafety({ data = {} }) {
             {/* Cert badges */}
             <div className="asaf-certs grid grid-cols-2 gap-4">
               {certs.map((cert, i) => (
-                <div key={i} className="asaf-cert flex items-center gap-3 bg-white border border-gray-100 px-4 py-3 hover:border-primary/30 hover:shadow-xl transition-all duration-300 group">
+                <div key={cert._key ?? `${cert.name}-${i}`} className="asaf-cert flex items-center gap-3 bg-white border border-gray-100 px-4 py-3 hover:border-primary/30 hover:shadow-xl transition-all duration-300 group">
                   <div className="w-10 h-10 bg-primary/10 group-hover:bg-primary flex items-center justify-center flex-shrink-0 text-primary group-hover:text-white transition-all duration-300">
                     {certIcons[cert.name] || <GenericIcon />}
                   </div>
@@ -147,13 +151,17 @@ export default function AboutSafety({ data = {} }) {
           {/* Right — image */}
           <div className="asaf-image order-1 lg:order-2 relative h-[480px] lg:h-[600px] overflow-hidden group shadow-lg">
             <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10 group-hover:bg-transparent transition-all duration-700" />
-            <img ref={imageRef} src={imageUrl} alt="Atlas Fuel Safety"
+            <CmsImage
+              value={data.safetyImage ?? imageUrl}
+              alt={data.safetyImageAlt ?? 'Atlas Fuel Safety'}
+              fill
+              sizes="(min-width: 1024px) 50vw, 100vw"
               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[1500ms]" />
             {/* Overlay text */}
             <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white/70 to-transparent z-20">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-primary" />
-                <span className="text-gray-900 text-sm font-semibold uppercase tracking-widest">ISO Certified Operations</span>
+                <span className="text-gray-900 text-sm font-semibold uppercase tracking-widest">{imageOverlayLabel}</span>
               </div>
             </div>
           </div>

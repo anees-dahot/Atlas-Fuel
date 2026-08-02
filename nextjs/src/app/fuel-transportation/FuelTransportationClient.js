@@ -2,6 +2,8 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
 import CTABanner from '@/components/shared/CTABanner'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
@@ -73,9 +75,12 @@ export default function FuelTransportationClient({ data, siteSettings }) {
         {/* Hero Section */}
         <section className="hero-section relative flex items-center overflow-hidden" style={{ minHeight: '80svh' }}>
           <div className="absolute inset-0 -z-10">
-            <img
-              src={data.heroImageUrl}
-              alt={data.heroImageAlt}
+            <CmsImage
+              value={data.heroImage ?? data.heroImageUrl}
+              alt={data.heroImageAlt ?? ''}
+              fill
+              priority
+              sizes="100vw"
               className="hero-image w-full h-full object-cover"
             />
           </div>
@@ -118,35 +123,35 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                 {data.heroDescription}
               </p>
               <div className="mt-6 flex flex-wrap gap-4">
-                <a href={data.heroCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
+                {data.heroCtaText && data.heroCtaLink && <Link href={data.heroCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
                   <span>{data.heroCtaText}</span>
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                   </svg>
-                </a>
-                <a href={data.heroSecondaryCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-white hover:bg-white hover:text-gray-900 transition-all duration-300">
+                </Link>}
+                {data.heroSecondaryCtaText && data.heroSecondaryCtaLink && <Link href={data.heroSecondaryCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-white hover:bg-white hover:text-gray-900 transition-all duration-300">
                   <span>{data.heroSecondaryCtaText}</span>
                   <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                   </svg>
-                </a>
+                </Link>}
               </div>
             </div>
           </div>
 
           {/* Quick Links Bar */}
-          <div className="absolute bottom-0 left-0 right-0 z-20 bg-white">
+          {data.heroStats.length > 0 && <div className="absolute bottom-0 left-0 right-0 z-20 bg-white">
             <div className="max-w-7xl mx-auto px-6 py-3">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 {data.heroStats.map((stat) => (
-                  <div key={stat._key || stat.label} className="flex flex-col items-center gap-1 px-4 py-3 bg-white border border-gray-100">
+                  <div key={stat._key ?? stat.label} className="flex flex-col items-center gap-1 px-4 py-3 bg-white border border-gray-100">
                     <div className="text-2xl font-heading font-bold text-primary">{stat.value}</div>
                     <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-600">{stat.label}</div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
+          </div>}
         </section>
 
         {/* Fleet Overview */}
@@ -185,8 +190,14 @@ export default function FuelTransportationClient({ data, siteSettings }) {
             {/* Fleet Gallery Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {data.fleetItems.map((item) => (
-                <div key={item._key || item.title} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
-                  <img src={item.imageUrl} alt={item.alt || item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                <div key={item._key ?? item.title} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
+                  <CmsImage
+                    value={item.image ?? item.imageUrl}
+                    alt={item.imageAlt ?? item.alt ?? item.title ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-xl font-heading font-bold text-white uppercase">{item.title}</h3>
@@ -219,9 +230,15 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               {data.servicesItems.map((service) => (
-                <div key={service._key || service.title} className="content-block group">
+                <div key={service._key ?? service.title} className="content-block group">
                   <div className="relative aspect-video overflow-hidden shadow-lg mb-6">
-                    <img src={service.imageUrl} alt={service.alt || service.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <CmsImage
+                      value={service.image ?? service.imageUrl}
+                      alt={service.imageAlt ?? service.alt ?? service.title ?? ''}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
                   <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase mb-3">{service.title}</h3>
                   <p className="text-gray-600 leading-relaxed">{service.description}</p>
@@ -266,16 +283,22 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               {data.coverageAreas.map((area) => (
-                <div key={area._key || area.region} className="content-block bg-white overflow-hidden shadow-lg">
+                <div key={area._key ?? area.region} className="content-block bg-white overflow-hidden shadow-lg">
                   <div className="relative aspect-[4/3] overflow-hidden">
-                    <img src={area.imageUrl} alt={area.alt || area.region} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                    <CmsImage
+                      value={area.image ?? area.imageUrl}
+                      alt={area.imageAlt ?? area.alt ?? area.region ?? ''}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, 100vw"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
                   <div className="p-8">
                     <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase mb-3">{area.region}</h3>
                     <p className="text-gray-600 mb-4">{area.description}</p>
                     <ul className="space-y-2">
-                      {area.locations.map((loc) => (
-                        <li key={loc} className="flex items-center gap-2 text-sm text-gray-700">
+                      {area.locations.map((loc, locationIndex) => (
+                        <li key={`${loc}-${locationIndex}`} className="flex items-center gap-2 text-sm text-gray-700">
                           <svg className="w-4 h-4 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                           </svg>
@@ -324,7 +347,7 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
                 <div className="grid grid-cols-2 gap-4 mb-8">
                   {data.teamStats.map((stat) => (
-                    <div key={stat._key || stat.label} className="bg-white border border-gray-100 p-6">
+                    <div key={stat._key ?? stat.label} className="bg-white border border-gray-100 p-6">
                       <div className="text-2xl font-heading font-bold text-primary mb-1">{stat.value}</div>
                       <div className="text-sm text-gray-600">{stat.label}</div>
                     </div>
@@ -332,8 +355,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                 </div>
 
                 <ul className="space-y-3">
-                  {data.teamQualifications.map((item) => (
-                    <li key={item} className="flex items-center gap-3 text-gray-600">
+                  {data.teamQualifications.map((item, qualificationIndex) => (
+                    <li key={`${item}-${qualificationIndex}`} className="flex items-center gap-3 text-gray-600">
                       <svg className="w-5 h-5 text-primary flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M22 11.08V12a10 10 0 11-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
                       </svg>
@@ -345,13 +368,18 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
               {/* Team Image Grid */}
               <div className="grid grid-cols-2 gap-4">
-                {[data.teamImages.slice(0, 2), data.teamImages.slice(2, 4)].map((column, columnIndex) => (
-                  <div key={columnIndex} className={`space-y-4 ${columnIndex === 1 ? 'pt-8' : ''}`}>
-                    {column.map((item, itemIndex) => (
-                      <div key={item._key || item.alt} className={`gallery-item ${itemIndex === columnIndex ? 'aspect-[4/3]' : 'aspect-[4/5]'} overflow-hidden shadow-lg`}>
-                        <img src={item.imageUrl} alt={item.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                      </div>
-                    ))}
+                {data.teamImages.map((item, imageIndex) => (
+                  <div
+                    key={item._key ?? item.alt ?? imageIndex}
+                    className={`gallery-item relative ${imageIndex % 3 === 0 ? 'aspect-[4/3]' : 'aspect-[4/5]'} overflow-hidden shadow-lg`}
+                  >
+                    <CmsImage
+                      value={item.image ?? item.imageUrl}
+                      alt={item.imageAlt ?? item.alt ?? ''}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, 50vw"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
                 ))}
               </div>
@@ -383,7 +411,7 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
             <div className="space-y-16">
               {data.processSteps.map((item) => (
-                <div key={item._key || item.step} className={`content-block grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${item.reverse ? 'lg:flex-row-reverse' : ''}`}>
+                <div key={item._key ?? item.step} className={`content-block grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${item.reverse ? 'lg:flex-row-reverse' : ''}`}>
                   <div className={item.reverse ? 'lg:order-2' : ''}>
                     <div className="flex items-center gap-3 mb-4">
                       <span className="w-14 h-14 bg-primary text-white flex items-center justify-center text-xl font-heading font-bold">{item.step}</span>
@@ -392,7 +420,13 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                     <p className="text-gray-600 text-lg leading-relaxed pl-[4.5rem]">{item.description}</p>
                   </div>
                   <div className={`gallery-item relative aspect-video overflow-hidden shadow-lg ${item.reverse ? 'lg:order-1' : ''}`}>
-                    <img src={item.imageUrl} alt={item.alt || item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                    <CmsImage
+                      value={item.image ?? item.imageUrl}
+                      alt={item.imageAlt ?? item.alt ?? item.title ?? ''}
+                      fill
+                      sizes="(min-width: 1024px) 50vw, 100vw"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
                 </div>
               ))}
@@ -406,7 +440,13 @@ export default function FuelTransportationClient({ data, siteSettings }) {
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               <div className="content-block relative">
                 <div className="gallery-item relative aspect-[4/5] overflow-hidden shadow-lg">
-                  <img src={data.safetyImageUrl} alt={data.safetyImageAlt} className="w-full h-full object-cover" />
+                  <CmsImage
+                    value={data.safetyImage ?? data.safetyImageUrl}
+                    alt={data.safetyImageAlt ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="absolute -bottom-6 -right-6 bg-primary text-white p-8 shadow-xl max-w-xs">
                   <div className="text-4xl font-heading font-bold mb-1">{data.safetyStatisticValue}</div>
@@ -445,7 +485,7 @@ export default function FuelTransportationClient({ data, siteSettings }) {
 
                 <div className="grid grid-cols-2 gap-4">
                   {data.safetyCertifications.map((cert) => (
-                    <div key={cert._key || cert.name} className="bg-cream p-6">
+                    <div key={cert._key ?? cert.name} className="bg-cream p-6">
                       <h4 className="font-heading font-bold text-gray-900 mb-1">{cert.name}</h4>
                       <p className="text-sm text-gray-600">{cert.label}</p>
                     </div>
@@ -479,23 +519,23 @@ export default function FuelTransportationClient({ data, siteSettings }) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {[0, 1, 2, 3].map((columnIndex) => (
-                <div key={columnIndex} className={`space-y-4 ${columnIndex === 1 ? 'pt-8' : columnIndex === 3 ? 'pt-6' : ''}`}>
-                  {data.fleetGalleryImages.slice(columnIndex * 2, columnIndex * 2 + 2).map((item, itemIndex) => {
-                    const aspectClasses = [
-                      ['aspect-[4/3]', 'aspect-[3/4]'],
-                      ['aspect-[3/4]', 'aspect-[4/3]'],
-                      ['aspect-square', 'aspect-square'],
-                      ['aspect-[3/4]', 'aspect-[4/3]'],
-                    ]
-                    return (
-                      <div key={item._key || item.alt} className={`gallery-item ${aspectClasses[columnIndex][itemIndex]} overflow-hidden shadow-lg`}>
-                        <img src={item.imageUrl} alt={item.alt} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
-                      </div>
-                    )
-                  })}
-                </div>
-              ))}
+              {data.fleetGalleryImages.map((item, imageIndex) => {
+                const aspects = ['aspect-[4/3]', 'aspect-[3/4]', 'aspect-square', 'aspect-[3/4]']
+                return (
+                  <div
+                    key={item._key ?? item.alt ?? imageIndex}
+                    className={`gallery-item relative ${aspects[imageIndex % aspects.length]} overflow-hidden shadow-lg`}
+                  >
+                    <CmsImage
+                      value={item.image ?? item.imageUrl}
+                      alt={item.imageAlt ?? item.alt ?? ''}
+                      fill
+                      sizes="(min-width: 768px) 25vw, 50vw"
+                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+                )
+              })}
             </div>
           </div>
         </section>
@@ -529,14 +569,14 @@ export default function FuelTransportationClient({ data, siteSettings }) {
             >
               {data.excellenceContent}
             </p>
-            <div className="mt-10 flex justify-center gap-4">
-              <a href={data.excellenceCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
+            {data.excellenceCtaText && data.excellenceCtaLink && <div className="mt-10 flex justify-center gap-4">
+              <Link href={data.excellenceCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
                 {data.excellenceCtaText}
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
                 </svg>
-              </a>
-            </div>
+              </Link>
+            </div>}
           </div>
         </section>
 

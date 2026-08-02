@@ -2,34 +2,20 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function ComplianceSection({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Atlas Compliance'
-  const content = data.content || 'Atlas Fuel stands proudly certified across ISO, WAHVA, and regulatory standards, proving our unwavering commitment to quality, safety, and responsible operations.'
-  const certifications = data.certifications || [
+  const heading = data.heading ?? 'Atlas Compliance'
+  const content = data.content ?? 'Atlas Fuel stands proudly certified across ISO, WAHVA, and regulatory standards, proving our unwavering commitment to quality, safety, and responsible operations.'
+  const certifications = Array.isArray(data.certifications) ? data.certifications : [
     { name: 'ISO 9001', label: 'Quality Management' },
     { name: 'ISO 14001', label: 'Environmental Management' },
     { name: 'ISO 45001', label: 'Occupational Health & Safety' },
     { name: 'WAHVA', label: 'WA Heavy Vehicle Accreditation' },
   ]
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -83,23 +69,13 @@ export default function ComplianceSection({ data = {} }) {
         <div className="text-center mb-16">
           <h2
             className="compliance-heading mb-8"
-            style={{
-              color: headingColor,
-              fontSize: headingSize,
-              border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-              textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
           >
             {heading}
           </h2>
           <p
             className="compliance-content max-w-4xl mx-auto leading-relaxed"
-            style={{
-              color: contentColor,
-              fontSize: contentSize,
-              border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-              textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
           >
             {content}
           </p>
@@ -107,14 +83,24 @@ export default function ComplianceSection({ data = {} }) {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {certifications.map((cert, index) => (
-            <div key={index} className="compliance-item bg-cream p-6 text-center border border-gray-100 hover:border-primary/40 hover:shadow-lg transition-all duration-300">
+            <div key={cert._key || index} className="compliance-item bg-cream p-6 text-center border border-gray-100 hover:border-primary/40 hover:shadow-lg transition-all duration-300">
               <div className="w-16 h-16 bg-gray-100 flex items-center justify-center mx-auto mb-4">
                 <svg className="w-8 h-8 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2">{cert.name}</h3>
-              <p className="text-gray-600 text-sm">{cert.label}</p>
+              <h3
+                className="font-bold text-gray-900 mb-2"
+                style={cmsTextStyle(cert, 'name', '#111827', '16px')}
+              >
+                {cert.name}
+              </h3>
+              <p
+                className="text-gray-600 text-sm"
+                style={cmsTextStyle(cert, 'label', '#4b5563', '14px')}
+              >
+                {cert.label}
+              </p>
             </div>
           ))}
         </div>

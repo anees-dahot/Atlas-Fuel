@@ -12,6 +12,21 @@
   }
   body {
     @apply font-body text-black bg-white overflow-x-hidden;
+    color: var(--cms-text);
+    background: var(--cms-background);
+    font-weight: var(--cms-body-weight);
+  }
+  .font-heading {
+    font-weight: var(--cms-heading-weight) !important;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--cms-font-heading);
+    font-weight: var(--cms-heading-weight);
   }
   ::selection {
     @apply bg-primary/20 text-black;

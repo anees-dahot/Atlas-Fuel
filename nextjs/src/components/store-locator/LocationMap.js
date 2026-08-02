@@ -44,8 +44,7 @@ export default function LocationMap({data}) {
               </div>
             </div>}
             
-            {/* Map Pin */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10">
+            {!data.mapEmbedUrl && <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-full z-10">
               <div className="relative">
                 <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center shadow-lg">
                   <svg className="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -55,23 +54,36 @@ export default function LocationMap({data}) {
                 </div>
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-primary"></div>
               </div>
-            </div>
+            </div>}
           </div>
+
+          {data.mapLink && data.mapLinkLabel && (
+            <div className="mt-6 text-center">
+              <a
+                href={data.mapLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-6 py-3 bg-primary text-white font-bold uppercase tracking-wide hover:bg-primary-dark transition-colors"
+              >
+                {data.mapLinkLabel}
+              </a>
+            </div>
+          )}
 
           {/* Quick Info Bar */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8">
-            <div className="bg-gray-50 p-6 border-l-4 border-primary">
+            {data.phone && <div className="bg-gray-50 p-6 border-l-4 border-primary">
               <div className="text-2xl font-heading font-bold text-gray-900">{data.phone}</div>
               <div className="text-gray-600 text-sm uppercase tracking-wider">{data.phoneLabel}</div>
-            </div>
-            <div className="bg-gray-50 p-6 border-l-4 border-primary">
+            </div>}
+            {data.email && <div className="bg-gray-50 p-6 border-l-4 border-primary">
               <div className="text-2xl font-heading font-bold text-gray-900">{data.email}</div>
               <div className="text-gray-600 text-sm uppercase tracking-wider">{data.emailLabel}</div>
-            </div>
-            <div className="bg-gray-50 p-6 border-l-4 border-primary">
+            </div>}
+            {data.hours && <div className="bg-gray-50 p-6 border-l-4 border-primary">
               <div className="text-2xl font-heading font-bold text-gray-900">{data.hours}</div>
               <div className="text-gray-600 text-sm uppercase tracking-wider">{data.hoursLabel}</div>
-            </div>
+            </div>}
           </div>
         </div>
       </div>

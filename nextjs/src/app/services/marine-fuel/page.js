@@ -1,7 +1,18 @@
 import { getMarineFuelPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import MarineFuelClient from './MarineFuelClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getMarineFuelPage,
+    getSiteSettings,
+    path: '/services/marine-fuel',
+    fallbackTitle: 'Marine Fuel Solutions | Atlas Fuel Australia',
+    fallbackDescription: 'Reliable marine bunkering and vessel fuel support across Australian ports.',
+  })
+}
 
 export default async function MarineFuelPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -123,8 +134,8 @@ export default async function MarineFuelPage() {
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
-    primaryCta: { text: sanity?.enquireSection?.primaryCTAText || fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink || fallbackEnquire.primaryCta.link },
-    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText || fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink || fallbackEnquire.secondaryCta.link },
+    primaryCta: { text: sanity?.enquireSection?.primaryCTAText ?? fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink ?? fallbackEnquire.primaryCta.link },
+    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText ?? fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink ?? fallbackEnquire.secondaryCta.link },
   }
 
   const fleet = mergeWithFallback({

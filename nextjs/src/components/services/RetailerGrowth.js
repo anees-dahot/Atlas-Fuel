@@ -3,41 +3,20 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function RetailerGrowth({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Growth Solutions'
-  const title = data.title || 'Join forces with a brand that understands independence.'
-  const description = data.description || 'Atlas Fuel offers flexible branding options, co-branded site support, and marketing tools that elevate your station\'s visibility while preserving your identity.'
-  const ctaPrimary = data.ctaPrimary || 'Learn More'
-  const ctaPrimaryLink = data.ctaPrimaryLink || '/fuel-prices'
-  const ctaSecondary = data.ctaSecondary || 'Enquire Now'
-  const ctaSecondaryLink = data.ctaSecondaryLink || '/contact'
-  const imageUrl = data.imageUrl || '/images/fuel-stations.jpg'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#2563eb'
-  const headingSize = data.headingSize || '14px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#2563eb'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const titleColor = data.titleColor || '#111827'
-  const titleSize = data.titleSize || '48px'
-  const titleBorderEnabled = data.titleBorderEnabled || false
-  const titleBorderColor = data.titleBorderColor || '#111827'
-  const titleBorderWidth = data.titleBorderWidth || '1px'
-  const titleShadowColor = data.titleShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '18px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Growth Solutions'
+  const title = data.title ?? 'Join forces with a brand that understands independence.'
+  const description = data.description ?? 'Atlas Fuel offers flexible branding options, co-branded site support, and marketing tools that elevate your station\'s visibility while preserving your identity.'
+  const ctaPrimary = data.ctaPrimaryText ?? data.ctaPrimary ?? 'Learn More'
+  const ctaPrimaryLink = data.ctaPrimaryLink ?? '/fuel-prices'
+  const ctaSecondary = data.ctaSecondaryText ?? data.ctaSecondary ?? 'Enquire Now'
+  const ctaSecondaryLink = data.ctaSecondaryLink ?? '/contact'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -123,12 +102,7 @@ export default function RetailerGrowth({ data = {} }) {
               <span className="w-2 h-2 bg-primary" />
               <span
                 className="font-bold tracking-wide uppercase"
-                style={{
-                  color: headingColor,
-                  fontSize: headingSize,
-                  border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-                  textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-                }}
+                style={cmsTextStyle(data, 'heading', '#2db234', '14px')}
               >
                 {heading}
               </span>
@@ -136,24 +110,14 @@ export default function RetailerGrowth({ data = {} }) {
 
             <h2
               className="growth-title font-bold mb-8 leading-tight"
-              style={{
-                color: titleColor,
-                fontSize: titleSize,
-                border: titleBorderEnabled ? `${titleBorderWidth} solid ${titleBorderColor}` : 'none',
-                textShadow: titleShadowColor ? `0 2px 4px ${titleShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'title', '#111827', '48px')}
             >
               {title}
             </h2>
 
             <p
               className="growth-description leading-relaxed mb-8"
-              style={{
-                color: contentColor,
-                fontSize: contentSize,
-                border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-                textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-              }}
+              style={cmsTextStyle(data, 'description', '#4b5563', '18px')}
             >
               {description}
             </p>
@@ -162,6 +126,7 @@ export default function RetailerGrowth({ data = {} }) {
               <Link 
                 href={ctaPrimaryLink} 
 className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors"
+                style={cmsTextStyle(data, 'ctaPrimaryText', '#ffffff', '14px')}
               >
                 {ctaPrimary}
                 <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -172,6 +137,7 @@ className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white 
               <Link 
                 href={ctaSecondaryLink} 
 className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-bold border-2 border-gray-200 hover:bg-gray-50 hover:border-primary/30 transition-colors uppercase tracking-wider text-sm"
+                style={cmsTextStyle(data, 'ctaSecondaryText', '#111827', '14px')}
               >
                 {ctaSecondary}
                 <svg className="w-5 h-5 text-primary group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -185,11 +151,16 @@ className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900
           {/* Right - Image */}
           <div className="order-1 lg:order-2">
             <div className="growth-image relative">
-              <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
-                <img 
-                  src={imageUrl} 
-                  alt="Fuel Station Growth" 
-                  className="w-full h-full object-cover"
+              <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                <CmsImage
+                  value={data.imageImage ?? data.image ?? data.imageUrl}
+                  fallbackSrc="/images/fuel-stations.jpg"
+                  alt={data.imageAlt ?? data.imageUrlAlt ?? 'Fuel Station Growth'}
+                  width={1200}
+                  height={900}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
               </div>
               {/* Decorative elements */}

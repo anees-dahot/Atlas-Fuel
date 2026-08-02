@@ -1,13 +1,18 @@
 import { getFranchisingPage, getSiteSettings } from '@/lib/sanity'
-import { mapPageCta } from '@/lib/contentFallbacks'
-import { mergeWithFallback } from '@/lib/fallback'
+import { arrayOrFallback, mapPageCta, valueOrFallback } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import FranchisingClient from '@/components/franchising/FranchisingClient'
 
-export const metadata = {
-  title: 'Franchising | Atlas Fuel Australia',
-  description: 'Own your own Atlas Fuel station. Join a proven franchise model with comprehensive training and ongoing support.',
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFranchisingPage,
+    getSiteSettings,
+    path: '/franchising',
+    fallbackTitle: 'Franchising | Atlas Fuel Australia',
+    fallbackDescription: 'Own your own Atlas Fuel station. Join a proven franchise model with comprehensive training and ongoing support.',
+  })
 }
 
 const fallbackSiteSettings = {
@@ -22,6 +27,7 @@ const fallbackHero = {
   title: 'Be Your Own Boss with Atlas Fuel',
   description: 'Join a growing network of successful fuel station owners. Atlas Fuel offers a proven franchise model with comprehensive training, ongoing support, and the backing of a trusted Australian brand.',
   heroImageUrl: '/images/independent-fuel-stations.jpg',
+  heroImageAlt: 'Atlas Fuel station franchise',
 }
 
 const fallbackFranchisingData = {
@@ -29,6 +35,8 @@ const fallbackFranchisingData = {
     eyebrow: 'Become Part of Our Growing Family',
     heading: 'Atlas Franchise',
     description: 'We are turning passion into profits for our franchisees. At Atlas Fuel, we believe in empowering entrepreneurs to build successful businesses while delivering quality fuel and service to their communities. Our franchise model is designed for success, combining industry expertise with personalized support.',
+    image: '/images/what-we-do-retail.webp',
+    imageAlt: 'Atlas Fuel franchise station',
   },
   benefitsHeading: 'Why Choose Atlas Fuel?',
   benefitsDescription: 'We provide everything you need to build a successful fuel station business',
@@ -111,6 +119,8 @@ const fallbackFranchisingData = {
       'Financial management and reporting',
       'Health, safety, and compliance certification',
     ],
+    image: '/images/atlas-fuel-hero-1b.webp',
+    imageAlt: 'Atlas Fuel franchise training and support',
   },
   investment: {
     heading: 'Investment Overview',
@@ -123,12 +133,6 @@ const fallbackFranchisingData = {
       { label: 'Training', value: 'Included' },
       { label: 'Support', value: '24/7 Available' },
     ],
-  },
-  cta: {
-    heading: 'Start Your Franchise Journey Today',
-    description: 'If you have any questions or need help, feel free to contact our team, or you can call us any time. We are here to help you succeed.',
-    primaryCta: { text: 'Enquire Now', link: '/contact' },
-    secondaryCta: { text: 'Learn More', link: '/about' },
   },
   international: {
     eyebrow: 'International Enquiries',
@@ -146,47 +150,69 @@ export default async function FranchisingPage() {
     getSiteSettings().catch(() => null),
   ])
 
+  const intro = sanity?.introSection
+  const benefits = sanity?.benefitsSection
+  const journey = sanity?.journeySection
+  const training = sanity?.trainingSection
+  const investment = sanity?.investmentSection
+  const international = sanity?.internationalSection
+
   const hero = {
-    subtitle: sanity?.heroSubtitle || fallbackHero.subtitle,
-    title: sanity?.heroTitle || fallbackHero.title,
-    description: sanity?.heroDescription || fallbackHero.description,
-    heroImageUrl: sanity?.heroImageUrl || fallbackHero.heroImageUrl,
+    subtitle: valueOrFallback(sanity?.heroSubtitle, fallbackHero.subtitle),
+    title: valueOrFallback(sanity?.heroTitle, fallbackHero.title),
+    description: valueOrFallback(sanity?.heroDescription, fallbackHero.description),
+    heroImage: sanity?.heroImage ?? sanity?.heroImageUrl ?? fallbackHero.heroImageUrl,
+    heroImageAlt: valueOrFallback(
+      sanity?.heroImageAlt ?? sanity?.heroImageUrlAlt,
+      fallbackHero.heroImageAlt
+    ),
   }
 
   const franchisingData = {
-    intro: mergeWithFallback({
-      eyebrow: fallbackFranchisingData.intro.eyebrow,
-      heading: sanity?.introHeading || fallbackFranchisingData.intro.heading,
-      description: sanity?.introDescription || fallbackFranchisingData.intro.description,
-      imageUrl: sanity?.introImageUrl || '/images/what-we-do-retail.webp',
-    }, sanity?.introSection),
-    benefitsHeading: sanity?.benefitsSection?.benefitsHeading || sanity?.benefitsHeading || fallbackFranchisingData.benefitsHeading,
-    benefitsDescription: sanity?.benefitsSection?.description || fallbackFranchisingData.benefitsDescription,
-    benefits: sanity?.benefitsSection?.benefits?.length ? sanity.benefitsSection.benefits : fallbackFranchisingData.benefits,
-    journey: mergeWithFallback({
-      heading: sanity?.journeyHeading || fallbackFranchisingData.journey.heading,
-      description: fallbackFranchisingData.journey.description,
-      steps: fallbackFranchisingData.journey.steps,
-    }, sanity?.journeySection),
-    training: mergeWithFallback({
-      heading: sanity?.trainingHeading || fallbackFranchisingData.training.heading,
-      description: sanity?.trainingDescription || fallbackFranchisingData.training.description,
-      features: fallbackFranchisingData.training.features,
-      imageUrl: sanity?.trainingImageUrl || '/images/atlas-fuel-hero-1b.webp',
-    }, sanity?.trainingSection),
-    investment: mergeWithFallback({
-      heading: sanity?.investmentHeading || fallbackFranchisingData.investment.heading,
-      description: fallbackFranchisingData.investment.description,
-      points: fallbackFranchisingData.investment.points,
-    }, sanity?.investmentSection),
-    international: mergeWithFallback({
-      heading: sanity?.internationalHeading || fallbackFranchisingData.international.heading,
-      description: sanity?.internationalDescription || fallbackFranchisingData.international.description,
-      whatsappNumber: fallbackFranchisingData.international.whatsappNumber,
-      whatsappUrl: fallbackFranchisingData.international.whatsappUrl,
-      eyebrow: fallbackFranchisingData.international.eyebrow,
-      buttonText: fallbackFranchisingData.international.buttonText,
-    }, sanity?.internationalSection),
+    intro: {
+      eyebrow: valueOrFallback(intro?.eyebrow, fallbackFranchisingData.intro.eyebrow),
+      heading: valueOrFallback(intro?.introHeading ?? sanity?.introHeading, fallbackFranchisingData.intro.heading),
+      description: valueOrFallback(intro?.introDescription ?? sanity?.introDescription, fallbackFranchisingData.intro.description),
+      image: intro?.introImage ?? sanity?.introImage ?? intro?.introImageUrl ?? sanity?.introImageUrl ?? fallbackFranchisingData.intro.image,
+      imageAlt: valueOrFallback(
+        intro?.introImageAlt ?? sanity?.introImageAlt ?? intro?.introImageUrlAlt ?? sanity?.introImageUrlAlt,
+        fallbackFranchisingData.intro.imageAlt
+      ),
+    },
+    benefitsHeading: valueOrFallback(
+      benefits?.benefitsHeading ?? sanity?.benefitsHeading,
+      fallbackFranchisingData.benefitsHeading
+    ),
+    benefitsDescription: valueOrFallback(benefits?.description, fallbackFranchisingData.benefitsDescription),
+    benefits: arrayOrFallback(benefits?.benefits, fallbackFranchisingData.benefits),
+    journey: {
+      heading: valueOrFallback(journey?.journeyHeading ?? sanity?.journeyHeading, fallbackFranchisingData.journey.heading),
+      description: valueOrFallback(journey?.description, fallbackFranchisingData.journey.description),
+      steps: arrayOrFallback(journey?.steps, fallbackFranchisingData.journey.steps),
+    },
+    training: {
+      heading: valueOrFallback(training?.trainingHeading ?? sanity?.trainingHeading, fallbackFranchisingData.training.heading),
+      description: valueOrFallback(training?.trainingDescription ?? sanity?.trainingDescription, fallbackFranchisingData.training.description),
+      features: arrayOrFallback(training?.features, fallbackFranchisingData.training.features),
+      image: training?.trainingImage ?? sanity?.trainingImage ?? training?.trainingImageUrl ?? sanity?.trainingImageUrl ?? fallbackFranchisingData.training.image,
+      imageAlt: valueOrFallback(
+        training?.trainingImageAlt ?? sanity?.trainingImageAlt ?? training?.trainingImageUrlAlt ?? sanity?.trainingImageUrlAlt,
+        fallbackFranchisingData.training.imageAlt
+      ),
+    },
+    investment: {
+      heading: valueOrFallback(investment?.investmentHeading ?? sanity?.investmentHeading, fallbackFranchisingData.investment.heading),
+      description: valueOrFallback(investment?.description, fallbackFranchisingData.investment.description),
+      points: arrayOrFallback(investment?.points, fallbackFranchisingData.investment.points),
+    },
+    international: {
+      eyebrow: valueOrFallback(international?.eyebrow, fallbackFranchisingData.international.eyebrow),
+      heading: valueOrFallback(international?.internationalHeading ?? sanity?.internationalHeading, fallbackFranchisingData.international.heading),
+      description: valueOrFallback(international?.internationalDescription ?? sanity?.internationalDescription, fallbackFranchisingData.international.description),
+      whatsappNumber: valueOrFallback(international?.whatsappNumber, fallbackFranchisingData.international.whatsappNumber),
+      whatsappUrl: valueOrFallback(international?.whatsappUrl, fallbackFranchisingData.international.whatsappUrl),
+      buttonText: valueOrFallback(international?.buttonText, fallbackFranchisingData.international.buttonText),
+    },
   }
 
   const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)

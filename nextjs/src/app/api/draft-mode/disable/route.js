@@ -1,7 +1,7 @@
-import { draftMode } from 'next/headers'
+import {draftMode} from 'next/headers'
 
-export async function GET() {
+export async function GET(request) {
   const dm = await draftMode()
   dm.disable()
-  return new Response('Draft mode disabled')
+  return Response.redirect(new URL('/', request.url), 307)
 }

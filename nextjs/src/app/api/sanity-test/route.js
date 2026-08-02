@@ -1,94 +1,92 @@
-import { client } from '@/lib/sanity';
+import {fetchSanity} from '@/lib/sanity'
 
-/**
- * TEST ENDPOINT - Check if Sanity changes showing on website
- * Visit: http://localhost:3000/api/sanity-test
- */
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const tests = [];
 
   try {
     // Test 1: Homepage Hero
-    const homeData = await client.fetch(`*[_type == "homePage"][0]{
+    const homeData = await fetchSanity({query: `*[_id == "homePage"][0]{
       "heroEyebrow": heroSection.eyebrow,
       "heroTitle1": heroSection.titleLine1,
       "heroTitle2": heroSection.titleLine2,
       "heroDesc": heroSection.description
-    }`);
+    }`, tags: ['homePage'], stega: false});
 
     tests.push({
       name: "Homepage Hero",
-      status: homeData?.heroEyebrow ? "✅ CONNECTED" : "❌ MISSING",
+      status: homeData?.heroEyebrow ? "CONNECTED" : "MISSING",
       data: homeData
     });
 
     // Test 2: About Section
-    const aboutData = await client.fetch(`*[_type == "homePage"][0]{
+    const aboutData = await fetchSanity({query: `*[_id == "homePage"][0]{
       "aboutHeading": aboutSection.heading,
       "aboutBody": aboutSection.body
-    }`);
+    }`, tags: ['homePage'], stega: false});
 
     tests.push({
       name: "Homepage About",
-      status: aboutData?.aboutHeading ? "✅ CONNECTED" : "❌ MISSING",
+      status: aboutData?.aboutHeading ? "CONNECTED" : "MISSING",
       data: aboutData
     });
 
     // Test 3: Site Settings
-    const settings = await client.fetch(`*[_type == "siteSettings"][0]{
+    const settings = await fetchSanity({query: `*[_id == "siteSettings"][0]{
       phone, email, address
-    }`);
+    }`, tags: ['siteSettings'], stega: false});
 
     tests.push({
       name: "Site Settings",
-      status: settings?.phone ? "✅ CONNECTED" : "❌ MISSING",
+      status: settings?.phone ? "CONNECTED" : "MISSING",
       data: settings
     });
 
     // Test 4: News Posts
-    const news = await client.fetch(`*[_type == "newsPost"] | order(publishedAt desc)[0...3]{
+    const news = await fetchSanity({query: `*[_type == "newsPost"] | order(publishedAt desc)[0...3]{
       title, "slug": slug.current
-    }`);
+    }`, tags: ['newsPost'], stega: false});
 
     tests.push({
       name: "News Posts",
-      status: news?.length > 0 ? `✅ CONNECTED (${news.length} posts)` : "❌ MISSING",
+      status: news?.length > 0 ? `CONNECTED (${news.length} posts)` : "MISSING",
       data: news
     });
 
     // Test 5: MegaMenu
-    const menu = await client.fetch(`*[_type == "megaMenu"][0]{
+    const menu = await fetchSanity({query: `*[_id == "megaMenu"][0]{
       "navItems": navItems[0...3].label
-    }`);
+    }`, tags: ['megaMenu'], stega: false});
 
     tests.push({
       name: "MegaMenu",
-      status: menu?.navItems?.length > 0 ? "✅ CONNECTED" : "❌ MISSING",
+      status: menu?.navItems?.length > 0 ? "CONNECTED" : "MISSING",
       data: menu
     });
 
     // Summary
-    const passed = tests.filter(t => t.status.includes("✅")).length;
-    const failed = tests.filter(t => t.status.includes("❌")).length;
+    const passed = tests.filter(t => t.status.startsWith("CONNECTED")).length;
+    const failed = tests.filter(t => t.status === "MISSING").length;
 
     return Response.json({
       summary: {
         total: tests.length,
         passed,
         failed,
-        status: failed === 0 ? "🎉 ALL TESTS PASSED" : "⚠️ SOME TESTS FAILED"
+        status: failed === 0 ? "ALL TESTS PASSED" : "SOME TESTS FAILED"
       },
       tests,
       instructions: {
         howToTest: [
           "1. Edit field in Sanity Studio",
           "2. Save & publish in Sanity",
-          "3. Wait 60 seconds (revalidation time)",
+          "3. Refresh the website or wait for the live-content event",
           "4. Refresh this endpoint: /api/sanity-test",
           "5. Check if new value appears in 'data' field"
         ],
         quickCheck: "Compare 'data' values with what you see on website",
-        cacheNote: "Site revalidates every 60 seconds. Changes may take up to 1 min to appear."
+        cacheNote: "Published changes use Sanity live events, with webhook and timed revalidation fallbacks."
       },
       timestamp: new Date().toISOString()
     }, {
@@ -101,7 +99,7 @@ export async function GET() {
   } catch (error) {
     return Response.json({
       error: error.message,
-      status: "❌ SANITY CONNECTION FAILED"
+      status: "SANITY CONNECTION FAILED"
     }, { status: 500 });
   }
 }

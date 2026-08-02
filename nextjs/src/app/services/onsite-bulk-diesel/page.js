@@ -1,7 +1,18 @@
 import { getOnsiteBulkDieselPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import OnsiteBulkDieselClient from './OnsiteBulkDieselClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getOnsiteBulkDieselPage,
+    getSiteSettings,
+    path: '/services/onsite-bulk-diesel',
+    fallbackTitle: 'Onsite Bulk Diesel | Atlas Fuel Australia',
+    fallbackDescription: 'Fast, dependable bulk diesel delivered directly to worksites across Australia.',
+  })
+}
 
 export default async function OnsiteBulkDieselPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -134,8 +145,8 @@ export default async function OnsiteBulkDieselPage() {
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
-    primaryCta: { text: sanity?.enquireSection?.primaryCTAText || fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink || fallbackEnquire.primaryCta.link },
-    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText || fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink || fallbackEnquire.secondaryCta.link },
+    primaryCta: { text: sanity?.enquireSection?.primaryCTAText ?? fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink ?? fallbackEnquire.primaryCta.link },
+    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText ?? fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink ?? fallbackEnquire.secondaryCta.link },
   }
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 

@@ -1,5 +1,6 @@
 'use client'
 import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
 
 const sizeMap = { '1': '12px', '2': '16px', '3': '20px', '4': '24px', '5': '32px', '6': '48px', '7': '70px' }
 
@@ -37,7 +38,7 @@ export default function NewsSection({ data }) {
             href={viewMoreLink}
             className={`${data.viewMoreTextColor || "text-primary"} mt-4 md:mt-0 inline-flex items-center gap-2 font-semibold hover:underline`} style={getStyle(data, 'viewMoreText')}
           >
-            {viewMoreText || 'View More'}
+            {viewMoreText ?? 'View More'}
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <line x1="5" y1="12" x2="19" y2="12" />
               <polyline points="12 5 19 12 12 19" />
@@ -54,17 +55,25 @@ export default function NewsSection({ data }) {
             >
               <Link href={article.link} className="block">
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
-                  <img
-                    src={article.imageUrl}
-                    alt={article.title}
+                  <CmsImage
+                    value={article.image || article.imageUrl}
+                    fallbackSrc="/images/what-we-do-retail.webp"
+                    alt={article.imageAlt || article.title || ""}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-6">
+                  {article.category && (
+                    <span className="mb-3 inline-block bg-primary/10 px-2.5 py-1 text-xs font-bold uppercase tracking-wide text-primary">
+                      {article.category}
+                    </span>
+                  )}
                   <div className="flex items-center gap-3 mb-3">
                     <span className="text-sm text-gray-500">{article.date}</span>
                     <span className="text-gray-300">|</span>
-                    <span className="text-sm text-gray-500">By: {article.author}</span>
+                    <span className="text-sm text-gray-500">{data.bylineLabel ?? "By:"} {article.author}</span>
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-3 group-hover:text-primary transition-colors line-clamp-2">
                     {article.title}
@@ -73,7 +82,7 @@ export default function NewsSection({ data }) {
                     {article.excerpt}
                   </p>
                   <span className="inline-flex items-center gap-2 mt-4 text-primary font-semibold text-sm hover:underline">
-                    Read More
+                    {data.readMoreText ?? "Read More"}
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <line x1="5" y1="12" x2="19" y2="12" />
                       <polyline points="12 5 19 12 12 19" />

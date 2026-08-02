@@ -1,7 +1,18 @@
 import { getLocalFuelDistributorsPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import LocalFuelDistributorsClient from './LocalFuelDistributorsClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getLocalFuelDistributorsPage,
+    getSiteSettings,
+    path: '/services/local-fuel-distributors',
+    fallbackTitle: 'Local Fuel Distributors | Atlas Fuel Australia',
+    fallbackDescription: 'National supply-chain strength and local support for independent fuel distributors.',
+  })
+}
 
 export default async function LocalFuelDistributorsPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -128,8 +139,8 @@ export default async function LocalFuelDistributorsPage() {
   }
 
   const hero = mergeWithFallback(fallbackHero, sanity?.heroSection)
-  const intro = mergeWithFallback(fallbackIntro, sanity?.introSection || sanity?.distributorSection)
-  const service = mergeWithFallback(fallbackService, sanity?.serviceSection || sanity?.distributorSection)
+  const intro = mergeWithFallback(fallbackIntro, sanity?.introSection ?? sanity?.distributorSection)
+  const service = mergeWithFallback(fallbackService, sanity?.serviceSection ?? sanity?.distributorSection)
   const features = mergeWithFallback(fallbackFeatures, sanity?.featuresSection)
   const process = mergeWithFallback(fallbackProcess, sanity?.processTimelineSection)
   const partnership = mergeWithFallback(fallbackPartnership, sanity?.partnershipSection)
@@ -141,8 +152,8 @@ export default async function LocalFuelDistributorsPage() {
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
-    primaryCta: { text: sanity?.enquireSection?.primaryCTAText || fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink || fallbackEnquire.primaryCta.link },
-    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText || fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink || fallbackEnquire.secondaryCta.link },
+    primaryCta: { text: sanity?.enquireSection?.primaryCTAText ?? fallbackEnquire.primaryCta.text, link: sanity?.enquireSection?.primaryCTALink ?? fallbackEnquire.primaryCta.link },
+    secondaryCta: { text: sanity?.enquireSection?.secondaryCTAText ?? fallbackEnquire.secondaryCta.text, link: sanity?.enquireSection?.secondaryCTALink ?? fallbackEnquire.secondaryCta.link },
   }
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 

@@ -1,6 +1,22 @@
 import { getFuelStationsPage, getSiteSettings } from '@/lib/sanity'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import { loadPageMetadata } from '@/lib/metadata'
 import FuelStationsClient from './FuelStationsClient'
+
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelStationsPage,
+    getSiteSettings,
+    path: '/fuel-stations',
+    fallbackTitle: 'Atlas Fuel Stations',
+    fallbackDescription:
+      'Find premium Atlas Fuel products, independent dealers, and customer-focused retail fuel stations.',
+    fallbackImage: {
+      imageUrl: 'https://atlasfuel.com.au/images/what-we-do-retail.webp',
+      alt: 'Atlas Fuel retail station',
+    },
+  })
+}
 
 export default async function FuelStationsPage() {
   const [sanity, globalSettings] = await Promise.all([
@@ -17,74 +33,76 @@ export default async function FuelStationsPage() {
 
   const fallbackHero = {
     subtitle: 'Our Retail Outlets',
-    subtitleColor: '#000000',
+    subtitleColor: 'var(--cms-text)',
     subtitleSize: '14px',
     subtitleBorderEnabled: false,
-    subtitleBorderColor: '#000000',
+    subtitleBorderColor: 'var(--cms-text)',
     subtitleBorderWidth: '1px',
     subtitleShadowColor: '',
     title: 'Quality Fuel for Every Journey',
-    titleColor: '#000000',
+    titleColor: 'var(--cms-text)',
     titleSize: '72px',
     titleBorderEnabled: false,
-    titleBorderColor: '#000000',
+    titleBorderColor: 'var(--cms-text)',
     titleBorderWidth: '1px',
     titleShadowColor: '',
     description: 'Our service stations cater to thousands of satisfied customers daily, offering a range of high-quality petroleum products, oils, lubricants, and automotive goods. In addition, our convenience stores stock confectionery, beverages, and groceries for both home and on-the-go needs.',
-    descriptionColor: '#000000',
+    descriptionColor: 'var(--cms-text)',
     descriptionSize: '18px',
     descriptionBorderEnabled: false,
-    descriptionBorderColor: '#000000',
+    descriptionBorderColor: 'var(--cms-text)',
     descriptionBorderWidth: '1px',
     descriptionShadowColor: '',
     heroImageUrl: '/images/what-we-do-retail.webp',
+    heroImageAlt: 'Atlas Fuel retail station',
     ctaText: 'Find a Station',
     ctaLink: '/store-locator',
   }
 
   const fallbackRetailIntro = {
     subtitle: 'Our Retail Outlets',
-    subtitleColor: '#000000',
+    subtitleColor: 'var(--cms-text)',
     subtitleSize: '14px',
     subtitleBorderEnabled: false,
-    subtitleBorderColor: '#000000',
+    subtitleBorderColor: 'var(--cms-text)',
     subtitleBorderWidth: '1px',
     subtitleShadowColor: '',
     title: 'Serving Australian Motorists',
-    titleColor: '#000000',
+    titleColor: 'var(--cms-text)',
     titleSize: '56px',
     titleBorderEnabled: false,
-    titleBorderColor: '#000000',
+    titleBorderColor: 'var(--cms-text)',
     titleBorderWidth: '1px',
     titleShadowColor: '',
     description: 'Our service stations cater to thousands of satisfied customers daily, offering a range of high-quality petroleum products, oils, lubricants, and automotive goods. In addition, our convenience stores stock confectionery, beverages, and groceries for both home and on-the-go needs.',
-    descriptionColor: '#000000',
+    descriptionColor: 'var(--cms-text)',
     descriptionSize: '18px',
     descriptionBorderEnabled: false,
-    descriptionBorderColor: '#000000',
+    descriptionBorderColor: 'var(--cms-text)',
     descriptionBorderWidth: '1px',
     descriptionShadowColor: '',
     secondParagraph: "With a widespread network, it's highly likely that if you're a motorist, you've already benefited from our facilities.",
     ctaText: 'Enquire now',
     ctaLink: '/store-locator',
     imageUrl: '/images/what-we-do-retail.webp',
+    imageAlt: 'Atlas Fuel retail station',
     statValue: '24/7',
     statLabel: 'Service',
   }
 
   const fallbackPremiumIntro = {
     tagline: 'Premium Quality',
-    taglineColor: '#000000',
+    taglineColor: 'var(--cms-text)',
     taglineSize: '24px',
     taglineBorderEnabled: false,
-    taglineBorderColor: '#000000',
+    taglineBorderColor: 'var(--cms-text)',
     taglineBorderWidth: '1px',
     taglineShadowColor: '',
     content: 'Atlas Fuel Australia takes pride in offering a range of premium fuel products designed to meet the diverse needs of Australian drivers. Whether you\'re running a family car, a high-performance vehicle, or a commercial fleet, our fuels are formulated to ensure optimal performance, efficiency, and engine care. Coupled with state-of-the-art retail facilities, we provide an unparalleled refueling experience for our customers.',
-    contentColor: '#000000',
+    contentColor: 'var(--cms-text)',
     contentSize: '18px',
     contentBorderEnabled: false,
-    contentBorderColor: '#000000',
+    contentBorderColor: 'var(--cms-text)',
     contentBorderWidth: '1px',
     contentShadowColor: '',
     ctaText: 'Enquire Now',
@@ -93,75 +111,77 @@ export default async function FuelStationsPage() {
 
   const fallbackIndependentDealers = {
     heading: 'Independent Dealers',
-    headingColor: '#000000',
+    headingColor: 'var(--cms-text)',
     headingSize: '48px',
     headingBorderEnabled: false,
-    headingBorderColor: '#000000',
+    headingBorderColor: 'var(--cms-text)',
     headingBorderWidth: '1px',
     headingShadowColor: '',
     description: 'Partner with Atlas Fuel and become part of our growing network of independent fuel retailers. We provide the support, products, and expertise you need to succeed in the competitive fuel retail market. Join our network and benefit from our established brand, quality fuel products, and comprehensive support systems.',
-    descriptionColor: '#000000',
+    descriptionColor: 'var(--cms-text)',
     descriptionSize: '18px',
     descriptionBorderEnabled: false,
-    descriptionBorderColor: '#000000',
+    descriptionBorderColor: 'var(--cms-text)',
     descriptionBorderWidth: '1px',
     descriptionShadowColor: '',
     ctaText: 'Learn More',
     ctaLink: '/contact',
     imageUrl: '/images/independent-fuel-stations.jpg',
+    imageAlt: 'Independent Atlas Fuel dealer',
   }
 
   const fallbackImageGallery = {
     heading: 'Our Stations',
-    headingColor: '#000000',
+    headingColor: 'var(--cms-text)',
     headingSize: '48px',
     headingBorderEnabled: false,
-    headingBorderColor: '#000000',
+    headingBorderColor: 'var(--cms-text)',
     headingBorderWidth: '1px',
     headingShadowColor: '',
     images: [
-      '/images/fuel-stations.jpg',
-      '/images/what-we-do-retail.webp',
-      '/images/independent-fuel-stations.jpg',
-      '/images/what-we-do-retail.webp',
-      '/images/local-fuel-distributors.jpg',
-      '/images/hero-truck.jpg',
+      { imageUrl: '/images/fuel-stations.jpg', alt: 'Atlas Fuel station' },
+      { imageUrl: '/images/what-we-do-retail.webp', alt: 'Atlas Fuel retail outlet' },
+      { imageUrl: '/images/independent-fuel-stations.jpg', alt: 'Independent Atlas Fuel station' },
+      { imageUrl: '/images/what-we-do-retail.webp', alt: 'Atlas Fuel forecourt' },
+      { imageUrl: '/images/local-fuel-distributors.jpg', alt: 'Atlas Fuel distributor' },
+      { imageUrl: '/images/hero-truck.jpg', alt: 'Atlas Fuel delivery truck' },
     ],
   }
 
   const fallbackStationService = {
     heading: 'At Atlas Fuel, customer service is our highest priority.',
-    headingColor: '#000000',
+    headingColor: 'var(--cms-text)',
     headingSize: '36px',
     headingBorderEnabled: false,
-    headingBorderColor: '#000000',
+    headingBorderColor: 'var(--cms-text)',
     headingBorderWidth: '1px',
     headingShadowColor: '',
     content: 'We are dedicated to delivering exceptional experiences by ensuring every customer interaction is marked by professionalism, responsiveness, and personalized care. Our team understands the importance of reliable fuel delivery and support, striving to meet and exceed customer expectations at every turn. From timely service to transparent communication, we are committed to building lasting relationships based on trust and satisfaction. At Atlas Fuel, we don\'t just provide fuel; we power peace of mind by putting our customers first.',
-    contentColor: '#000000',
+    contentColor: 'var(--cms-text)',
     contentSize: '18px',
     contentBorderEnabled: false,
-    contentBorderColor: '#000000',
+    contentBorderColor: 'var(--cms-text)',
     contentBorderWidth: '1px',
     contentShadowColor: '',
     question: 'How can we meet the growing demand for fuel needs while protecting our climate & make planet a better place?',
-    questionColor: '#000000',
+    questionColor: 'var(--cms-text)',
     questionSize: '18px',
     questionBorderEnabled: false,
-    questionBorderColor: '#000000',
+    questionBorderColor: 'var(--cms-text)',
     questionBorderWidth: '1px',
     questionShadowColor: '',
     imageUrl: '/images/independent-fuel-stations.jpg',
+    imageAlt: 'Atlas Fuel customer service',
     statValue: '99.5%',
     statLabel: 'Customer Satisfaction',
   }
 
   const fallbackFuelTypes = {
     heading: 'Our Fuel Products',
-    headingColor: '#000000',
+    headingColor: 'var(--cms-text)',
     headingSize: '48px',
     headingBorderEnabled: false,
-    headingBorderColor: '#000000',
+    headingBorderColor: 'var(--cms-text)',
     headingBorderWidth: '1px',
     headingShadowColor: '',
     fuelTypes: [
@@ -171,6 +191,7 @@ export default async function FuelStationsPage() {
         subtitle: 'Standard Performance',
         description: 'A staple fuel option carefully refined to ensure reliable performance and efficient combustion. An excellent choice for vehicles requiring standard octane levels.',
         imageUrl: '/images/fuel-stations.jpg',
+        imageAlt: 'Unleaded 91 fuel',
       },
       {
         octane: '95',
@@ -178,6 +199,7 @@ export default async function FuelStationsPage() {
         subtitle: 'Enhanced Performance',
         description: 'Provides a noticeable boost in efficiency and power. Formulated to prevent engine knocking, ensuring a smoother and more responsive drive.',
         imageUrl: '/images/what-we-do-retail.webp',
+        imageAlt: 'Premium 95 fuel',
       },
       {
         octane: '98',
@@ -185,6 +207,7 @@ export default async function FuelStationsPage() {
         subtitle: 'Maximum Performance',
         description: 'The ultimate solution for high-performance engines. Delivers precise and efficient combustion, unlocking the full potential of powerful vehicles.',
         imageUrl: '/images/what-we-do-retail.webp',
+        imageAlt: 'Premium 98 fuel',
       },
     ],
     primaryCtaText: 'Order Bulk',
@@ -195,39 +218,40 @@ export default async function FuelStationsPage() {
 
   const fallbackStats = {
     statValue: '35,224',
-    statValueColor: '#000000',
+    statValueColor: 'var(--cms-text)',
     statValueSize: '64px',
     statValueBorderEnabled: false,
-    statValueBorderColor: '#000000',
+    statValueBorderColor: 'var(--cms-text)',
     statValueBorderWidth: '1px',
     statValueShadowColor: '',
     statLabel: 'Happy Customers Every Day',
-    statLabelColor: '#000000',
+    statLabelColor: 'var(--cms-text)',
     statLabelSize: '18px',
     statLabelBorderEnabled: false,
-    statLabelBorderColor: '#000000',
+    statLabelBorderColor: 'var(--cms-text)',
     statLabelBorderWidth: '1px',
     statLabelShadowColor: '',
   }
 
   const fallbackDieselSection = {
     heading: 'Diesel Fuel',
-    headingColor: '#000000',
+    headingColor: 'var(--cms-text)',
     headingSize: '48px',
     headingBorderEnabled: false,
-    headingBorderColor: '#000000',
+    headingBorderColor: 'var(--cms-text)',
     headingBorderWidth: '1px',
     headingShadowColor: '',
     description: 'Our high-quality diesel fuel is formulated to deliver optimal performance for diesel engines. Whether you\'re operating commercial vehicles, heavy machinery, or agricultural equipment, Atlas Fuel diesel provides the power and efficiency you need. Our diesel meets all Australian standards and is available at all our retail locations.',
-    descriptionColor: '#000000',
+    descriptionColor: 'var(--cms-text)',
     descriptionSize: '18px',
     descriptionBorderEnabled: false,
-    descriptionBorderColor: '#000000',
+    descriptionBorderColor: 'var(--cms-text)',
     descriptionBorderWidth: '1px',
     descriptionShadowColor: '',
     ctaText: 'Learn More',
     ctaLink: '/contact',
     imageUrl: '/images/onsite-diesel.jpg',
+    imageAlt: 'Atlas Fuel diesel delivery',
   }
 
   const fallbackStationFeatures = {
@@ -245,17 +269,17 @@ export default async function FuelStationsPage() {
   const fallbackExcellence = {
     sectionTag: 'Our Philosophy',
     tagline: 'Unrivalled. Unmatched. Unstoppable.',
-    taglineColor: '#000000',
+    taglineColor: 'var(--cms-text)',
     taglineSize: '24px',
     taglineBorderEnabled: false,
-    taglineBorderColor: '#000000',
+    taglineBorderColor: 'var(--cms-text)',
     taglineBorderWidth: '1px',
     taglineShadowColor: '',
     content: 'These three words capture the spirit of Atlas Fuel and the people who drive it forward every day. We stand unrivalled in our commitment to quality, unmatched in our ability to deliver reliable fuel solutions nationwide, and unstoppable in our pursuit of growth, innovation, and excellence. From our performance fleet to our world-class service stations, every step we take reflects a relentless drive to set new standards in the fuel industry.',
-    contentColor: '#000000',
+    contentColor: 'var(--cms-text)',
     contentSize: '18px',
     contentBorderEnabled: false,
-    contentBorderColor: '#000000',
+    contentBorderColor: 'var(--cms-text)',
     contentBorderWidth: '1px',
     contentShadowColor: '',
     ctaText: 'Read More',
@@ -264,9 +288,7 @@ export default async function FuelStationsPage() {
 
   const hasValue = (value) =>
     value !== undefined &&
-    value !== null &&
-    value !== '' &&
-    (!Array.isArray(value) || value.length > 0)
+    value !== null
 
   const mapFields = (fallback, mapping, section = {}) => ({
     ...fallback,
@@ -311,41 +333,75 @@ export default async function FuelStationsPage() {
       sanity?.[sectionName]
     )
 
-  const hero = mapPrefixedFields(fallbackHero, 'heroSection', 'hero', {
+  const heroData = mapPrefixedFields(fallbackHero, 'heroSection', 'hero', {
     heroImageUrl: { section: 'imageUrl', legacy: 'heroImageUrl' },
+    heroImageAlt: { section: 'imageAlt', legacy: 'heroAlt' },
   })
-  const retailIntro = mapPrefixedFields(
+  const hero = {
+    ...heroData,
+    heroImage:
+      sanity?.heroSection?.imageImage ??
+      sanity?.heroImage ??
+      heroData.heroImageUrl,
+  }
+  const retailIntroData = mapPrefixedFields(
     fallbackRetailIntro,
     'retailIntroSection',
     'retailIntro',
     {
       imageUrl: { section: 'imageUrl', legacy: 'retailIntroImageUrl' },
+      imageAlt: { section: 'imageAlt', legacy: 'retailIntroAlt' },
     }
   )
+  const retailIntro = {
+    ...retailIntroData,
+    image:
+      sanity?.retailIntroSection?.imageImage ??
+      sanity?.retailIntroImage ??
+      retailIntroData.imageUrl,
+  }
   const premiumIntro = mapPrefixedFields(
     fallbackPremiumIntro,
     'premiumProductsSection',
     'premium'
   )
-  const independentDealers = mapPrefixedFields(
+  const independentDealersData = mapPrefixedFields(
     fallbackIndependentDealers,
     'independentDealersSection',
     'independent',
-    { imageUrl: { section: 'imageUrl', legacy: 'independentImageUrl' } }
+    {
+      imageUrl: { section: 'imageUrl', legacy: 'independentImageUrl' },
+      imageAlt: { section: 'imageAlt', legacy: 'independentAlt' },
+    }
   )
+  const independentDealers = {
+    ...independentDealersData,
+    image:
+      sanity?.independentDealersSection?.imageImage ??
+      sanity?.independentImage ??
+      independentDealersData.imageUrl,
+  }
   const imageGallery = mapPrefixedFields(
     fallbackImageGallery,
     'gallerySection',
     'gallery'
   )
-  const stationService = mapPrefixedFields(
+  const stationServiceData = mapPrefixedFields(
     fallbackStationService,
     'customerServiceSection',
     'service',
     {
       imageUrl: { section: 'imageUrl', legacy: 'serviceImageUrl' },
+      imageAlt: { section: 'imageAlt', legacy: 'serviceAlt' },
     }
   )
+  const stationService = {
+    ...stationServiceData,
+    image:
+      sanity?.customerServiceSection?.imageImage ??
+      sanity?.serviceImage ??
+      stationServiceData.imageUrl,
+  }
   const fuelTypes = mapPrefixedFields(
     fallbackFuelTypes,
     'fuelProductsSection',
@@ -367,14 +423,22 @@ export default async function FuelStationsPage() {
     ),
     sanity?.statisticsSection
   )
-  const dieselSection = mapPrefixedFields(
+  const dieselSectionData = mapPrefixedFields(
     fallbackDieselSection,
     'dieselSection',
     'diesel',
     {
       imageUrl: { section: 'imageUrl', legacy: 'dieselImageUrl' },
+      imageAlt: { section: 'imageAlt', legacy: 'dieselAlt' },
     }
   )
+  const dieselSection = {
+    ...dieselSectionData,
+    image:
+      sanity?.dieselSection?.imageImage ??
+      sanity?.dieselImage ??
+      dieselSectionData.imageUrl,
+  }
   const stationFeatures = mapPrefixedFields(
     fallbackStationFeatures,
     'featuresSection',

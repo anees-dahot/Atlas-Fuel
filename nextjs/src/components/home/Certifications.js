@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CmsImage from '@/components/common/CmsImage';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -150,9 +150,7 @@ export default function Certifications({ data }) {
   // Merge: defaultData provides baseline, Sanity data overrides
   const content = { ...defaultData, ...data };
   const certifications = content.certifications || defaultData.certifications;
-  const certificateImages = (content.certificateImages || [])
-    .map((image) => (typeof image === 'string' ? image : image?.url || image?.asset?.url))
-    .filter(Boolean);
+  const certificateImages = (content.certificateImages || []).filter(Boolean);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -225,12 +223,28 @@ export default function Certifications({ data }) {
             <p className={`${content.descriptionColor || "text-gray-600"} text-lg leading-relaxed mb-8`} style={getStyle(content, 'description')}>
               {content.description}
             </p>
+            {(content.trustBadgeText || content.trustBadgeSubtext) && (
+              <div className="mb-8 inline-flex items-center gap-4 border-l-4 border-primary bg-white px-5 py-4 shadow-sm">
+                <ShieldIcon />
+                <div>
+                  {content.trustBadgeText && (
+                    <div className={`${content.trustBadgeTextColor || "text-gray-900"} font-bold`} style={getStyle(content, 'trustBadgeText')}>
+                      {content.trustBadgeText}
+                    </div>
+                  )}
+                  {content.trustBadgeSubtext && (
+                    <div className={`${content.trustBadgeSubtextColor || "text-gray-600"} text-sm`} style={getStyle(content, 'trustBadgeSubtext')}>
+                      {content.trustBadgeSubtext}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             {/* Certificate Images Row */}
             {certificateImages.length > 0 && (
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 {certificateImages.map((image, index) => {
-                  const imageUrl = typeof image === 'string' ? image : image.url;
                   const imageAlt = typeof image === 'string'
                     ? `Certificate ${index + 1}`
                     : image.alt || `Certificate ${index + 1}`;
@@ -238,12 +252,12 @@ export default function Certifications({ data }) {
                   <button
                     type="button"
                     key={index}
-                    onClick={() => setSelectedCertificate({ imageUrl, index })}
+                    onClick={() => setSelectedCertificate({ image, imageAlt, index })}
                     className="relative bg-white border-2 border-primary shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-shadow duration-300 overflow-hidden h-32 cursor-zoom-in"
                     aria-label={`View certificate ${index + 1}`}
                   >
-                    <Image
-                      src={imageUrl}
+                    <CmsImage
+                      value={image}
                       alt={imageAlt}
                       fill
                       sizes="(min-width: 640px) 25vw, 50vw"
@@ -266,7 +280,7 @@ export default function Certifications({ data }) {
               >
                 <div className="p-6">
                   <div className="bg-gray-100 text-primary w-14 h-14 flex items-center justify-center mb-4">
-                    {iconMap[(cert.type || cert.name || '').toLowerCase().replace(/[\s./-]/g, '')] || <AwardIcon />}
+                    {iconMap[(cert.icon || cert.type || cert.name || '').toLowerCase().replace(/[\s./-]/g, '')] || <AwardIcon />}
                   </div>
                   <h3 className={`${cert.titleColor || "text-gray-900"} text-lg font-semibold mb-2`} style={getStyle(cert, 'title')}>
                     {cert.title}
@@ -294,9 +308,9 @@ export default function Certifications({ data }) {
             className="relative w-full max-w-5xl h-[85vh] bg-white shadow-2xl"
             onClick={(event) => event.stopPropagation()}
           >
-            <Image
-              src={selectedCertificate.imageUrl}
-              alt={`Certificate ${selectedCertificate.index + 1}`}
+            <CmsImage
+              value={selectedCertificate.image}
+              alt={selectedCertificate.imageAlt}
               fill
               sizes="100vw"
               className="object-contain p-4 sm:p-8"

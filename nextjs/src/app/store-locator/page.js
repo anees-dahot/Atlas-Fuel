@@ -1,28 +1,29 @@
 import { getStoreLocatorPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import CTABanner from '@/components/shared/CTABanner'
 import LocatorHero from '@/components/store-locator/LocatorHero'
 import LocationMap from '@/components/store-locator/LocationMap'
 import LocationDetail from '@/components/store-locator/LocationDetail'
 import ContactSection from '@/components/store-locator/ContactSection'
 
-export const metadata = {
-  title: 'Store Locator | Atlas Fuel Australia',
-  description: 'Find your nearest Atlas Fuel station across Australia. Visit our Kwinana Beach location for reliable fuel solutions.',
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getStoreLocatorPage,
+    getSiteSettings,
+    path: '/store-locator',
+    fallbackTitle: 'Store Locator | Atlas Fuel Australia',
+    fallbackDescription: 'Find your nearest Atlas Fuel station across Australia. Visit our Kwinana Beach location for reliable fuel solutions.',
+  })
 }
 
 const fallbackData = {
   heroSubtitle: 'Store Locator',
-  heroSubtitleColor: '#10b981',
-  heroSubtitleSize: '14px',
   heroTitle: 'Find Your Nearest Atlas Fuel Station',
-  heroTitleColor: '#000000',
-  heroTitleSize: '72px',
   heroDescription: 'Atlas Fuel Australia delivers reliable, efficient fuel solutions nationwide. We cater to businesses of all sizes, ensuring quality and sustainability. Trust us to fuel your success.',
-  heroDescriptionColor: '#666666',
-  heroDescriptionSize: '18px',
   heroImageUrl: '/images/store-locator.jpg',
+  heroImageAlt: 'Atlas Fuel store location',
   mapSection: {
     eyebrow: 'Find Us',
     heading: 'Our Location',
@@ -31,6 +32,7 @@ const fallbackData = {
     address: '1 Mandurah Road, Kwinana WA 6167',
     mapEmbedUrl: '',
     mapLink: 'https://maps.google.com/?q=1+Mandurah+Road,+Kwinana+WA+6167',
+    mapLinkLabel: 'Open in Google Maps',
     phone: '+61-8-6377-7644',
     email: 'info@atlasfuel.com.au',
     hours: 'Mon-Fri: 8am - 7pm',
@@ -97,7 +99,8 @@ export default async function StoreLocatorPage() {
     subtitle: data.heroSubtitle,
     title: data.heroTitle,
     description: data.heroDescription,
-    heroImageUrl: data.heroImageUrl,
+    heroImage: data.heroImage ?? data.heroImageUrl,
+    heroImageAlt: data.heroImageAlt ?? data.heroImageUrlAlt ?? fallbackData.heroImageAlt,
   }
 
   return (

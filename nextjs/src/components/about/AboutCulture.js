@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const sizeMap = {
@@ -18,13 +19,14 @@ const sizeMap = {
 export default function AboutCulture({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Our People'
-  const headingColor = data.headingColor || 'text-black'
+  const eyebrow = data.eyebrow ?? 'Our Team'
+  const heading = data.heading ?? 'Our People'
+  const headingColor = data.headingColor ?? 'text-black'
   const headingSize = data.headingSize ? { fontSize: sizeMap[data.headingSize] } : {}
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
   const headingStyle = {
     ...headingSize,
     ...(headingBorderEnabled && {
@@ -33,13 +35,13 @@ export default function AboutCulture({ data = {} }) {
     }),
   }
 
-  const description = data.description || "Atlas Fuel Australia is powered by a team of highly skilled professionals dedicated to excellence in every aspect of our operations. We prioritize attracting, retaining, and nurturing top talent, creating an environment where skills are honed and expertise is valued."
-  const descriptionColor = data.descriptionColor || 'text-gray-600'
+  const description = data.description ?? "Atlas Fuel Australia is powered by a team of highly skilled professionals dedicated to excellence in every aspect of our operations. We prioritize attracting, retaining, and nurturing top talent, creating an environment where skills are honed and expertise is valued."
+  const descriptionColor = data.descriptionColor ?? 'text-gray-600'
   const descriptionSize = data.descriptionSize ? { fontSize: sizeMap[data.descriptionSize] } : {}
-  const descriptionBorderEnabled = data.descriptionBorderEnabled || false
-  const descriptionBorderColor = data.descriptionBorderColor || '#000000'
-  const descriptionBorderWidth = data.descriptionBorderWidth || '1px'
-  const descriptionShadowColor = data.descriptionShadowColor || ''
+  const descriptionBorderEnabled = data.descriptionBorderEnabled ?? false
+  const descriptionBorderColor = data.descriptionBorderColor ?? 'var(--cms-text)'
+  const descriptionBorderWidth = data.descriptionBorderWidth ?? '1px'
+  const descriptionShadowColor = data.descriptionShadowColor ?? ''
   const descriptionStyle = {
     ...descriptionSize,
     ...(descriptionBorderEnabled && {
@@ -48,8 +50,8 @@ export default function AboutCulture({ data = {} }) {
     }),
   }
 
-  const imageUrl = data.imageUrl || '/images/work-with-us.jpg'
-  const items = data.cultureItems || [
+  const imageUrl = data.imageUrl ?? '/images/work-with-us.jpg'
+  const items = data.cultureItems ?? [
     { title: 'Our Culture',   content: 'We excel in delivering both the product and the concept — streamlining operations in a rapid, agile, and collaborative execution. Our teams work tirelessly to improve logistics for our clients.',       ctaText: 'Enquire Now', ctaLink: '/contact', imageUrl: '/images/work-with-us.webp' },
     { title: 'Our Operators', content: 'At Atlas Fuel Australia, our work culture emphasises a commitment to excellence, continuous learning, and a supportive environment ensuring both personal and professional growth.',                        ctaText: 'Enquire Now', ctaLink: '/contact', imageUrl: '/images/work-with-us.jpg' },
     { title: 'Our Team',      content: 'Our team collaborates across departments to deliver reliable fuel solutions. We focus on innovation, efficiency, and maintaining the highest service standards for our customers.',                          ctaText: 'Enquire Now', ctaLink: '/contact', imageUrl: '/images/work-with-us.webp' },
@@ -110,16 +112,18 @@ export default function AboutCulture({ data = {} }) {
           <div className="acul-left lg:col-span-4 lg:sticky lg:top-32 self-start">
             <div className="flex items-center gap-4 mb-6">
               <div className="w-12 h-0.5 bg-primary" />
-              <span className="text-primary text-sm font-bold uppercase tracking-widest">Our Team</span>
+              <span className="text-primary text-sm font-bold uppercase tracking-widest">{eyebrow}</span>
             </div>
             <h2 className={`${headingColor} text-3xl md:text-4xl lg:text-5xl font-heading font-bold uppercase tracking-tight leading-tight mb-6`} style={headingStyle}>
               {heading}
             </h2>
             <p className={`${descriptionColor} text-lg leading-relaxed font-light mb-8`} style={descriptionStyle}>{description}</p>
             <div className="relative h-[250px] overflow-hidden shadow-xl">
-              <img
-                src={imageUrl}
-                alt="Our Team"
+              <CmsImage
+                value={data.image ?? data.imageImage ?? imageUrl}
+                alt={data.imageAlt ?? 'Our Team'}
+                fill
+                sizes="(min-width: 1024px) 33vw, 100vw"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
@@ -129,12 +133,12 @@ export default function AboutCulture({ data = {} }) {
           {/* Right — culture cards */}
           <div className="acul-list lg:col-span-8 flex flex-col gap-0 border border-gray-200 overflow-hidden divide-y divide-gray-200">
             {items.map((item, i) => {
-              const titleColor = item.titleColor || 'text-black'
+              const titleColor = item.titleColor ?? 'text-black'
               const titleSize = item.titleSize ? { fontSize: sizeMap[item.titleSize] } : {}
-              const titleBorderEnabled = item.titleBorderEnabled || false
-              const titleBorderColor = item.titleBorderColor || '#000000'
-              const titleBorderWidth = item.titleBorderWidth || '1px'
-              const titleShadowColor = item.titleShadowColor || ''
+              const titleBorderEnabled = item.titleBorderEnabled ?? false
+              const titleBorderColor = item.titleBorderColor ?? 'var(--cms-text)'
+              const titleBorderWidth = item.titleBorderWidth ?? '1px'
+              const titleShadowColor = item.titleShadowColor ?? ''
               const titleStyle = {
                 ...titleSize,
                 ...(titleBorderEnabled && {
@@ -143,12 +147,12 @@ export default function AboutCulture({ data = {} }) {
                 }),
               }
 
-              const contentColor = item.contentColor || 'text-gray-600'
+              const contentColor = item.contentColor ?? 'text-gray-600'
               const contentSize = item.contentSize ? { fontSize: sizeMap[item.contentSize] } : {}
-              const contentBorderEnabled = item.contentBorderEnabled || false
-              const contentBorderColor = item.contentBorderColor || '#000000'
-              const contentBorderWidth = item.contentBorderWidth || '1px'
-              const contentShadowColor = item.contentShadowColor || ''
+              const contentBorderEnabled = item.contentBorderEnabled ?? false
+              const contentBorderColor = item.contentBorderColor ?? 'var(--cms-text)'
+              const contentBorderWidth = item.contentBorderWidth ?? '1px'
+              const contentShadowColor = item.contentShadowColor ?? ''
               const contentStyle = {
                 ...contentSize,
                 ...(contentBorderEnabled && {
@@ -157,12 +161,12 @@ export default function AboutCulture({ data = {} }) {
                 }),
               }
 
-              const ctaTextColor = item.ctaTextColor || 'text-primary'
+              const ctaTextColor = item.ctaTextColor ?? 'text-primary'
               const ctaTextSize = item.ctaTextSize ? { fontSize: sizeMap[item.ctaTextSize] } : {}
-              const ctaTextBorderEnabled = item.ctaTextBorderEnabled || false
-              const ctaTextBorderColor = item.ctaTextBorderColor || '#000000'
-              const ctaTextBorderWidth = item.ctaTextBorderWidth || '1px'
-              const ctaTextShadowColor = item.ctaTextShadowColor || ''
+              const ctaTextBorderEnabled = item.ctaTextBorderEnabled ?? false
+              const ctaTextBorderColor = item.ctaTextBorderColor ?? 'var(--cms-text)'
+              const ctaTextBorderWidth = item.ctaTextBorderWidth ?? '1px'
+              const ctaTextShadowColor = item.ctaTextShadowColor ?? ''
               const ctaTextStyle = {
                 ...ctaTextSize,
                 ...(ctaTextBorderEnabled && {
@@ -172,7 +176,7 @@ export default function AboutCulture({ data = {} }) {
               }
 
               return (
-                <div key={i} className="acul-item group relative bg-white hover:bg-gray-50 transition-colors duration-500 p-8 md:p-10" style={{ perspective: '1000px' }}>
+                <div key={item._key ?? `${item.title}-${i}`} className="acul-item group relative bg-white hover:bg-gray-50 transition-colors duration-500 p-8 md:p-10" style={{ perspective: '1000px' }}>
                   <div className="flex items-start justify-between mb-4">
                     <h3 className={`acul-content ${titleColor} text-xl md:text-2xl font-heading font-bold uppercase tracking-wide group-hover:text-primary transition-colors duration-300`} style={titleStyle}>
                       {item.title}
@@ -187,7 +191,7 @@ export default function AboutCulture({ data = {} }) {
                         {item.content}
                       </p>
                       {item.ctaText && item.ctaLink && (
-                        <Link href={item.ctaLink || '#'}
+                        <Link href={item.ctaLink}
                           className={`group/link inline-flex items-center gap-3 font-bold uppercase tracking-widest text-sm hover:gap-5 transition-all duration-300 ${ctaTextColor}`} style={ctaTextStyle}>
                           {item.ctaText}
                           <svg className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -198,9 +202,11 @@ export default function AboutCulture({ data = {} }) {
                     </div>
                     {item.imageUrl && (
                       <div className="hidden sm:block w-48 h-32 flex-shrink-0 overflow-hidden">
-                        <img
-                          src={item.imageUrl}
-                          alt={item.title}
+                        <CmsImage
+                          value={item.image ?? item.imageImage ?? item.imageUrl}
+                          alt={item.imageAlt ?? item.title ?? ''}
+                          fill
+                          sizes="192px"
                           className="w-full h-full object-cover"
                         />
                       </div>

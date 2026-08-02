@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import CmsImage from "@/components/common/CmsImage";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 const sectorIcons = {
@@ -449,10 +450,13 @@ export default function WhatWeDo({ data }) {
             <div className="bg-white border border-gray-100 shadow-lg overflow-hidden">
               {/* Image */}
               <div className="relative h-72 overflow-hidden bg-gray-100">
-                <img
+                <CmsImage
                   key={sector.slug}
-                  src={sector.imageUrl || "/images/hero-trucks.jpg"}
+                  value={sector.image || sector.imageUrl}
+                  fallbackSrc="/images/hero-trucks.jpg"
                   alt={sector.imageAlt || sector.title || ""}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
@@ -484,7 +488,7 @@ export default function WhatWeDo({ data }) {
                   href={sector.href || `/${sector.slug || ""}`}
                   className="read-more group"
                 >
-                  Learn More
+                  {sector.ctaText || "Learn More"}
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"

@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const fleetFeatures = [
@@ -29,23 +30,10 @@ const iconSvgs = {
 export default function FleetCompliance({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Fleet Compliance'
-  const content = data.content || 'Our fleet operates with the highest standards of safety and compliance, ensuring your fuel deliveries are handled by certified professionals using state-of-the-art equipment.'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Fleet Compliance'
+  const content = data.content ?? 'Our fleet operates with the highest standards of safety and compliance, ensuring your fuel deliveries are handled by certified professionals using state-of-the-art equipment.'
+  const sectionTag = data.sectionTag ?? 'Our Fleet'
+  const features = Array.isArray(data.features) ? data.features : fleetFeatures
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -88,47 +76,43 @@ export default function FleetCompliance({ data = {} }) {
             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.76 3.76z" />
             </svg>
-            Our Fleet
+            {sectionTag}
           </span>
           <h2
             className="mb-6"
-            style={{
-              color: headingColor,
-              fontSize: headingSize,
-              border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-              textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
           >
             {heading}
           </h2>
           <p
             className="max-w-3xl mx-auto"
-            style={{
-              color: contentColor,
-              fontSize: contentSize,
-              border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-              textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
           >
             {content}
           </p>
         </div>
 
         <div className="fleet-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {fleetFeatures.map((feature, index) => (
+          {features.map((feature, index) => (
             <div
-              key={index}
+              key={feature._key || index}
               className="fleet-card group bg-white p-6 border border-gray-100 hover:border-primary/40 hover:shadow-lg transition-all duration-300"
             >
               <div className="w-12 h-12 bg-gray-100 flex items-center justify-center mb-4 group-hover:bg-gray-200 transition-colors">
                 <div className="w-6 h-6 text-primary">
-                  {iconSvgs[feature.icon]}
+                  {iconSvgs[feature.icon] || iconSvgs.gps}
                 </div>
               </div>
-              <h3 className="font-bold text-gray-900 mb-2 text-lg">
+              <h3
+                className="font-bold text-gray-900 mb-2 text-lg"
+                style={cmsTextStyle(feature, 'title', '#111827', '18px')}
+              >
                 {feature.title}
               </h3>
-              <p className="text-gray-600 text-sm">
+              <p
+                className="text-gray-600 text-sm"
+                style={cmsTextStyle(feature, 'description', '#4b5563', '14px')}
+              >
                 {feature.description}
               </p>
             </div>

@@ -3,6 +3,8 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CTABanner from '@/components/shared/CTABanner'
+import {FormStatus, useFormSubmission} from '@/components/forms/FormStatus'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const fallbackSiteSettings = {
@@ -12,11 +14,93 @@ const fallbackSiteSettings = {
   ctaBannerButtonLink: '#openings',
 }
 
+const fallbackWhyWorkCards = [
+  {imageUrl: '/images/work-with-us.jpg', title: 'Competitive Pay', description: 'Industry-leading salaries with regular performance reviews and bonus opportunities.'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Training & Development', description: 'Comprehensive onboarding and ongoing training programs to help you grow your skills.'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Career Growth', description: 'Clear pathways for advancement within our growing company.'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Work-Life Balance', description: 'Flexible scheduling and supportive work environment.'},
+  {imageUrl: '/images/partner-in-safety.webp', title: 'Health & Safety', description: 'Committed to maintaining the highest safety standards for all employees.'},
+  {imageUrl: '/images/work-with-us.jpg', title: 'Team Culture', description: 'Join a collaborative, supportive team that values every contribution.'},
+]
+
+const fallbackCultureImages = [
+  {imageUrl: '/images/work-with-us.webp', alt: 'Team Culture'},
+  {imageUrl: '/images/work-with-us.jpg', alt: 'Work Environment'},
+  {imageUrl: '/images/work-with-us.webp', alt: 'Training'},
+  {imageUrl: '/images/work-with-us.jpg', alt: 'Team Events'},
+]
+
+const fallbackJobOpenings = [
+  {imageUrl: '/images/truck-new.jpg', title: 'Fuel Tanker Driver', location: 'Kwinana, WA', type: 'Full Time', description: 'Join our fleet as a certified tanker driver. Competitive salary, comprehensive training, and career growth opportunities.'},
+  {imageUrl: '/images/fuel-stations.jpg', title: 'Station Manager', location: 'Perth, WA', type: 'Full Time', description: 'Lead operations at one of our modern fuel stations. Manage team, customer service, and daily operations.'},
+  {imageUrl: '/images/what-we-do-fuel-transportation.webp', title: 'Logistics Coordinator', location: 'Kwinana, WA', type: 'Full Time', description: 'Coordinate fuel deliveries and fleet operations. Strong organizational skills and attention to detail required.'},
+  {imageUrl: '/images/what-we-do-retail.webp', title: 'Customer Service Representative', location: 'Multiple Locations', type: 'Part Time / Full Time', description: 'Provide exceptional service at our fuel stations. No experience required - full training provided.'},
+]
+
+const fallbackTeamGalleryImages = [
+  {imageUrl: '/images/work-with-us.webp', alt: 'Atlas Fuel team'},
+  {imageUrl: '/images/work-with-us.jpg', alt: 'Atlas Fuel workplace'},
+  {imageUrl: '/images/work-with-us.webp', alt: 'Atlas Fuel team members'},
+  {imageUrl: '/images/work-with-us.webp', alt: 'Atlas Fuel team collaboration'},
+  {imageUrl: '/images/work-with-us.jpg', alt: 'Atlas Fuel employee'},
+  {imageUrl: '/images/truck-new.jpg', alt: 'Atlas Fuel transport team'},
+  {imageUrl: '/images/hero-truck.jpg', alt: 'Atlas Fuel operations team'},
+  {imageUrl: '/images/fuel-stations.jpg', alt: 'Atlas Fuel station team'},
+]
+
+const fallbackOfficeLocations = [
+  {imageUrl: '/images/work-with-us.webp', title: 'Headquarters', subtitle: 'Kwinana, WA'},
+  {imageUrl: '/images/work-with-us.jpg', title: 'Operations Center', subtitle: 'Perth Metro'},
+  {imageUrl: '/images/what-we-do-mining-civil.webp', title: 'Regional Office', subtitle: 'Pilbara Region'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Training Facility', subtitle: 'Kwinana Beach'},
+  {imageUrl: '/images/marine-bunkering.jpg', title: 'Port Office', subtitle: 'Fremantle'},
+  {imageUrl: '/images/fuel-stations.jpg', title: 'Depot Office', subtitle: 'Multiple Locations'},
+]
+
+const fallbackTrainingImages = [
+  {imageUrl: '/images/truck-new.jpg', alt: 'Driver Training'},
+  {imageUrl: '/images/partner-in-safety.webp', alt: 'Safety Training'},
+  {imageUrl: '/images/what-we-do-mining-civil.webp', alt: 'Equipment Training'},
+  {imageUrl: '/images/work-with-us.webp', alt: 'Certification Programs'},
+  {imageUrl: '/images/marine-bunkering.jpg', alt: 'Leadership Training'},
+  {imageUrl: '/images/what-we-do-fuel-transportation.webp', alt: 'Technical Skills'},
+  {imageUrl: '/images/hero-truck.jpg', alt: 'First Aid Training'},
+  {imageUrl: '/images/work-with-us.webp', alt: 'Ongoing Education'},
+]
+
+const fallbackTeamEvents = [
+  {imageUrl: '/images/work-with-us.jpg', title: 'Team Building', subtitle: 'Annual retreats and activities'},
+  {imageUrl: '/images/agriculture.webp', title: 'Community Service', subtitle: 'Local charity initiatives'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Award Ceremonies', subtitle: 'Celebrating excellence'},
+  {imageUrl: '/images/what-we-do-retail.webp', title: 'Performance Events', subtitle: 'Showcasing our precision fleet'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Family Days', subtitle: 'Bringing families together'},
+  {imageUrl: '/images/work-with-us.webp', title: 'Training Workshops', subtitle: 'Skill development sessions'},
+]
+
+const authoredArray = (value, fallback) =>
+  Array.isArray(value) ? value : fallback
+
 export default function CareersClient({ data, siteSettings }) {
   const pageRef = useRef(null)
-  const titleWords = data.heroTitle.trim().split(/\s+/)
+  const titleWords = String(data.heroTitle || '').trim().split(/\s+/)
   const titleAccent = titleWords.pop()
   const titleLead = titleWords.join(' ')
+  const {status, submit, isSubmitting} = useFormSubmission({
+    endpoint: '/api/careers',
+    successMessage:
+      data.applicationSuccessMessage ??
+      'Thank you. Your application has been submitted to the Atlas Fuel team.',
+    errorMessage:
+      data.applicationErrorMessage ??
+      'Your application could not be submitted. Please try again.',
+  })
+  const whyWorkCards = authoredArray(data.whyWorkCards, fallbackWhyWorkCards)
+  const cultureImages = authoredArray(data.cultureImages, fallbackCultureImages)
+  const jobOpenings = authoredArray(data.jobOpenings, fallbackJobOpenings)
+  const teamGalleryImages = authoredArray(data.teamGalleryImages, fallbackTeamGalleryImages)
+  const officeLocations = authoredArray(data.officeLocations, fallbackOfficeLocations)
+  const trainingImages = authoredArray(data.trainingImages, fallbackTrainingImages)
+  const teamEvents = authoredArray(data.teamEvents, fallbackTeamEvents)
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -100,10 +184,15 @@ export default function CareersClient({ data, siteSettings }) {
         {/* Hero Section */}
         <section className="hero-section relative flex items-center overflow-hidden" style={{ minHeight: '80svh' }}>
           <div className="absolute inset-0 -z-10">
-            <img
-              src={data.heroImageUrl || '/images/work-with-us.jpg'}
-              alt="Atlas Fuel Careers"
-              className="hero-image w-full h-full object-cover"
+            <CmsImage
+              value={data.heroImage}
+              src={data.heroImageUrl}
+              fallbackSrc="/images/work-with-us.jpg"
+              alt={data.heroImageUrlAlt || data.heroImageAlt || data.heroTitle || 'Atlas Fuel Careers'}
+              fill
+              priority
+              sizes="100vw"
+              className="hero-image object-cover"
             />
           </div>
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 pb-4">
@@ -154,18 +243,22 @@ export default function CareersClient({ data, siteSettings }) {
                 {data.heroDescription}
               </p>
               <div className="mt-6 flex flex-wrap gap-4">
-                <a href={data.heroCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
-                  <span>{data.heroCtaText}</span>
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </a>
-                <a href={data.secondaryCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-white hover:bg-white hover:text-gray-900 transition-all duration-300">
-                  {data.secondaryCtaText}
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </a>
+                {data.heroCtaText && data.heroCtaLink && (
+                  <a href={data.heroCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
+                    <span>{data.heroCtaText}</span>
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
+                )}
+                {data.secondaryCtaText && data.secondaryCtaLink && (
+                  <a href={data.secondaryCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-transparent text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-white hover:bg-white hover:text-gray-900 transition-all duration-300">
+                    {data.secondaryCtaText}
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -217,17 +310,17 @@ export default function CareersClient({ data, siteSettings }) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(data.whyWorkCards?.length > 0 ? data.whyWorkCards : [
-                { imageUrl: '/images/work-with-us.jpg', title: 'Competitive Pay', description: 'Industry-leading salaries with regular performance reviews and bonus opportunities.' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Training & Development', description: 'Comprehensive onboarding and ongoing training programs to help you grow your skills.' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Career Growth', description: 'Clear pathways for advancement within our growing company.' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Work-Life Balance', description: 'Flexible scheduling and supportive work environment.' },
-                { imageUrl: '/images/partner-in-safety.webp', title: 'Health & Safety', description: 'Committed to maintaining the highest safety standards for all employees.' },
-                { imageUrl: '/images/work-with-us.jpg', title: 'Team Culture', description: 'Join a collaborative, supportive team that values every contribution.' },
-              ]).map((benefit, idx) => (
-                <div key={idx} className="content-block bg-white overflow-hidden shadow-lg group">
+              {whyWorkCards.map((benefit, idx) => (
+                <div key={benefit._key || benefit.title || idx} className="content-block bg-white overflow-hidden shadow-lg group">
                   <div className="gallery-item relative aspect-video overflow-hidden">
-                    <img src={benefit.imageUrl} alt={benefit.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <CmsImage
+                      value={benefit.image}
+                      src={benefit.imageUrl}
+                      alt={benefit.imageAlt ?? benefit.alt ?? benefit.image?.alt ?? benefit.title ?? ''}
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                   </div>
                   <div className="p-6">
                     <h3 className="text-xl font-heading font-bold text-gray-900 uppercase mb-2">{benefit.title}</h3>
@@ -277,32 +370,39 @@ export default function CareersClient({ data, siteSettings }) {
                   ))}
                 </div>
 
-                <a href={data.cultureCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
-                  {data.cultureCtaText}
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </a>
+                {data.cultureCtaText && data.cultureCtaLink && (
+                  <a href={data.cultureCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
+                    {data.cultureCtaText}
+                    <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
+                )}
               </div>
 
               {/* Culture Image Grid */}
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-4">
-                  <div className="gallery-item aspect-[4/3] overflow-hidden shadow-lg">
-                    <img src={data.cultureImages?.[0]?.imageUrl || "/images/work-with-us.webp"} alt="Team Culture" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                {[cultureImages.filter((_, index) => index % 2 === 0), cultureImages.filter((_, index) => index % 2 === 1)].map((column, columnIndex) => (
+                  <div key={columnIndex} className={`space-y-4 ${columnIndex ? 'pt-8' : ''}`}>
+                    {column.map((image, imageIndex) => (
+                      <div
+                        key={image._key || image.imageUrl || image.url || imageIndex}
+                        className={`gallery-item relative overflow-hidden shadow-lg ${
+                          (imageIndex + columnIndex) % 2 === 0 ? 'aspect-[4/3]' : 'aspect-[4/5]'
+                        }`}
+                      >
+                        <CmsImage
+                          value={image.image || image}
+                          src={image.imageUrl || image.url}
+                          alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
+                          fill
+                          sizes="(min-width: 1024px) 25vw, 50vw"
+                          className="object-cover hover:scale-105 transition-transform duration-700"
+                        />
+                      </div>
+                    ))}
                   </div>
-                  <div className="gallery-item aspect-[4/5] overflow-hidden shadow-lg">
-                    <img src={data.cultureImages?.[1]?.imageUrl || "/images/work-with-us.jpg"} alt="Work Environment" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                  </div>
-                </div>
-                <div className="space-y-4 pt-8">
-                  <div className="gallery-item aspect-[4/5] overflow-hidden shadow-lg">
-                    <img src={data.cultureImages?.[2]?.imageUrl || "/images/work-with-us.webp"} alt="Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                  </div>
-                  <div className="gallery-item aspect-[4/3] overflow-hidden shadow-lg">
-                    <img src={data.cultureImages?.[3]?.imageUrl || "/images/work-with-us.jpg"} alt="Team Events" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
@@ -327,15 +427,17 @@ export default function CareersClient({ data, siteSettings }) {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {(data.jobOpenings?.length > 0 ? data.jobOpenings : [
-                { imageUrl: '/images/truck-new.jpg', title: 'Fuel Tanker Driver', location: 'Kwinana, WA', type: 'Full Time', description: 'Join our fleet as a certified tanker driver. Competitive salary, comprehensive training, and career growth opportunities.' },
-                { imageUrl: '/images/fuel-stations.jpg', title: 'Station Manager', location: 'Perth, WA', type: 'Full Time', description: 'Lead operations at one of our modern fuel stations. Manage team, customer service, and daily operations.' },
-                { imageUrl: '/images/what-we-do-fuel-transportation.webp', title: 'Logistics Coordinator', location: 'Kwinana, WA', type: 'Full Time', description: 'Coordinate fuel deliveries and fleet operations. Strong organizational skills and attention to detail required.' },
-                { imageUrl: '/images/what-we-do-retail.webp', title: 'Customer Service Representative', location: 'Multiple Locations', type: 'Part Time / Full Time', description: 'Provide exceptional service at our fuel stations. No experience required - full training provided.' },
-              ]).map((job, idx) => (
-                <div key={idx} className="content-block bg-white border border-gray-100 overflow-hidden hover:border-primary/30 transition-colors shadow-sm hover:shadow-xl group">
+              {jobOpenings.map((job, idx) => (
+                <div key={job._key || job.title || idx} className="content-block bg-white border border-gray-100 overflow-hidden hover:border-primary/30 transition-colors shadow-sm hover:shadow-xl group">
                   <div className="gallery-item relative aspect-video overflow-hidden">
-                    <img src={job.imageUrl} alt={job.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+                    <CmsImage
+                      value={job.image}
+                      src={job.imageUrl}
+                      alt={job.imageAlt ?? job.alt ?? job.image?.alt ?? job.title ?? ''}
+                      fill
+                      sizes="(min-width: 768px) 50vw, 100vw"
+                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wide">
                         {job.type}
@@ -351,12 +453,14 @@ export default function CareersClient({ data, siteSettings }) {
                       {job.location}
                     </div>
                     <p className="text-gray-600 mb-4">{job.description}</p>
-                    <a href={data.jobCtaLink} className="group/link inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide text-sm hover:gap-3 transition-all">
-                      {data.jobCtaText}
-                      <svg className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                      </svg>
-                    </a>
+                    {data.jobCtaText && data.jobCtaLink && (
+                      <a href={data.jobCtaLink} className="group/link inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide text-sm hover:gap-3 transition-all">
+                        {data.jobCtaText}
+                        <svg className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                        </svg>
+                      </a>
+                    )}
                   </div>
                 </div>
               ))}
@@ -370,7 +474,15 @@ export default function CareersClient({ data, siteSettings }) {
             <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
               <div className="content-block relative">
                 <div className="gallery-item relative aspect-[4/5] overflow-hidden shadow-lg">
-                  <img src={data.talentRisingImageUrl || "/images/what-we-do-mining-civil.webp"} alt="Talent Rising" className="w-full h-full object-cover" />
+                  <CmsImage
+                    value={data.talentRisingImage}
+                    src={data.talentRisingImageUrl}
+                    fallbackSrc="/images/what-we-do-mining-civil.webp"
+                    alt={data.talentRisingImageAlt ?? data.talentRisingImage?.alt ?? data.talentHeading ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    className="object-cover"
+                  />
                 </div>
                 <div className="absolute -bottom-6 -right-6 bg-primary text-white p-8 shadow-xl max-w-xs">
                   <div className="text-4xl font-heading font-bold mb-1">{data.talentStatValue}</div>
@@ -416,12 +528,14 @@ export default function CareersClient({ data, siteSettings }) {
                   ))}
                 </ul>
 
-                <a href={data.talentCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
-                  <span>{data.talentCtaText}</span>
-                  <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                </a>
+                {data.talentCtaText && data.talentCtaLink && (
+                  <a href={data.talentCtaLink} className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
+                    <span>{data.talentCtaText}</span>
+                    <svg className="w-4 h-4 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                    </svg>
+                  </a>
+                )}
               </div>
             </div>
           </div>
@@ -450,22 +564,33 @@ export default function CareersClient({ data, siteSettings }) {
 
             {/* Masonry Gallery */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="space-y-4">
-                <div className="gallery-item aspect-[4/3] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[0]?.imageUrl || "/images/work-with-us.webp"} alt="Team 1" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-                <div className="gallery-item aspect-[3/4] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[1]?.imageUrl || "/images/work-with-us.jpg"} alt="Team 2" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              </div>
-              <div className="space-y-4 pt-8">
-                <div className="gallery-item aspect-[3/4] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[2]?.imageUrl || "/images/work-with-us.webp"} alt="Team 3" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-                <div className="gallery-item aspect-[4/3] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[3]?.imageUrl || "/images/work-with-us.webp"} alt="Team 4" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              </div>
-              <div className="space-y-4">
-                <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[4]?.imageUrl || "/images/work-with-us.jpg"} alt="Team 5" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-                <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[5]?.imageUrl || "/images/truck-new.jpg"} alt="Team 6" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              </div>
-              <div className="space-y-4 pt-6">
-                <div className="gallery-item aspect-[3/4] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[6]?.imageUrl || "/images/hero-truck.jpg"} alt="Team 7" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-                <div className="gallery-item aspect-[4/3] overflow-hidden shadow-lg"><img src={data.teamGalleryImages?.[7]?.imageUrl || "/images/fuel-stations.jpg"} alt="Team 8" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              </div>
+              {[0, 1, 2, 3].map((columnIndex) => (
+                <div key={columnIndex} className={`space-y-4 ${columnIndex === 1 ? 'pt-8' : columnIndex === 3 ? 'pt-6' : ''}`}>
+                  {teamGalleryImages
+                    .slice(columnIndex * 2, columnIndex * 2 + 2)
+                    .map((image, imageIndex) => (
+                      <div
+                        key={image._key || image.imageUrl || image.url || imageIndex}
+                        className={`gallery-item relative overflow-hidden shadow-lg ${
+                          columnIndex === 2
+                            ? 'aspect-square'
+                            : (imageIndex + columnIndex) % 2 === 0
+                              ? 'aspect-[4/3]'
+                              : 'aspect-[3/4]'
+                        }`}
+                      >
+                        <CmsImage
+                          value={image.image || image}
+                          src={image.imageUrl || image.url}
+                          alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
+                          fill
+                          sizes="(min-width: 768px) 25vw, 50vw"
+                          className="object-cover hover:scale-105 transition-transform duration-500"
+                        />
+                      </div>
+                    ))}
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -502,16 +627,16 @@ export default function CareersClient({ data, siteSettings }) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(data.officeLocations?.length > 0 ? data.officeLocations : [
-                { imageUrl: '/images/work-with-us.webp', title: 'Headquarters', subtitle: 'Kwinana, WA' },
-                { imageUrl: '/images/work-with-us.jpg', title: 'Operations Center', subtitle: 'Perth Metro' },
-                { imageUrl: '/images/what-we-do-mining-civil.webp', title: 'Regional Office', subtitle: 'Pilbara Region' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Training Facility', subtitle: 'Kwinana Beach' },
-                { imageUrl: '/images/marine-bunkering.jpg', title: 'Port Office', subtitle: 'Fremantle' },
-                { imageUrl: '/images/fuel-stations.jpg', title: 'Depot Office', subtitle: 'Multiple Locations' },
-              ]).map((item, idx) => (
-                <div key={idx} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
-                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              {officeLocations.map((item, idx) => (
+                <div key={item._key || item.title || idx} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
+                  <CmsImage
+                    value={item.image}
+                    src={item.imageUrl}
+                    alt={item.imageAlt ?? item.alt ?? item.image?.alt ?? item.title ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-xl font-heading font-bold text-white uppercase">{item.title}</h3>
@@ -555,14 +680,18 @@ export default function CareersClient({ data, siteSettings }) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[0]?.imageUrl || "/images/truck-new.jpg"} alt="Driver Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[1]?.imageUrl || "/images/partner-in-safety.webp"} alt="Safety Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[2]?.imageUrl || "/images/what-we-do-mining-civil.webp"} alt="Equipment Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[3]?.imageUrl || "/images/work-with-us.webp"} alt="Certification Programs" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[4]?.imageUrl || "/images/marine-bunkering.jpg"} alt="Leadership Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[5]?.imageUrl || "/images/what-we-do-fuel-transportation.webp"} alt="Technical Skills" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[6]?.imageUrl || "/images/hero-truck.jpg"} alt="First Aid Training" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
-              <div className="gallery-item aspect-square overflow-hidden shadow-lg"><img src={data.trainingImages?.[7]?.imageUrl || "/images/work-with-us.webp"} alt="Ongoing Education" className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" /></div>
+              {trainingImages.map((image, index) => (
+                <div key={image._key || image.imageUrl || image.url || index} className="gallery-item relative aspect-square overflow-hidden shadow-lg">
+                  <CmsImage
+                    value={image.image || image}
+                    src={image.imageUrl || image.url}
+                    alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
+                    fill
+                    sizes="(min-width: 768px) 25vw, 50vw"
+                    className="object-cover hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              ))}
             </div>
           </div>
         </section>
@@ -599,16 +728,16 @@ export default function CareersClient({ data, siteSettings }) {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {(data.teamEvents?.length > 0 ? data.teamEvents : [
-                { imageUrl: '/images/work-with-us.jpg', title: 'Team Building', subtitle: 'Annual retreats and activities' },
-                { imageUrl: '/images/agriculture.webp', title: 'Community Service', subtitle: 'Local charity initiatives' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Award Ceremonies', subtitle: 'Celebrating excellence' },
-                { imageUrl: '/images/what-we-do-retail.webp', title: 'Performance Events', subtitle: 'Showcasing our precision fleet' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Family Days', subtitle: 'Bringing families together' },
-                { imageUrl: '/images/work-with-us.webp', title: 'Training Workshops', subtitle: 'Skill development sessions' },
-              ]).map((item, idx) => (
-                <div key={idx} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
-                  <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
+              {teamEvents.map((item, idx) => (
+                <div key={item._key || item.title || idx} className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg group">
+                  <CmsImage
+                    value={item.image}
+                    src={item.imageUrl}
+                    alt={item.imageAlt ?? item.alt ?? item.image?.alt ?? item.title ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
                     <h3 className="text-xl font-heading font-bold text-white uppercase">{item.title}</h3>
@@ -648,12 +777,14 @@ export default function CareersClient({ data, siteSettings }) {
               {data.excellenceContent}
             </p>
             <div className="mt-10 flex justify-center gap-4">
-              <a href={data.excellenceCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
-                {data.excellenceCtaText}
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
-                </svg>
-              </a>
+              {data.excellenceCtaText && data.excellenceCtaLink && (
+                <a href={data.excellenceCtaLink} className="group inline-flex items-center gap-2 text-primary font-bold uppercase tracking-wide hover:gap-4 transition-all">
+                  {data.excellenceCtaText}
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
+                  </svg>
+                </a>
+              )}
             </div>
           </div>
         </section>
@@ -666,28 +797,62 @@ export default function CareersClient({ data, siteSettings }) {
                 <div className="w-10 h-0.5 bg-primary flex-shrink-0" />
                 <span className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]">{data.applicationEyebrow}</span>
               </div>
-              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4 text-center">
+              <h2
+                className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4 text-center"
+                style={{
+                  color: data.applicationHeadingColor,
+                  fontSize: data.applicationHeadingSize,
+                  ...getBorderStyle(
+                    data.applicationHeadingBorderEnabled,
+                    data.applicationHeadingBorderColor,
+                    data.applicationHeadingBorderWidth,
+                    data.applicationHeadingShadowColor
+                  ),
+                }}
+              >
                 {data.applicationHeading}
               </h2>
-              <p className="text-gray-600 text-lg text-center mb-10">
+              <p
+                className="text-gray-600 text-lg text-center mb-10"
+                style={{
+                  color: data.applicationDescriptionColor,
+                  fontSize: data.applicationDescriptionSize,
+                  ...getBorderStyle(
+                    data.applicationDescriptionBorderEnabled,
+                    data.applicationDescriptionBorderColor,
+                    data.applicationDescriptionBorderWidth,
+                    data.applicationDescriptionShadowColor
+                  ),
+                }}
+              >
                 {data.applicationDescription}
               </p>
-              <form className="space-y-6 bg-white p-8 border border-gray-100 shadow-sm">
+              <form className="space-y-6 bg-white p-8 border border-gray-100 shadow-sm" onSubmit={submit}>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {data.applicationFields.map((field, index) => (
                     <div key={field._key || field.name || index} className={field.fullWidth ? 'md:col-span-2' : ''}>
                       <label htmlFor={field.name} className="block text-sm font-bold text-gray-900 uppercase tracking-wide mb-2">{field.label}</label>
                       {field.type === 'textarea' ? (
-                        <textarea id={field.name} name={field.name} className="w-full border border-gray-200 px-4 py-3 text-gray-900 focus:outline-none focus:border-primary h-32" placeholder={field.placeholder} />
+                        <textarea id={field.name} name={field.name} required={field.required ?? field.name === 'coverLetter'} className="w-full border border-gray-200 px-4 py-3 text-gray-900 focus:outline-none focus:border-primary h-32" placeholder={field.placeholder} />
                       ) : (
-                        <input id={field.name} name={field.name} type={field.type || 'text'} className="w-full border border-gray-200 px-4 py-3 text-gray-900 focus:outline-none focus:border-primary" placeholder={field.placeholder} />
+                        <input id={field.name} name={field.name} type={field.type || 'text'} required={field.required ?? ['fullName', 'email'].includes(field.name)} className="w-full border border-gray-200 px-4 py-3 text-gray-900 focus:outline-none focus:border-primary" placeholder={field.placeholder} />
                       )}
                     </div>
                   ))}
                 </div>
-                <button type="submit" className="w-full px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
-                  {data.applicationButtonText}
+                <div className="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+                  <label htmlFor="careers-website">Website</label>
+                  <input id="careers-website" name="website" type="text" tabIndex="-1" autoComplete="off" />
+                </div>
+                <button type="submit" disabled={isSubmitting} className="w-full px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300 disabled:cursor-wait disabled:opacity-60">
+                  {isSubmitting
+                    ? (data.applicationSubmittingButtonText ?? 'Submitting…')
+                    : data.applicationButtonText}
                 </button>
+                <FormStatus
+                  status={status}
+                  emailLinkText={data.applicationEmailFallbackText ?? 'Email us instead'}
+                />
               </form>
             </div>
           </div>

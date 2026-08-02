@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import CmsImage from '@/components/common/CmsImage';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -206,10 +206,11 @@ className="py-16 lg:py-24 bg-white"
             <div className="bg-white shadow-lg overflow-hidden border border-gray-200">
               {/* Card Image */}
               <div className="relative h-64 overflow-hidden">
-                <Image
-                  src={content.cardImageUrl}
-                  alt={content.cardHeading || 'Careers at Atlas Fuel'}
+                <CmsImage
+                  value={content.cardImage || content.cardImageUrl}
+                  alt={content.cardImageAlt || content.cardHeading || 'Careers at Atlas Fuel'}
                   fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
                   className="object-cover"
                 />
                 {/* Gradient Overlay */}

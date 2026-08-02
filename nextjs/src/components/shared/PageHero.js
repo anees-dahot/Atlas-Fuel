@@ -3,6 +3,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import CmsImage from "@/components/common/CmsImage";
 if (typeof window !== "undefined") gsap.registerPlugin(ScrollTrigger);
 
 /**
@@ -57,11 +58,11 @@ export default function PageHero({
         .from(".hero-title", { opacity: 0, y: 60, duration: 1.2 }, 0.2)
         .from(".hero-desc", { opacity: 0, y: 30, duration: 0.9 }, 0.45);
 
-      if (stats) {
+      if (stats?.length) {
         tl.from(".hero-stat", { opacity: 0, y: 40, duration: 0.7, stagger: 0.1 }, 0.65);
       }
 
-      if (ctaButtons) {
+      if (ctaButtons?.length) {
         tl.from(".hero-cta", { opacity: 0, y: 20, duration: 0.6, stagger: 0.15 }, 0.7);
       }
     }, sectionRef);
@@ -96,13 +97,20 @@ export default function PageHero({
       style={{ minHeight: '80svh' }}
     >
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10">
-        <img
-          ref={bgRef}
-          src={backgroundImage}
+      <div className="absolute inset-0 -z-10 overflow-hidden">
+        <div ref={bgRef} className="absolute -inset-[10%]">
+          <CmsImage
+          value={backgroundImage}
+          fallbackSrc="/images/truck-new.jpg"
           alt={backgroundAlt}
-          className="w-full h-full object-cover"
-        />
+          width={1920}
+          height={1080}
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
+          />
+        </div>
       </div>
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-32 pb-12">
@@ -160,8 +168,8 @@ export default function PageHero({
           <div className="flex flex-wrap gap-4 mb-8">
             {ctaButtons.map((btn, i) => (
               <Link
-                key={btn._key || `${btn.href}-${i}`}
-                href={btn.href || '#'}
+                key={btn._key ?? `${btn.href}-${i}`}
+                href={btn.href ?? '#'}
                 style={btn.textStyle}
                 className={`hero-cta inline-flex items-center gap-2 px-6 py-3 font-bold uppercase tracking-wider text-sm transition-all duration-200 ${
                   i === 0
@@ -169,7 +177,7 @@ export default function PageHero({
                     : 'border-2 border-white text-white hover:bg-white hover:text-gray-900'
                 }`}
               >
-                {btn.text || 'Learn More'}
+                {btn.text ?? 'Learn More'}
               </Link>
             ))}
           </div>
@@ -179,7 +187,7 @@ export default function PageHero({
         {stats && stats.length > 0 && (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 pt-8 border-t border-white/30">
             {stats.map((stat, i) => (
-              <div key={stat._key || `${stat.label}-${i}`} className="hero-stat group">
+              <div key={stat._key ?? `${stat.label}-${i}`} className="hero-stat group">
                 <div
                   className="text-3xl md:text-4xl font-heading font-light text-gray-900 mb-2 tracking-tight group-hover:text-primary transition-colors duration-300"
                   style={{

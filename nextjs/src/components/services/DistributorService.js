@@ -2,28 +2,14 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function DistributorService({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Servicing Local distributors across Australia'
-  const content = data.content || `Atlas Fuel is reshaping how local distributors access and deliver fuel by combining national reach with local focus. Through a smart supply network and strong industry alliances, we empower independent distributors with seamless logistics, real-time support, and scalable fuel solutions. From coast to outback, we're not just delivering fuel — we're building the backbone of Australia's local energy economy.`
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Servicing Local distributors across Australia'
+  const content = data.content ?? `Atlas Fuel is reshaping how local distributors access and deliver fuel by combining national reach with local focus. Through a smart supply network and strong industry alliances, we empower independent distributors with seamless logistics, real-time support, and scalable fuel solutions. From coast to outback, we're not just delivering fuel — we're building the backbone of Australia's local energy economy.`
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -54,23 +40,13 @@ export default function DistributorService({ data = {} }) {
         <div className="distributor-service-content text-center">
           <h2
             className="font-bold mb-8 leading-tight"
-            style={{
-              color: headingColor,
-              fontSize: headingSize,
-              border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-              textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
           >
             {heading}
           </h2>
           <p
             className="leading-relaxed max-w-4xl mx-auto"
-            style={{
-              color: contentColor,
-              fontSize: contentSize,
-              border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-              textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
           >
             {content}
           </p>

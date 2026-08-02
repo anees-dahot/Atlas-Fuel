@@ -24,19 +24,25 @@ const featureIcons = {
     </svg>
   ),
 }
+const defaultFeatureIcon = (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+    <circle cx="12" cy="12" r="9" />
+    <path d="M8 12l3 3 5-6" />
+  </svg>
+)
 
 export default function StationFeatures({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const features = data.features || [
+  const features = data.features ?? [
     { title: 'Reliability and performance', icon: 'shield' },
     { title: 'Quality Assurance', icon: 'star' },
     { title: 'Competitive Prices', icon: 'dollar' },
   ]
-  const tagline = data.tagline || 'Why Choose Us'
-  const heading = data.heading || 'The Atlas Fuel Difference'
-  const ctaText = data.ctaText || 'NEW BULK FUEL ENQUIRY'
-  const ctaLink = data.ctaLink || '/contact'
+  const tagline = data.tagline ?? 'Why Choose Us'
+  const heading = data.heading ?? 'The Atlas Fuel Difference'
+  const ctaText = data.ctaText ?? 'NEW BULK FUEL ENQUIRY'
+  const ctaLink = data.ctaLink ?? '/contact'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -106,12 +112,12 @@ export default function StationFeatures({ data = {} }) {
         <div className="station-features-list space-y-6 mb-12 max-w-2xl mx-auto">
           {features.map((feature, index) => (
             <div
-              key={feature._key || feature.title || index}
+              key={feature._key ?? feature.title ?? index}
               className="station-feature-item flex items-center gap-4 p-4 bg-gray-50 hover:bg-primary/5 transition-colors"
             >
               <div className="w-12 h-12 bg-primary/10 flex items-center justify-center flex-shrink-0">
                 <div className="w-6 h-6 text-primary">
-                  {featureIcons[feature.icon]}
+                  {featureIcons[feature.icon] ?? defaultFeatureIcon}
                 </div>
               </div>
               <span className="text-lg font-semibold text-gray-900">{feature.title}</span>
@@ -119,7 +125,7 @@ export default function StationFeatures({ data = {} }) {
           ))}
         </div>
 
-        <div className="station-features-cta text-center">
+        {ctaText && ctaLink && <div className="station-features-cta text-center">
           <Link
             href={ctaLink}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wide hover:bg-primary-dark transition-all"
@@ -130,7 +136,7 @@ export default function StationFeatures({ data = {} }) {
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </Link>
-        </div>
+        </div>}
       </div>
     </section>
   )

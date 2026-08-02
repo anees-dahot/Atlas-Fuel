@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from '@/components/services/cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const serviceIcons = {
@@ -72,7 +73,9 @@ const defaultFeatures = [
 
 export default function MarineFeatures({ data = {} }) {
   const sectionRef = useRef(null)
-  const features = data.features || defaultFeatures
+  const features = Array.isArray(data.features) ? data.features : defaultFeatures
+  const sectionTag = data.sectionTag ?? 'What We Offer'
+  const heading = data.heading ?? 'Marine Services'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -124,36 +127,36 @@ export default function MarineFeatures({ data = {} }) {
     <section ref={sectionRef} className="py-16 lg:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-6">
         <div className="text-center mb-16">
-          <span className="marine-features-label inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">
-            What We Offer
+          <span className="marine-features-label inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4" style={cmsTextStyle(data, 'sectionTag', '#2db234', '14px')}>
+            {sectionTag}
           </span>
-          <h2 className="marine-features-heading text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-900 uppercase tracking-tight">
-            Marine Services
+          <h2 className="marine-features-heading text-4xl md:text-5xl lg:text-6xl font-heading font-bold text-gray-900 uppercase tracking-tight" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
+            {heading}
           </h2>
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
           {features.map((feature, index) => (
             <div
-              key={feature.id || index}
+              key={feature._key || feature.id || index}
               className="marine-feature-card group bg-cream border border-gray-100 p-8 lg:p-10 hover:border-primary/30 hover:shadow-xl transition-all duration-300"
             >
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                  {serviceIcons[feature.icon] || serviceIcons.vessel}
+                  {serviceIcons[feature.icon] ?? serviceIcons.vessel}
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase tracking-wide mb-4 group-hover:text-primary transition-colors duration-300">
+                  <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase tracking-wide mb-4 group-hover:text-primary transition-colors duration-300" style={cmsTextStyle(feature, 'title', '#111827', '24px')}>
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 leading-relaxed mb-6">
+                  <p className="text-gray-600 leading-relaxed mb-6" style={cmsTextStyle(feature, 'description', '#4b5563', '16px')}>
                     {feature.description}
                   </p>
                   <a
-                    href={feature.ctaLink || '/contact'}
+                    href={feature.ctaLink ?? '/contact'}
                     className="inline-flex items-center gap-2 text-primary font-semibold uppercase tracking-wider text-sm hover:gap-3 transition-all duration-300"
                   >
-                    {feature.ctaText || 'Enquire Now'}
+                    {feature.ctaText ?? 'Enquire Now'}
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <line x1="5" y1="12" x2="19" y2="12"/>
                       <polyline points="12 5 19 12 12 19"/>

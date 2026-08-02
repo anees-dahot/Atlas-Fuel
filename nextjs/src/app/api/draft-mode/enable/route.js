@@ -1,16 +1,22 @@
-import { draftMode } from 'next/headers'
-import { redirect } from 'next/navigation'
+import {defineEnableDraftMode} from 'next-sanity/draft-mode'
+import {NextResponse} from 'next/server'
+import {client} from '@/lib/sanityClient'
+
+const readToken = process.env.SANITY_API_READ_TOKEN
+
+const enableDraftMode = readToken
+  ? defineEnableDraftMode({
+      client: client.withConfig({token: readToken, useCdn: false}),
+    }).GET
+  : null
 
 export async function GET(request) {
-  const { searchParams } = new URL(request.url)
-  const secret = searchParams.get('secret')
-  const slug = searchParams.get('slug') || '/'
-
-  if (secret !== process.env.SANITY_PREVIEW_SECRET) {
-    return new Response('Invalid preview secret', { status: 401 })
+  if (!enableDraftMode) {
+    return NextResponse.json(
+      {message: 'Draft preview is not configured.'},
+      {status: 503}
+    )
   }
 
-  const dm = await draftMode()
-  dm.enable()
-  redirect(slug)
+  return enableDraftMode(request)
 }

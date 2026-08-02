@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const sizeMap = {
@@ -19,13 +20,14 @@ export default function AboutExcellence({ data = {} }) {
   const sectionRef = useRef(null)
   const bgRef = useRef(null)
 
-  const heading = data.heading || 'We Deliver Excellence'
-  const headingColor = data.headingColor || 'text-gray-900'
+  const eyebrow = data.eyebrow ?? 'Our Philosophy'
+  const heading = data.heading ?? 'We Deliver Excellence'
+  const headingColor = data.headingColor ?? 'text-gray-900'
   const headingSize = data.headingSize ? { fontSize: sizeMap[data.headingSize] } : {}
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
   const headingStyle = {
     ...headingSize,
     ...(headingBorderEnabled && {
@@ -34,13 +36,13 @@ export default function AboutExcellence({ data = {} }) {
     }),
   }
 
-  const content = data.content || "There's a moment when it all comes together. When a complicated challenge turns into a creative solution. When a problem turns into an opportunity. We live for those moments. Here at Atlas, creativity is what drives us forward. We are the outliers. The non-conformists. The game-changers. At Atlas Fuel Australia, we believe in more than just powering vehicles — we're here to empower your journeys and fuel the limitless possibilities of tomorrow."
-  const contentColor = data.contentColor || 'text-gray-600'
+  const content = data.content ?? "There's a moment when it all comes together. When a complicated challenge turns into a creative solution. When a problem turns into an opportunity. We live for those moments. Here at Atlas, creativity is what drives us forward. We are the outliers. The non-conformists. The game-changers. At Atlas Fuel Australia, we believe in more than just powering vehicles — we're here to empower your journeys and fuel the limitless possibilities of tomorrow."
+  const contentColor = data.contentColor ?? 'text-gray-600'
   const contentSize = data.contentSize ? { fontSize: sizeMap[data.contentSize] } : {}
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#000000'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || ''
+  const contentBorderEnabled = data.contentBorderEnabled ?? false
+  const contentBorderColor = data.contentBorderColor ?? 'var(--cms-text)'
+  const contentBorderWidth = data.contentBorderWidth ?? '1px'
+  const contentShadowColor = data.contentShadowColor ?? ''
   const contentStyle = {
     ...contentSize,
     ...(contentBorderEnabled && {
@@ -49,13 +51,13 @@ export default function AboutExcellence({ data = {} }) {
     }),
   }
 
-  const ctaText = data.ctaText || 'Contact Us'
-  const ctaTextColor = data.ctaTextColor || 'text-white'
+  const ctaText = data.ctaText ?? 'Contact Us'
+  const ctaTextColor = data.ctaTextColor ?? 'text-white'
   const ctaTextSize = data.ctaTextSize ? { fontSize: sizeMap[data.ctaTextSize] } : {}
-  const ctaTextBorderEnabled = data.ctaTextBorderEnabled || false
-  const ctaTextBorderColor = data.ctaTextBorderColor || '#000000'
-  const ctaTextBorderWidth = data.ctaTextBorderWidth || '1px'
-  const ctaTextShadowColor = data.ctaTextShadowColor || ''
+  const ctaTextBorderEnabled = data.ctaTextBorderEnabled ?? false
+  const ctaTextBorderColor = data.ctaTextBorderColor ?? 'var(--cms-text)'
+  const ctaTextBorderWidth = data.ctaTextBorderWidth ?? '1px'
+  const ctaTextShadowColor = data.ctaTextShadowColor ?? ''
   const ctaTextStyle = {
     ...ctaTextSize,
     ...(ctaTextBorderEnabled && {
@@ -64,14 +66,14 @@ export default function AboutExcellence({ data = {} }) {
     }),
   }
 
-  const ctaLink = data.ctaLink || '/contact'
-  const secCtaText = data.secondaryCtaText || 'Our Services'
-  const secCtaTextColor = data.secondaryCtaTextColor || 'text-gray-900'
+  const ctaLink = data.ctaLink ?? '/contact'
+  const secCtaText = data.secondaryCtaText ?? 'Our Services'
+  const secCtaTextColor = data.secondaryCtaTextColor ?? 'text-gray-900'
   const secCtaTextSize = data.secondaryCtaTextSize ? { fontSize: sizeMap[data.secondaryCtaTextSize] } : {}
-  const secCtaTextBorderEnabled = data.secondaryCtaTextBorderEnabled || false
-  const secCtaTextBorderColor = data.secondaryCtaTextBorderColor || '#000000'
-  const secCtaTextBorderWidth = data.secondaryCtaTextBorderWidth || '1px'
-  const secCtaTextShadowColor = data.secondaryCtaTextShadowColor || ''
+  const secCtaTextBorderEnabled = data.secondaryCtaTextBorderEnabled ?? false
+  const secCtaTextBorderColor = data.secondaryCtaTextBorderColor ?? 'var(--cms-text)'
+  const secCtaTextBorderWidth = data.secondaryCtaTextBorderWidth ?? '1px'
+  const secCtaTextShadowColor = data.secondaryCtaTextShadowColor ?? ''
   const secCtaTextStyle = {
     ...secCtaTextSize,
     ...(secCtaTextBorderEnabled && {
@@ -80,8 +82,8 @@ export default function AboutExcellence({ data = {} }) {
     }),
   }
 
-  const secCtaLink = data.secondaryCtaLink || '/services'
-  const bgImage = data.excellenceBgUrl || '/images/what-we-offer.webp'
+  const secCtaLink = data.secondaryCtaLink ?? '/services'
+  const bgImage = data.excellenceBgUrl ?? '/images/what-we-offer.webp'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -101,8 +103,15 @@ export default function AboutExcellence({ data = {} }) {
     <section ref={sectionRef} className="relative py-32 lg:py-48 bg-white overflow-hidden flex items-center justify-center text-center">
       {/* Parallax BG */}
       <div className="absolute inset-0 overflow-hidden">
-        <img ref={bgRef} src={bgImage} alt="Excellence"
-          className="absolute -inset-y-[10%] w-full h-[120%] object-cover opacity-10" />
+        <div ref={bgRef} className="absolute -inset-y-[10%] inset-x-0 h-[120%]">
+          <CmsImage
+            value={data.excellenceBg ?? bgImage}
+            alt={data.excellenceBgAlt ?? 'Excellence'}
+            fill
+            sizes="100vw"
+            className="object-cover opacity-10"
+          />
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/90 to-white/70" />
       </div>
 
@@ -114,7 +123,7 @@ export default function AboutExcellence({ data = {} }) {
           {/* Eyebrow */}
           <div className="flex items-center justify-center gap-4 mb-8">
             <div className="w-8 h-0.5 bg-primary" />
-            <span className="text-primary text-sm font-bold uppercase tracking-[0.2em]">Our Philosophy</span>
+            <span className="text-primary text-sm font-bold uppercase tracking-[0.2em]">{eyebrow}</span>
             <div className="w-8 h-0.5 bg-primary" />
           </div>
 
@@ -134,17 +143,17 @@ export default function AboutExcellence({ data = {} }) {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-14">
-            <Link href={ctaLink || '#'}
+            {ctaText && ctaLink && <Link href={ctaLink}
               className={`group w-full sm:w-auto px-10 py-5 bg-primary font-bold uppercase tracking-wider hover:bg-white hover:text-black transition-all duration-300 hover:scale-105 ${ctaTextColor}`} style={ctaTextStyle}>
               {ctaText}
               <svg className="inline ml-3 w-4 h-4 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
               </svg>
-            </Link>
-            <Link href={secCtaLink || '#'}
+            </Link>}
+            {secCtaText && secCtaLink && <Link href={secCtaLink}
               className={`w-full sm:w-auto px-10 py-5 bg-transparent border border-gray-400 font-bold uppercase tracking-wider hover:bg-primary-dark hover:text-white hover:border-primary-dark transition-all duration-300 ${secCtaTextColor}`} style={secCtaTextStyle}>
               {secCtaText}
-            </Link>
+            </Link>}
           </div>
         </div>
       </div>

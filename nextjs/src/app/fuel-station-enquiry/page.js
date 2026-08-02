@@ -1,25 +1,30 @@
 import { getFuelStationEnquiryPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
-import { mapPageCta } from '@/lib/contentFallbacks'
+import { arrayOrFallback, mapPageCta, valueOrFallback } from '@/lib/contentFallbacks'
+import {loadPageMetadata} from '@/lib/metadata'
 import FranchisingHero from '@/components/franchising/FranchisingHero'
 import FranchisingClient from '@/components/franchising/FranchisingClient'
 
-export const metadata = {
-  title: 'Fuel Station Enquiry | Atlas Fuel Australia',
-  description: 'Enquire about fuel station franchising opportunities with Atlas Fuel. Join a trusted brand with proven business model and comprehensive support.',
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelStationEnquiryPage,
+    getSiteSettings,
+    path: '/fuel-station-enquiry',
+    fallbackTitle: 'Fuel Station Enquiry | Atlas Fuel Australia',
+    fallbackDescription: 'Enquire about fuel station franchising opportunities with Atlas Fuel. Join a trusted brand with proven business model and comprehensive support.',
+  })
 }
 
 const fallbackData = {
   heroSubtitle: 'Fuel Station Enquiry',
-  heroSubtitleColor: '#10b981',
-  heroSubtitleSize: '14px',
   heroTitle: 'Own Your Own Atlas Fuel Station',
-  heroTitleColor: '#000000',
-  heroTitleSize: '72px',
   heroDescription: 'Atlas Fuel Australia offers a unique franchise opportunity with a proven business model and comprehensive support. Partnering with Atlas Fuel means joining a trusted brand that values community and excellence.',
-  heroDescriptionColor: '#666666',
-  heroDescriptionSize: '18px',
   heroImageUrl: '/images/independent-fuel-stations.jpg',
+  heroImageAlt: 'Atlas Fuel independent fuel station',
+  ctaButtons: [
+    {text: 'Enquire Now', href: '/contact'},
+    {text: 'View Benefits', href: '#benefits'},
+  ],
 }
 
 const fallbackSiteSettings = {
@@ -34,7 +39,8 @@ const fallbackSections = {
     eyebrow: 'Franchise',
     heading: 'Atlas Franchise',
     description: 'Atlas Fuel Australia offers a unique franchise opportunity with a proven business model and comprehensive support. Our focus on innovation, sustainability, and customer satisfaction ensures franchisees thrive in a competitive market.',
-    imageUrl: '/images/what-we-do-retail.webp',
+    image: '/images/what-we-do-retail.webp',
+    imageAlt: 'Atlas Fuel franchise station',
   },
   benefitsHeading: 'Why Choose Atlas Fuel?',
   benefitsDescription: 'We provide everything you need to build a successful fuel station business.',
@@ -57,7 +63,8 @@ const fallbackSections = {
     heading: 'Training and Support',
     description: 'Our comprehensive program covers operations, safety, customer service, inventory, marketing, and financial management.',
     features: ['Fuel handling and safety', 'Customer service excellence', 'Inventory and supply management', 'Marketing support', 'Financial reporting', 'Compliance certification'],
-    imageUrl: '/images/atlas-fuel-hero-1b.webp',
+    image: '/images/atlas-fuel-hero-1b.webp',
+    imageAlt: 'Atlas Fuel franchise training',
   },
   investment: {
     heading: 'Investment Overview',
@@ -92,13 +99,18 @@ export default async function FuelStationEnquiryPage() {
     subtitle: data.heroSubtitle,
     title: data.heroTitle,
     description: data.heroDescription,
-    heroImageUrl: data.heroImageUrl,
+    heroImage: data.heroImage ?? data.heroImageUrl,
+    heroImageAlt: data.heroImageAlt ?? data.heroImageUrlAlt ?? fallbackData.heroImageAlt,
+    ctaButtons: arrayOrFallback(
+      sanity?.heroSection?.ctaButtons ?? sanity?.ctaButtons,
+      fallbackData.ctaButtons
+    ),
   }
   const franchisingData = {
     intro: mergeWithFallback(fallbackSections.intro, sanity?.introSection),
-    benefitsHeading: sanity?.benefitsSection?.heading || fallbackSections.benefitsHeading,
-    benefitsDescription: sanity?.benefitsSection?.description || fallbackSections.benefitsDescription,
-    benefits: sanity?.benefitsSection?.benefits?.length ? sanity.benefitsSection.benefits : fallbackSections.benefits,
+    benefitsHeading: valueOrFallback(sanity?.benefitsSection?.heading, fallbackSections.benefitsHeading),
+    benefitsDescription: valueOrFallback(sanity?.benefitsSection?.description, fallbackSections.benefitsDescription),
+    benefits: arrayOrFallback(sanity?.benefitsSection?.benefits, fallbackSections.benefits),
     journey: mergeWithFallback(fallbackSections.journey, sanity?.journeySection),
     training: mergeWithFallback(fallbackSections.training, sanity?.trainingSection),
     investment: mergeWithFallback(fallbackSections.investment, sanity?.investmentSection),

@@ -2,38 +2,39 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function StationService({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'At Atlas Fuel, customer service is our highest priority.'
-  const headingColor = data.headingColor || '#000000'
-  const headingSize = data.headingSize || '36px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const heading = data.heading ?? 'At Atlas Fuel, customer service is our highest priority.'
+  const headingColor = data.headingColor ?? 'var(--cms-text)'
+  const headingSize = data.headingSize ?? '36px'
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
 
-  const content = data.content || `We are dedicated to delivering exceptional experiences by ensuring every customer interaction is marked by professionalism, responsiveness, and personalized care. Our team understands the importance of reliable fuel delivery and support, striving to meet and exceed customer expectations at every turn. From timely service to transparent communication, we are committed to building lasting relationships based on trust and satisfaction. At Atlas Fuel, we don't just provide fuel; we power peace of mind by putting our customers first.`
-  const contentColor = data.contentColor || '#000000'
-  const contentSize = data.contentSize || '18px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#000000'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || ''
+  const content = data.content ?? `We are dedicated to delivering exceptional experiences by ensuring every customer interaction is marked by professionalism, responsiveness, and personalized care. Our team understands the importance of reliable fuel delivery and support, striving to meet and exceed customer expectations at every turn. From timely service to transparent communication, we are committed to building lasting relationships based on trust and satisfaction. At Atlas Fuel, we don't just provide fuel; we power peace of mind by putting our customers first.`
+  const contentColor = data.contentColor ?? 'var(--cms-text)'
+  const contentSize = data.contentSize ?? '18px'
+  const contentBorderEnabled = data.contentBorderEnabled ?? false
+  const contentBorderColor = data.contentBorderColor ?? 'var(--cms-text)'
+  const contentBorderWidth = data.contentBorderWidth ?? '1px'
+  const contentShadowColor = data.contentShadowColor ?? ''
 
-  const question = data.question || 'How can we meet the growing demand for fuel needs while protecting our climate & make planet a better place?'
-  const questionColor = data.questionColor || '#000000'
-  const questionSize = data.questionSize || '18px'
-  const questionBorderEnabled = data.questionBorderEnabled || false
-  const questionBorderColor = data.questionBorderColor || '#000000'
-  const questionBorderWidth = data.questionBorderWidth || '1px'
-  const questionShadowColor = data.questionShadowColor || ''
+  const question = data.question ?? 'How can we meet the growing demand for fuel needs while protecting our climate & make planet a better place?'
+  const questionColor = data.questionColor ?? 'var(--cms-text)'
+  const questionSize = data.questionSize ?? '18px'
+  const questionBorderEnabled = data.questionBorderEnabled ?? false
+  const questionBorderColor = data.questionBorderColor ?? 'var(--cms-text)'
+  const questionBorderWidth = data.questionBorderWidth ?? '1px'
+  const questionShadowColor = data.questionShadowColor ?? ''
 
-  const imageUrl = data.imageUrl || '/images/agriculture.jpg'
-  const statValue = data.statValue || '99.5%'
-  const statLabel = data.statLabel || 'Customer Satisfaction'
+  const imageUrl = data.imageUrl ?? '/images/agriculture.jpg'
+  const statValue = data.statValue ?? '99.5%'
+  const statLabel = data.statLabel ?? 'Customer Satisfaction'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -141,9 +142,11 @@ export default function StationService({ data = {} }) {
 
           <div className="service-image relative">
             <div className="relative aspect-[4/3] overflow-hidden">
-              <img
-                src={imageUrl}
-                alt="Atlas Fuel Service"
+              <CmsImage
+                value={data.image ?? imageUrl}
+                alt={data.imageAlt ?? 'Atlas Fuel Service'}
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
                 className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />

@@ -3,30 +3,16 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function DistributorIntro({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Atlas - As your reliable partner'
-  const content = data.content || `we proudly support independent local fuel distributors across the country by leveraging our strong, established relationships with all major national & international fuel suppliers. Our extensive network allows us to ensure reliable, timely, and cost-effective fuel supply to regional partners—empowering them to compete, grow, and serve their communities with confidence. No matter where you operate, Atlas Fuel stands ready to deliver the resources and support you need to thrive.`
-  const ctaText = data.ctaText || 'Enquire now'
-  const ctaLink = data.ctaLink || '/contact'
-
-  // Dynamic styling props
-  const headingColor = data.headingColor || '#111827'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#111827'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || 'rgba(0,0,0,0.3)'
-
-  const contentColor = data.contentColor || '#4b5563'
-  const contentSize = data.contentSize || '20px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#4b5563'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || 'rgba(0,0,0,0.3)'
+  const heading = data.heading ?? 'Atlas - As your reliable partner'
+  const content = data.content ?? `we proudly support independent local fuel distributors across the country by leveraging our strong, established relationships with all major national & international fuel suppliers. Our extensive network allows us to ensure reliable, timely, and cost-effective fuel supply to regional partners—empowering them to compete, grow, and serve their communities with confidence. No matter where you operate, Atlas Fuel stands ready to deliver the resources and support you need to thrive.`
+  const ctaText = data.ctaText ?? 'Enquire now'
+  const ctaLink = data.ctaLink ?? '/contact'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -71,23 +57,13 @@ export default function DistributorIntro({ data = {} }) {
         <div className="distributor-intro-content">
           <h2
             className="font-bold mb-6"
-            style={{
-              color: headingColor,
-              fontSize: headingSize,
-              border: headingBorderEnabled ? `${headingBorderWidth} solid ${headingBorderColor}` : 'none',
-              textShadow: headingShadowColor ? `0 2px 4px ${headingShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'heading', '#111827', '48px')}
           >
             {heading}
           </h2>
           <p
             className="leading-relaxed"
-            style={{
-              color: contentColor,
-              fontSize: contentSize,
-              border: contentBorderEnabled ? `${contentBorderWidth} solid ${contentBorderColor}` : 'none',
-              textShadow: contentShadowColor ? `0 2px 4px ${contentShadowColor}` : 'none',
-            }}
+            style={cmsTextStyle(data, 'content', '#4b5563', '20px')}
           >
             {content}
           </p>
@@ -97,6 +73,7 @@ export default function DistributorIntro({ data = {} }) {
           <Link
             href={ctaLink}
 className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors"
+            style={cmsTextStyle(data, 'ctaText', '#ffffff', '14px')}
           >
             {ctaText}
             <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

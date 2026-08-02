@@ -17,7 +17,7 @@ import EnquireSection from '@/components/services/EnquireSection'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function MiningFuelClient({ hero, features, miningSector, stats, safety, compliance, process, fleet, drivers, enquire, siteSettings }) {
+export default function MiningFuelClient({ hero, features, miningSector, stats, safety, compliance, process, fleet, drivers, excellence, enquire, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -79,7 +79,7 @@ export default function MiningFuelClient({ hero, features, miningSector, stats, 
         <MiningStats data={stats} />
         <ServiceFeatures data={features} />
         <ProcessTimeline data={process} />
-        <ExcellenceSection />
+        <ExcellenceSection data={excellence} />
         <SafetySection data={safety} />
         <ComplianceSection data={compliance} />
         <FleetCompliance data={fleet} />

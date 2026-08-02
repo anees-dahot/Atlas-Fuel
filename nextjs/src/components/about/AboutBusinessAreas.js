@@ -4,6 +4,7 @@ import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import TiltCard from '@/components/shared/TiltCard'
+import CmsImage from '@/components/common/CmsImage'
 import { getCmsTextStyle } from '@/lib/cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
@@ -60,11 +61,11 @@ const defaultIcon = (
 export default function AboutBusinessAreas({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading    = data.heading    || 'What We Do'
-  const subheading = data.subheading || 'Comprehensive fuel solutions across every sector of Australian industry.'
-  const eyebrow    = data.eyebrow    || 'Our Business Areas'
-  const linkLabel  = data.linkLabel  || 'Learn More'
-  const areas      = data.areas      || [
+  const heading    = data.heading    ?? 'What We Do'
+  const subheading = data.subheading ?? 'Comprehensive fuel solutions across every sector of Australian industry.'
+  const eyebrow    = data.eyebrow    ?? 'Our Business Areas'
+  const linkLabel  = data.linkLabel  ?? 'Learn More'
+  const areas      = data.areas      ?? [
     { title: 'Fuel Stations',       description: 'World-class retail fuel stations delivering quality, convenience and competitive pricing for everyday Australians.', icon: 'fuel',      link: '/fuel-stations',   imageUrl: '/images/what-we-do-retail.webp' },
     { title: 'Bulk Diesel Supply',  description: 'Large-scale bulk fuel delivery for mining, agriculture, construction and industrial operations across Australia.',   icon: 'truck',     link: '/fuel-transportation', imageUrl: '/images/what-we-do-mining-civil.webp' },
     { title: 'Fuel Transportation', description: 'GPS-tracked road tanker fleet providing safe, on-time fuel logistics across Western Australia and beyond.',          icon: 'transport', link: '/fuel-transportation', imageUrl: '/images/what-we-do-fuel-transportation.webp' },
@@ -97,16 +98,20 @@ export default function AboutBusinessAreas({ data = {} }) {
 
         {/* Cards */}
         <div className="aba-grid grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {areas.map((area, i) => (
-            <TiltCard key={area._key || `${area.title}-${i}`} tiltAmount={8} className="aba-card">
-            <Link href={area.link || '#'}
+          {areas.map((area, i) => {
+            const CardWrapper = area.link ? Link : 'div'
+            return (
+            <TiltCard key={area._key ?? `${area.title}-${i}`} tiltAmount={8} className="aba-card">
+            <CardWrapper {...(area.link ? {href: area.link} : {})}
               className="group relative block bg-white shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden h-full border border-gray-200">
               {/* Image */}
               {area.imageUrl && (
                 <div className="h-40 overflow-hidden">
-                  <img
-                    src={area.imageUrl}
-                    alt={area.alt || area.imageAlt || area.title}
+                  <CmsImage
+                    value={area.image ?? area.imageImage ?? area.imageUrl}
+                    alt={area.imageAlt ?? area.alt ?? area.title ?? ''}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
@@ -135,16 +140,16 @@ export default function AboutBusinessAreas({ data = {} }) {
                 </p>
 
                 {/* Arrow */}
-                <div className="relative z-10 flex items-center gap-2 text-primary group-hover:text-white font-bold text-xs uppercase tracking-wide transition-colors duration-300">
+                {area.link && linkLabel && <div className="relative z-10 flex items-center gap-2 text-primary group-hover:text-white font-bold text-xs uppercase tracking-wide transition-colors duration-300">
                   <span style={getCmsTextStyle(data, 'linkLabel')}>{linkLabel}</span>
                   <svg className="w-3 h-3 group-hover:translate-x-1 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                   </svg>
-                </div>
+                </div>}
               </div>
-            </Link>
+            </CardWrapper>
             </TiltCard>
-          ))}
+          )})}
         </div>
       </div>
     </section>

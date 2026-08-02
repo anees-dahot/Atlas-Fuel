@@ -2,6 +2,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import CmsImage from '@/components/common/CmsImage'
 import { cmsTextStyle } from './cmsStyles'
 
 const serviceIcons = {
@@ -15,6 +16,17 @@ const serviceIcons = {
 
 function getIcon(id) {
   return serviceIcons[id] || serviceIcons.mining
+}
+
+function getServiceId(service = {}) {
+  if (service.id) return service.id
+  const value = `${service.link || ''} ${service.title || ''}`.toLowerCase()
+  if (value.includes('marine')) return 'marine'
+  if (value.includes('agri')) return 'agriculture'
+  if (value.includes('retail')) return 'retail'
+  if (value.includes('transport') || value.includes('onsite')) return 'transport'
+  if (value.includes('distribut')) return 'distribution'
+  return 'mining'
 }
 
 const defaultServices = [
@@ -93,7 +105,7 @@ const defaultServices = [
 ]
 
 export default function ServicesShowcase({ data = {} }) {
-  const displayServices = data.services?.length ? data.services : defaultServices
+  const displayServices = Array.isArray(data.services) ? data.services : defaultServices
   const [activeIndex, setActiveIndex] = useState(0)
   const [isVisible, setIsVisible]     = useState(false)
 
@@ -193,7 +205,10 @@ export default function ServicesShowcase({ data = {} }) {
     }
   }, [activeIndex, displayServices.length])
 
-  const service = displayServices[activeIndex] || displayServices[0] || {}
+  const service = displayServices[activeIndex] ?? displayServices[0] ?? {}
+  const activeServiceId = getServiceId(service)
+  const scrollHint = data.scrollHint ?? 'Scroll to explore'
+  const ctaLabel = service.ctaText ?? data.ctaLabel ?? 'Learn More'
 
   return (
     <section ref={sectionRef} className="relative bg-white overflow-hidden" id="services-showcase">
@@ -202,7 +217,7 @@ export default function ServicesShowcase({ data = {} }) {
         {/* Label */}
         <div className={cn('transition-all duration-700 mb-4', isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6')}>
           <span className="section-label" style={cmsTextStyle(data, 'subheading')}>
-            {data.subheading || 'Tailored fuel solutions for every sector'}
+            {data.subheading ?? 'Tailored fuel solutions for every sector'}
           </span>
         </div>
 
@@ -211,7 +226,7 @@ export default function ServicesShowcase({ data = {} }) {
           'font-heading text-4xl md:text-5xl lg:text-6xl font-semibold text-black uppercase tracking-wide mb-12 transition-all duration-700 delay-100',
           isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
         )} style={cmsTextStyle(data, 'heading')}>
-          {data.heading || 'What We Offer'}
+          {data.heading ?? 'What We Offer'}
         </h2>
 
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
@@ -233,7 +248,7 @@ export default function ServicesShowcase({ data = {} }) {
                   'w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300',
                   activeIndex === i ? 'bg-white/20 text-white' : 'bg-primary/10 text-primary group-hover:bg-primary/15'
                 )}>
-                  {getIcon(s.id)}
+                  {getIcon(getServiceId(s))}
                 </span>
                 <span className="font-semibold uppercase tracking-wider text-sm">{s.title}</span>
                 {activeIndex === i && (
@@ -250,7 +265,7 @@ export default function ServicesShowcase({ data = {} }) {
                 <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
                 </svg>
-                Scroll to explore
+                {scrollHint}
               </p>
             )}
           </div>
@@ -263,18 +278,23 @@ export default function ServicesShowcase({ data = {} }) {
             <div className="bg-white border border-gray-100 shadow-lg overflow-hidden">
               {/* Image */}
               <div className="relative h-72 overflow-hidden bg-gray-100">
-                <img
-                  key={service.id}
-                  src={service.imageUrl || '/images/hero-trucks.jpg'}
-                  alt={service.imageAlt || service.title || ''}
-                  className="w-full h-full object-cover"
+                <CmsImage
+                  key={activeServiceId}
+                  value={service.imageImage ?? service.image ?? service.imageUrl}
+                  fallbackSrc="/images/hero-trucks.jpg"
+                  alt={service.imageAlt ?? service.imageUrlAlt ?? service.title ?? ''}
+                  width={1200}
+                  height={640}
+                  fill
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                  className="object-cover"
                 />
                 {service.stats?.length > 0 && (
                   <div className="absolute bottom-6 left-6 right-6 flex gap-8">
                     {service.stats.map((stat, i) => (
                       <div key={i}>
-                        <div className="text-3xl font-bold text-white font-heading leading-none">{stat.value}</div>
-                        <div className="text-xs text-white/80 mt-1 uppercase tracking-wide">{stat.label}</div>
+                        <div className="text-3xl font-bold text-white font-heading leading-none" style={cmsTextStyle(stat, 'value', '#ffffff', '30px')}>{stat.value}</div>
+                        <div className="text-xs text-white/80 mt-1 uppercase tracking-wide" style={cmsTextStyle(stat, 'label', 'rgba(255,255,255,0.8)', '12px')}>{stat.label}</div>
                       </div>
                     ))}
                   </div>
@@ -293,10 +313,10 @@ export default function ServicesShowcase({ data = {} }) {
                   className="text-gray-500 leading-relaxed text-sm mb-6"
                   style={cmsTextStyle(service, 'description')}
                 >
-                  {service.fullDescription || service.description}
+                  {service.fullDescription ?? service.description}
                 </p>
-                <Link href={service.link || '/services'} className="read-more group">
-                  Learn More
+                <Link href={service.link ?? '/services'} className="read-more group">
+                  {ctaLabel}
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="group-hover:translate-x-1 transition-transform duration-200">
                     <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
                   </svg>

@@ -29,6 +29,7 @@ const routeByType = {
 
 const globalTypes = new Set([
   'siteSettings',
+  'themeSettings',
   'megaMenu',
   'footerNavigation',
   'errorPages',
@@ -44,10 +45,18 @@ const productTypes = new Set([
 ])
 
 export async function POST(request) {
+  const secret = process.env.SANITY_REVALIDATE_SECRET
+  if (!secret) {
+    return NextResponse.json(
+      {message: 'Revalidation webhook is not configured.'},
+      {status: 503}
+    )
+  }
+
   try {
     const { isValidSignature, body } = await parseBody(
       request,
-      process.env.SANITY_REVALIDATE_SECRET,
+      secret,
       true
     )
 
@@ -63,14 +72,23 @@ export async function POST(request) {
 
     if (globalTypes.has(body._type)) {
       revalidatePath('/', 'layout')
-      return NextResponse.json({ revalidated: ['all routes'] })
+      if (body._type === 'errorPages') {
+        revalidatePath('/_not-found')
+        revalidatePath('/route-that-does-not-exist-cms-roundtrip')
+      }
+      revalidatePath('/sitemap.xml')
+      revalidatePath('/robots.txt')
+      return NextResponse.json({revalidated: ['all routes', '/sitemap.xml', '/robots.txt']})
     }
 
     if (body._type === 'newsPost') {
       const paths = ['/', '/news']
-      if (body.slug?.current) paths.push(`/news/${body.slug.current}`)
+      const slug = body.slug?.current || body.slug
+      const previousSlug = body.previousSlug?.current || body.previousSlug
+      if (slug) paths.push(`/news/${slug}`)
+      if (previousSlug && previousSlug !== slug) paths.push(`/news/${previousSlug}`)
       paths.forEach((path) => revalidatePath(path))
-      return NextResponse.json({ revalidated: paths })
+      return NextResponse.json({revalidated: [...new Set(paths)]})
     }
 
     if (productTypes.has(body._type)) {
@@ -90,8 +108,9 @@ export async function POST(request) {
     revalidatePath(path)
     return NextResponse.json({ revalidated: [path] })
   } catch (error) {
+    console.error('[Sanity webhook] Revalidation failed:', error)
     return NextResponse.json(
-      { message: 'Error revalidating', error: error.message },
+      {message: 'Error revalidating'},
       { status: 500 }
     )
   }

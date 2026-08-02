@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import CmsImage from "@/components/common/CmsImage";
+import CmsVideo from "@/components/common/CmsVideo";
 
 const sizeMap = { '1': '12px', '2': '16px', '3': '20px', '4': '24px', '5': '32px', '6': '48px', '7': '70px' };
 
@@ -21,18 +23,84 @@ const getStyle = (obj, field) => {
 export default function VisionSection({ data = {} }) {
   const sectionRef = useRef(null);
 
-  const tag = data?.tag || "Vision & Purpose - 2030";
+  const tag = data?.tag ?? "Vision & Purpose - 2030";
   const quote =
-    data?.quote ||
+    data?.quote ??
     '"Our purpose is to provide reliable and affordable petroleum products to help create a better world for everyone."';
-  const quoteHighlight = data?.quoteHighlight || "better world for everyone.";
+  const quoteHighlight = data?.quoteHighlight ?? "better world for everyone.";
   const description =
-    data?.description ||
+    data?.description ??
     "Behind the scenes, discover the scale of our logistics operations in action and explore the community initiatives and charity events that make a real difference. You'll also witness how we're building world-class fuel stations designed for everyday Australians, while following the remarkable journey of Atlas Fuel from a single site to a national network.";
-  const ctaText = data?.ctaText || "Read More";
-  const ctaLink = data?.ctaLink || "/about";
-  const videoImageUrl = data?.videoImageUrl || "/images/watch-our-videos.jpg";
-  const videoLabel = data?.videoLabel || "Watch What We Do";
+  const ctaText = data?.ctaText ?? "Read More";
+  const ctaLink = data?.ctaLink ?? "/about";
+  const videoImageUrl = data?.videoImageUrl ?? "/images/watch-our-videos.jpg";
+  const videoLabel = data?.videoLabel ?? "Watch What We Do";
+  const videoBadgeLabel = data?.videoBadgeLabel ?? "Video";
+  const video = data?.video ?? {};
+  const activeVideoUrl = video.url ?? data?.videoUrl;
+  const videoUploadUrl = video.uploadUrl ?? video.file?.asset?.url;
+  const hasVideo = Boolean(activeVideoUrl || videoUploadUrl);
+  const videoCard = (
+    <div className="relative aspect-video overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+      <CmsImage
+        value={video.poster?.image ?? data?.videoImage ?? videoImageUrl}
+        fallbackSrc="/images/watch-our-videos.jpg"
+        alt={video.poster?.alt ?? data?.videoImageAlt ?? "Atlas Fuel Operations"}
+        fill
+        sizes="(min-width: 1024px) 50vw, 100vw"
+        className="object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700"
+      />
+
+      {hasVideo && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="relative">
+            <span className="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 shrink-0">
+              <svg
+                className="w-5 h-5 text-white ml-0.5"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+              <span className="absolute inset-0 rounded-full border-2 border-white/30 animate-pulse-ring" />
+            </span>
+          </div>
+        </div>
+      )}
+
+      <div className="absolute bottom-0 left-0 right-0 p-6">
+        <div className="flex items-center gap-3 text-white">
+          <span className={`${data?.videoLabelColor || ""} text-lg font-bold uppercase tracking-wide font-heading group-hover:translate-x-1 transition-transform duration-300`} style={getStyle(data, 'videoLabel')}>
+            {videoLabel}
+          </span>
+          {data?.videoDescription && (
+            <span className="text-sm text-white/80">{data.videoDescription}</span>
+          )}
+          {hasVideo && (
+            <svg
+              className="w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform duration-300"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          )}
+        </div>
+      </div>
+
+      {hasVideo && (
+        <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/50 px-3 py-1.5 group-hover:bg-white/70 transition-colors duration-300">
+          <div className="w-2 h-2 bg-red-500" />
+          <span className="text-gray-900 text-xs font-medium uppercase">
+            {videoBadgeLabel}
+          </span>
+        </div>
+      )}
+    </div>
+  );
 
   const highlightIdx = quoteHighlight ? quote.indexOf(quoteHighlight) : -1;
   const quoteBefore = highlightIdx > -1 ? quote.slice(0, highlightIdx) : quote;
@@ -147,81 +215,47 @@ export default function VisionSection({ data = {} }) {
               {description}
             </p>
 
-            <Link
-              href={ctaLink || "#"}
-              className={`${data?.ctaTextColor || "text-primary"} vision-cta group inline-flex items-center gap-2 font-bold uppercase tracking-wide hover:gap-4 transition-all duration-500`} style={getStyle(data, 'ctaText')}
-            >
-              {ctaText}
-              <svg
-                className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
+            {ctaText && ctaLink && (
+              <Link
+                href={ctaLink}
+                className={`${data?.ctaTextColor ?? "text-primary"} vision-cta group inline-flex items-center gap-2 font-bold uppercase tracking-wide hover:gap-4 transition-all duration-500`} style={getStyle(data, 'ctaText')}
               >
-                <line x1="5" y1="12" x2="19" y2="12" />
-                <polyline points="12 5 19 12 12 19" />
-              </svg>
-            </Link>
+                {ctaText}
+                <svg
+                  className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                >
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </Link>
+            )}
           </div>
 
           {/* Right — Video Card */}
           <div className="vision-video">
-            <div className="relative group cursor-pointer">
-              <div className="relative aspect-video overflow-hidden shadow-lg group-hover:shadow-xl transition-shadow duration-300">
-                <img
-                  src={videoImageUrl}
-                  alt={data?.videoImageAlt || "Atlas Fuel Operations"}
-                  className="w-full h-full object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700"
-                />
-
-                {/* Play button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="relative">
-                    <span className="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 shrink-0">
-                      <svg
-                        className="w-5 h-5 text-white ml-0.5"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                      >
-                        <polygon points="5 3 19 12 5 21 5 3" />
-                      </svg>
-                      <span className="absolute inset-0 rounded-full border-2 border-white/30 animate-pulse-ring" />
-                    </span>
-                  </div>
-                </div>
-
-                {/* Label */}
-                <div className="absolute bottom-0 left-0 right-0 p-6">
-                  <div className="flex items-center gap-3 text-white">
-                    <span className={`${data?.videoLabelColor || ""} text-lg font-bold uppercase tracking-wide font-heading group-hover:translate-x-1 transition-transform duration-300`} style={getStyle(data, 'videoLabel')}>
-                      {videoLabel}
-                    </span>
-                    {data?.videoDescription && (
-                      <span className="text-sm text-gray-600">{data.videoDescription}</span>
-                    )}
-                    <svg
-                      className="w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-1 transition-transform duration-300"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                      <polyline points="12 5 19 12 12 19" />
-                    </svg>
-                  </div>
-                </div>
-
-                {/* Badge */}
-                <div className="absolute top-4 right-4 flex items-center gap-2 bg-white/50 px-3 py-1.5 group-hover:bg-white/70 transition-colors duration-300">
-                  <div className="w-2 h-2 bg-red-500" />
-                  <span className="text-gray-900 text-xs font-medium uppercase">
-                    Video
-                  </span>
-                </div>
-              </div>
-            </div>
+            {hasVideo ? (
+              <CmsVideo
+                url={activeVideoUrl}
+                uploadUrl={videoUploadUrl}
+                poster={video.poster}
+                title={video.title ?? videoLabel}
+                caption={video.caption}
+                transcript={video.transcript}
+                transcriptLabel={video.transcriptLabel}
+                autoplay={video.autoplay ?? true}
+                muted={video.muted ?? false}
+                loop={video.loop ?? false}
+                className="relative group cursor-pointer block w-full text-left"
+              >
+                {videoCard}
+              </CmsVideo>
+            ) : (
+              <div className="relative group">{videoCard}</div>
+            )}
           </div>
         </div>
       </div>

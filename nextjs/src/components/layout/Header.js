@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import TopRibbon from '@/components/common/TopRibbon'
+import CmsImage from '@/components/common/CmsImage'
 
 // ─── Default Nav data (fallback when Sanity data is not available) ────────────
 const defaultNavItems = [
@@ -133,13 +134,13 @@ const withFallbackValues = (fallback, value) => ({
   ...fallback,
   ...Object.fromEntries(
     Object.entries(value || {}).filter(([, fieldValue]) =>
-      fieldValue !== undefined && fieldValue !== null && fieldValue !== ''
+      fieldValue !== undefined && fieldValue !== null
     )
   ),
 })
 
 const normalizeNavItems = (items) => {
-  if (!items?.length) return defaultNavItems
+  if (!Array.isArray(items)) return defaultNavItems
 
   return items.map((item, itemIndex) => {
     const itemIdentity = (item.id || item.label || '').toLowerCase()
@@ -152,7 +153,7 @@ const normalizeNavItems = (items) => {
       {}
 
     const merged = withFallbackValues(fallback, item)
-    const sourceGroups = item.groups?.length ? item.groups : fallback.groups || []
+    const sourceGroups = Array.isArray(item.groups) ? item.groups : fallback.groups || []
 
     return {
       ...merged,
@@ -160,9 +161,7 @@ const normalizeNavItems = (items) => {
       featured: withFallbackValues(fallback.featured, item.featured),
       groups: sourceGroups.map((group, groupIndex) => {
         const fallbackGroup = fallback.groups?.[groupIndex] || {}
-        const sourceLinks = group.links?.length
-          ? group.links
-          : fallbackGroup.links || []
+        const sourceLinks = Array.isArray(group.links) ? group.links : fallbackGroup.links || []
 
         return {
           ...withFallbackValues(fallbackGroup, group),
@@ -179,19 +178,20 @@ const getItemLinks = (item) => item.groups?.flatMap((group) => group?.links ?? [
 
 // ─── Mega Menu Panel (100% Bechtel Clone) ─────────────────────────────────────
 function MegaMenu({ item, visible }) {
-  // Flatten all links from groups into cards (max 6)
-  const allLinks = item.groups?.flatMap(g => g.links?.map(l => ({ ...l, groupHeading: g.heading })) ?? []) || []
-  const displayLinks = allLinks.slice(0, 6)
+  const groups = (item.groups || []).filter((group) => group?.links?.length)
 
-  // Don't render if no links to display
-  if (displayLinks.length === 0) return null
+  if (groups.length === 0) return null
 
   const easing = 'cubic-bezier(0.22, 1, 0.36, 1)'
+  const featuredImage =
+    item.featured?.imageUrl ||
+    (typeof item.featured?.image === 'string' ? item.featured.image : '') ||
+    '/images/hero-trucks.jpg'
 
   return (
     <div
       className={cn(
-        'hidden lg:block fixed left-0 right-0 z-[60] origin-top bg-white shadow-[0_30px_90px_rgba(10,10,10,0.18)] transition-[opacity,transform] duration-500',
+        'hidden lg:block fixed left-0 right-0 z-[60] max-h-[calc(100vh-var(--header-height,110px))] origin-top overflow-y-auto bg-white shadow-[0_30px_90px_rgba(10,10,10,0.18)] transition-[opacity,transform] duration-500',
         visible
           ? 'pointer-events-auto opacity-100 translate-y-0'
           : 'pointer-events-none opacity-0 -translate-y-5'
@@ -223,71 +223,129 @@ function MegaMenu({ item, visible }) {
             style={{ transitionTimingFunction: easing, transitionDelay: visible ? '120ms' : '0ms' }}
           >
             <div>
-              <h2 className="wp-block-bechtel-menu-callout__heading text-[2.25rem] font-semibold text-gray-900 leading-[1.1] mb-5">
-                {item.calloutHeading || item.label}
-              </h2>
-              <p className="wp-block-bechtel-menu-callout__copy text-gray-600 leading-[1.6] text-base mb-8">
-                {item.description}
-              </p>
+              {(item.calloutHeading || item.label) && (
+                <h2 className="wp-block-bechtel-menu-callout__heading text-[2.25rem] font-semibold text-gray-900 leading-[1.1] mb-5">
+                  {item.calloutHeading || item.label}
+                </h2>
+              )}
+              {item.description && (
+                <p className="wp-block-bechtel-menu-callout__copy text-gray-600 leading-[1.6] text-base mb-8">
+                  {item.description}
+                </p>
+              )}
+              {item.featured?.label && item.featured?.href && (
+                <Link
+                  href={item.featured.href}
+                  className="group mb-6 flex items-center gap-4 border border-gray-200 bg-gray-50 p-3 transition-colors hover:border-primary"
+                >
+                  <span className="relative h-16 w-24 flex-shrink-0 overflow-hidden bg-gray-100">
+                    <CmsImage
+                      value={item.featured.image}
+                      src={featuredImage}
+                      alt={item.featured.imageAlt || item.featured.label}
+                      fill
+                      sizes="96px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  </span>
+                  <span className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-primary">
+                    {item.featured.label}
+                  </span>
+                </Link>
+              )}
             </div>
-            <div className="wp-block-button is-style-arrow-right">
+            {item.calloutCta && item.href && (
+              <div className="wp-block-button is-style-arrow-right">
               <Link
                 href={item.href || '#'}
                 className="wp-block-button__link wp-element-button inline-flex items-center gap-3 px-6 py-3 bg-primary text-white text-sm font-semibold uppercase tracking-wider hover:bg-primary-dark transition-colors"
               >
-                {item.calloutCta || 'Learn More'}
+                {item.calloutCta}
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <line x1="5" y1="12" x2="19" y2="12"/>
                   <polyline points="12 5 19 12 12 19"/>
                 </svg>
               </Link>
-            </div>
+              </div>
+            )}
           </div>
 
           {/* ── Right: Card grid layout ── */}
           <div className="wp-block-bechtel-menu-layout-links flex-1">
-            <div className="grid grid-cols-3 gap-x-6 gap-y-8">
-              {displayLinks.map((link, i) => (
-                <div
-                  key={i}
-                  className={cn(
-                    'wp-block-bechtel-post-link transition-[opacity,transform] duration-500',
-                    visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+            <div className="space-y-8">
+              {groups.map((group, groupIndex) => (
+                <section key={group._key || group.heading || groupIndex}>
+                  {group.heading && (
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-[0.16em] text-gray-500">
+                      {group.heading}
+                    </h3>
                   )}
-                  style={{
-                    transitionTimingFunction: easing,
-                    transitionDelay: visible ? `${180 + i * 40}ms` : '0ms',
-                  }}
-                >
-                  <article className="block-link block-link--vertical group">
-                    <Link href={link.href || '#'} className="block">
-                      <figure className="block-link__media block-link__media--vertical overflow-hidden bg-gray-100 mb-4">
-                        <img
-                          src={link.imageUrl || link.image || item.featured?.imageUrl || item.featured?.image || '/images/hero-trucks.jpg'}
-                          alt={link.label}
-                          className="block-link__image block-link__image--vertical w-full h-[169px] object-cover transition-transform duration-500 group-hover:scale-105"
-                        />
-                      </figure>
-                      <div className="block-link__content block-link__content--vertical">
-                        <h3 className="block-link__title block-link__title--vertical text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">
-                          {link.label}
-                        </h3>
-                        {link.excerpt && (
-                          <p className="block-link__excerpt block-link__excerpt--vertical text-sm text-gray-600 leading-relaxed line-clamp-3">
-                            {link.excerpt}
-                          </p>
-                        )}
-                        <span className="block-link__link block-link__link--vertical inline-flex items-center gap-2 text-sm text-primary font-semibold mt-3 group-hover:gap-3 transition-all">
-                          Read More
-                          <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                            <line x1="5" y1="12" x2="19" y2="12"/>
-                            <polyline points="12 5 19 12 12 19"/>
-                          </svg>
-                        </span>
-                      </div>
-                    </Link>
-                  </article>
-                </div>
+                  <div className="grid grid-cols-3 gap-x-6 gap-y-8">
+                    {group.links.map((link, linkIndex) => {
+                      const imageSource =
+                        link.imageUrl ||
+                        (typeof link.image === 'string' ? link.image : '') ||
+                        featuredImage
+                      const readMoreText =
+                        link.readMoreText ?? item.readMoreText ?? 'Read More'
+                      const animationIndex =
+                        groups
+                          .slice(0, groupIndex)
+                          .reduce((count, previous) => count + previous.links.length, 0) +
+                        linkIndex
+
+                      return (
+                        <div
+                          key={link._key || `${link.href}-${linkIndex}`}
+                          className={cn(
+                            'wp-block-bechtel-post-link transition-[opacity,transform] duration-500',
+                            visible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
+                          )}
+                          style={{
+                            transitionTimingFunction: easing,
+                            transitionDelay: visible ? `${180 + animationIndex * 40}ms` : '0ms',
+                          }}
+                        >
+                          <article className="block-link block-link--vertical group">
+                            <Link href={link.href || '#'} className="block">
+                              <figure className="block-link__media block-link__media--vertical relative h-[169px] overflow-hidden bg-gray-100 mb-4">
+                                <CmsImage
+                                  value={link.image}
+                                  src={imageSource}
+                                  alt={link.imageAlt || link.label || ''}
+                                  fill
+                                  sizes="(min-width: 1024px) 240px, 100vw"
+                                  className="block-link__image block-link__image--vertical object-cover transition-transform duration-500 group-hover:scale-105"
+                                />
+                              </figure>
+                              <div className="block-link__content block-link__content--vertical">
+                                {link.label && (
+                                  <h3 className="block-link__title block-link__title--vertical text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                                    {link.label}
+                                  </h3>
+                                )}
+                                {link.excerpt && (
+                                  <p className="block-link__excerpt block-link__excerpt--vertical text-sm text-gray-600 leading-relaxed line-clamp-3">
+                                    {link.excerpt}
+                                  </p>
+                                )}
+                                {readMoreText && (
+                                  <span className="block-link__link block-link__link--vertical inline-flex items-center gap-2 text-sm text-primary font-semibold mt-3 group-hover:gap-3 transition-all">
+                                    {readMoreText}
+                                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                      <line x1="5" y1="12" x2="19" y2="12"/>
+                                      <polyline points="12 5 19 12 12 19"/>
+                                    </svg>
+                                  </span>
+                                )}
+                              </div>
+                            </Link>
+                          </article>
+                        </div>
+                      )
+                    })}
+                  </div>
+                </section>
               ))}
             </div>
           </div>
@@ -305,12 +363,12 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
   const navItems = normalizeNavItems(propNavItems)
 
   // Button text and phone from siteSettings with fallbacks
-  const phone = siteSettings?.phone || '+61 8 6377 7644'
-  const callButtonText = siteSettings?.headerCallButtonText || 'Call Now'
-  const quoteButtonText = siteSettings?.headerQuoteButtonText || 'Get a Quote'
-  const mobileQuoteButtonText = siteSettings?.mobileMenuQuoteButtonText || 'Get a Quote'
-  const quoteButtonLink = siteSettings?.headerQuoteButtonLink || '/contact'
-  const mobileQuoteButtonLink = siteSettings?.mobileMenuQuoteButtonLink || quoteButtonLink
+  const phone = siteSettings?.phone ?? '+61 8 6377 7644'
+  const callButtonText = siteSettings?.headerCallButtonText ?? 'Call Now'
+  const quoteButtonText = siteSettings?.headerQuoteButtonText ?? 'Get a Quote'
+  const mobileQuoteButtonText = siteSettings?.mobileMenuQuoteButtonText ?? 'Get a Quote'
+  const quoteButtonLink = siteSettings?.headerQuoteButtonLink ?? '/contact'
+  const mobileQuoteButtonLink = siteSettings?.mobileMenuQuoteButtonLink ?? quoteButtonLink
 
   const [isScrolled, setIsScrolled]       = useState(false)
   const [activeMenu, setActiveMenu]       = useState(null)
@@ -433,9 +491,13 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
 
             {/* Logo */}
             <Link href="/" className="flex-shrink-0 z-10" onClick={() => setActiveMenu(null)}>
-              <img
-                src={siteSettings?.logoUrl || '/images/logo.png'}
-                alt={siteSettings?.siteName || 'Atlas Fuel'}
+              <CmsImage
+                value={siteSettings?.logo}
+                src={siteSettings?.logoUrl}
+                fallbackSrc="/images/logo.png"
+                alt={siteSettings?.logoAlt ?? siteSettings?.logo?.alt ?? siteSettings?.siteName ?? 'Atlas Fuel'}
+                width={180}
+                height={72}
                 className={cn('w-auto transition-all duration-300', isScrolled ? 'h-9' : 'h-11')}
               />
             </Link>
@@ -481,20 +543,24 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
             {/* ── Right: Call Now + Get Quote Buttons ── */}
             <div className="hidden lg:flex items-center gap-3 flex-shrink-0">
               {/* Call Now Button (Green Outline) */}
-              <a
-                href={`tel:${phone.replace(/\s/g, '')}`}
-                className="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-primary text-primary text-[12px] font-bold uppercase tracking-[0.1em] hover:bg-primary hover:text-white transition-colors duration-200"
-              >
-                {callButtonText}
-              </a>
+              {phone && callButtonText && (
+                <a
+                  href={`tel:${phone.replace(/[^\d+]/g, '')}`}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 border-2 border-primary text-primary text-[12px] font-bold uppercase tracking-[0.1em] hover:bg-primary hover:text-white transition-colors duration-200"
+                >
+                  {callButtonText}
+                </a>
+              )}
 
               {/* Get a Quote Button (Solid Green) */}
-              <Link
-                href={quoteButtonLink}
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-[12px] font-bold uppercase tracking-[0.1em] hover:bg-primary-dark transition-colors duration-200"
-              >
-                {quoteButtonText}
-              </Link>
+              {quoteButtonText && quoteButtonLink && (
+                <Link
+                  href={quoteButtonLink}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-white text-[12px] font-bold uppercase tracking-[0.1em] hover:bg-primary-dark transition-colors duration-200"
+                >
+                  {quoteButtonText}
+                </Link>
+              )}
             </div>
 
             {/* ── Mobile Hamburger ── */}
@@ -561,23 +627,45 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
                     {hasMenuItems && (
                       <div className={cn(
                         'overflow-hidden transition-all duration-300',
-                        mobileExpanded === item.id ? 'max-h-96' : 'max-h-0'
+                        mobileExpanded === item.id ? 'max-h-[60vh] overflow-y-auto' : 'max-h-0'
                       )}>
-                        <div className="bg-gray-50 px-6 pb-4 pt-2 space-y-1">
-                          {menuLinks.map((link, i) => (
+                        <div className="bg-gray-50 px-6 pb-4 pt-2">
+                          {(item.groups || []).map((group, groupIndex) => (
+                            <div key={group._key || group.heading || groupIndex} className="mb-3 last:mb-0">
+                              {group.heading && (
+                                <p className="pb-1 pt-2 text-[10px] font-bold uppercase tracking-[0.16em] text-gray-400">
+                                  {group.heading}
+                                </p>
+                              )}
+                              {(group.links || []).map((link, linkIndex) => (
+                                <Link
+                                  key={link._key || `${link.href}-${linkIndex}`}
+                                  href={link.href || '#'}
+                                  className="flex items-center gap-3 py-2.5 text-sm font-semibold text-gray-700 hover:text-primary transition-colors"
+                                  onClick={() => {
+                                    setIsMobileOpen(false)
+                                    setMobileExpanded(null)
+                                  }}
+                                >
+                                  <span className="w-1.5 h-1.5 bg-primary flex-shrink-0" />
+                                  {link.label}
+                                </Link>
+                              ))}
+                            </div>
+                          ))}
+                          {item.featured?.label && item.featured?.href && (
                             <Link
-                              key={i}
-                              href={link.href || '#'}
-                              className="flex items-center gap-3 py-2.5 text-sm font-semibold text-gray-700 hover:text-primary transition-colors"
+                              href={item.featured.href}
+                              className="mt-3 flex items-center gap-3 border-t border-gray-200 pt-4 text-sm font-bold text-primary"
                               onClick={() => {
                                 setIsMobileOpen(false)
                                 setMobileExpanded(null)
                               }}
                             >
-                              <span className="w-1.5 h-1.5 bg-primary flex-shrink-0" />
-                              {link.label}
+                              <ChevronRight />
+                              {item.featured.label}
                             </Link>
-                          ))}
+                          )}
                         </div>
                       </div>
                     )}
@@ -589,18 +677,22 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
 
           {/* Mobile footer */}
           <div className="border-t border-gray-100 px-6 py-6 space-y-3 bg-white">
-            <a href={`tel:${phone.replace(/\s/g, '')}`} className="flex items-center justify-center gap-2 w-full px-6 py-3 border-2 border-gray-200 text-gray-800 font-bold text-sm uppercase tracking-wider hover:border-primary hover:text-primary transition-colors">
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6.87-6.87 19.79 19.79 0 01-3.07-8.63A2 2 0 012 1h3a2 2 0 012 1.72c.127.96.361 1.904.7 2.81a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
-              {phone}
-            </a>
-            <Link
-              href={mobileQuoteButtonLink}
-              className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary-dark transition-colors"
-              onClick={() => setIsMobileOpen(false)}
-            >
-              {mobileQuoteButtonText}
-              <ChevronRight />
-            </Link>
+            {phone && (
+              <a href={`tel:${phone.replace(/[^\d+]/g, '')}`} className="flex items-center justify-center gap-2 w-full px-6 py-3 border-2 border-gray-200 text-gray-800 font-bold text-sm uppercase tracking-wider hover:border-primary hover:text-primary transition-colors">
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6.87-6.87 19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 2 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.904.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.906.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                {phone}
+              </a>
+            )}
+            {mobileQuoteButtonText && mobileQuoteButtonLink && (
+              <Link
+                href={mobileQuoteButtonLink}
+                className="flex items-center justify-center gap-2 w-full px-6 py-3 bg-primary text-white font-bold text-sm uppercase tracking-wider hover:bg-primary-dark transition-colors"
+                onClick={() => setIsMobileOpen(false)}
+              >
+                {mobileQuoteButtonText}
+                <ChevronRight />
+              </Link>
+            )}
           </div>
         </div>
       </header>

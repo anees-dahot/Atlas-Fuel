@@ -1,20 +1,42 @@
-import { Manrope } from 'next/font/google'
+import localFont from 'next/font/local'
+import {draftMode} from 'next/headers'
+import VisualEditing from 'next-sanity/visual-editing/client-component'
 import '../styles/global.css'
 import HeaderServer from '@/components/layout/HeaderServer'
 import FooterServer from '@/components/layout/FooterServer'
 import ScrollIndicator from '@/components/shared/ScrollIndicator'
 import { ErrorSettingsProvider } from '@/components/common/ErrorSettingsProvider'
-import { getErrorPages, getSiteSettings } from '@/lib/sanity'
+import { getErrorPages, getSiteSettings, getThemeSettings } from '@/lib/sanity'
+import {SanityLive} from '@/lib/live'
+import {buildThemeStyle} from '@/lib/theme'
 
-const manrope = Manrope({
-  subsets: ['latin'],
+const manrope = localFont({
+  src: '../fonts/manrope-latin.woff2',
   display: 'swap',
   variable: '--font-manrope',
-  weight: ['300', '400', '500', '600', '700', '800'],
+  weight: '300 800',
+})
+const inter = localFont({
+  src: '../fonts/inter-latin.woff2',
+  display: 'swap',
+  variable: '--font-inter',
+  weight: '300 800',
+})
+const oswald = localFont({
+  src: '../fonts/oswald-latin.woff2',
+  display: 'swap',
+  variable: '--font-oswald',
+  weight: '300 700',
+})
+const bebasNeue = localFont({
+  src: '../fonts/bebas-neue-latin.woff2',
+  display: 'swap',
+  variable: '--font-bebas-neue',
+  weight: '400',
 })
 
 export async function generateMetadata() {
-  const siteSettings = await getSiteSettings().catch(() => null)
+  const siteSettings = await getSiteSettings({stega: false}).catch(() => null)
 
   return {
     title: siteSettings?.siteTitle || 'Atlas Fuel Australia',
@@ -23,13 +45,21 @@ export async function generateMetadata() {
   }
 }
 
-export const revalidate = 30
+export const revalidate = 1
 
 export default async function RootLayout({ children }) {
-  const errorSettings = await getErrorPages().catch(() => null)
+  const [errorSettings, themeSettings] = await Promise.all([
+    getErrorPages().catch(() => null),
+    getThemeSettings().catch(() => null),
+  ])
+  const {isEnabled: isDraftMode} = await draftMode()
 
   return (
-    <html lang="en" className={manrope.variable}>
+    <html
+      lang="en"
+      className={`${manrope.variable} ${inter.variable} ${oswald.variable} ${bebasNeue.variable}`}
+      style={buildThemeStyle(themeSettings)}
+    >
       <body className="font-body">
         <ErrorSettingsProvider settings={errorSettings}>
           <HeaderServer />
@@ -37,6 +67,8 @@ export default async function RootLayout({ children }) {
           <ScrollIndicator />
           <FooterServer />
         </ErrorSettingsProvider>
+        <SanityLive />
+        {isDraftMode && <VisualEditing />}
       </body>
     </html>
   )

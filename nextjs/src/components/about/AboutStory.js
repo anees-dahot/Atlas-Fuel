@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import TiltCard from '@/components/shared/TiltCard'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const sizeMap = {
@@ -18,13 +19,13 @@ const sizeMap = {
 export default function AboutStory({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const tagline = data.tagline || 'Unrivalled. Unmatched. Unstoppable.'
-  const taglineColor = data.taglineColor || 'text-primary'
+  const tagline = data.tagline ?? 'Unrivalled. Unmatched. Unstoppable.'
+  const taglineColor = data.taglineColor ?? 'text-primary'
   const taglineSize = data.taglineSize ? { fontSize: sizeMap[data.taglineSize] } : {}
-  const taglineBorderEnabled = data.taglineBorderEnabled || false
-  const taglineBorderColor = data.taglineBorderColor || '#000000'
-  const taglineBorderWidth = data.taglineBorderWidth || '1px'
-  const taglineShadowColor = data.taglineShadowColor || ''
+  const taglineBorderEnabled = data.taglineBorderEnabled ?? false
+  const taglineBorderColor = data.taglineBorderColor ?? 'var(--cms-text)'
+  const taglineBorderWidth = data.taglineBorderWidth ?? '1px'
+  const taglineShadowColor = data.taglineShadowColor ?? ''
   const taglineStyle = {
     ...taglineSize,
     ...(taglineBorderEnabled && {
@@ -33,13 +34,13 @@ export default function AboutStory({ data = {} }) {
     }),
   }
 
-  const heading = data.heading || 'Our Story'
-  const headingColor = data.headingColor || 'text-gray-900'
+  const heading = data.heading ?? 'Our Story'
+  const headingColor = data.headingColor ?? 'text-gray-900'
   const headingSize = data.headingSize ? { fontSize: sizeMap[data.headingSize] } : {}
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
   const headingStyle = {
     ...headingSize,
     ...(headingBorderEnabled && {
@@ -48,13 +49,13 @@ export default function AboutStory({ data = {} }) {
     }),
   }
 
-  const body = data.body || "Atlas Fuel has been proudly serving Australia since 2010. From a single independently operated service station, we've grown into one of Australia's most trusted fuel companies. Our commitment to quality, reliability, and customer service has driven our expansion across the nation."
-  const bodyColor = data.bodyColor || 'text-gray-600'
+  const body = data.body ?? "Atlas Fuel has been proudly serving Australia since 2010. From a single independently operated service station, we've grown into one of Australia's most trusted fuel companies. Our commitment to quality, reliability, and customer service has driven our expansion across the nation."
+  const bodyColor = data.bodyColor ?? 'text-gray-600'
   const bodySize = data.bodySize ? { fontSize: sizeMap[data.bodySize] } : {}
-  const bodyBorderEnabled = data.bodyBorderEnabled || false
-  const bodyBorderColor = data.bodyBorderColor || '#000000'
-  const bodyBorderWidth = data.bodyBorderWidth || '1px'
-  const bodyShadowColor = data.bodyShadowColor || ''
+  const bodyBorderEnabled = data.bodyBorderEnabled ?? false
+  const bodyBorderColor = data.bodyBorderColor ?? 'var(--cms-text)'
+  const bodyBorderWidth = data.bodyBorderWidth ?? '1px'
+  const bodyShadowColor = data.bodyShadowColor ?? ''
   const bodyStyle = {
     ...bodySize,
     ...(bodyBorderEnabled && {
@@ -63,22 +64,22 @@ export default function AboutStory({ data = {} }) {
     }),
   }
 
-  const keyPoints = data.keyPoints || [
+  const keyPoints = data.keyPoints ?? [
     '100% Australian owned and operated',
     'Nationwide fuel delivery network',
     'World-class service stations',
     'Commitment to safety and sustainability'
   ]
-  const image1Url = data.image1Url || '/images/about-us.jpg'
-  const image2Url = data.image2Url || '/images/our-story.webp'
+  const image1Url = data.image1Url ?? '/images/about-us.jpg'
+  const image2Url = data.image2Url ?? '/images/our-story.webp'
   
-  const stat1Value = data.stat1Value || '2010'
-  const stat1ValueColor = data.stat1ValueColor || 'text-primary'
+  const stat1Value = data.stat1Value ?? '2010'
+  const stat1ValueColor = data.stat1ValueColor ?? 'text-primary'
   const stat1ValueSize = data.stat1ValueSize ? { fontSize: sizeMap[data.stat1ValueSize] } : {}
-  const stat1ValueBorderEnabled = data.stat1ValueBorderEnabled || false
-  const stat1ValueBorderColor = data.stat1ValueBorderColor || '#000000'
-  const stat1ValueBorderWidth = data.stat1ValueBorderWidth || '1px'
-  const stat1ValueShadowColor = data.stat1ValueShadowColor || ''
+  const stat1ValueBorderEnabled = data.stat1ValueBorderEnabled ?? false
+  const stat1ValueBorderColor = data.stat1ValueBorderColor ?? 'var(--cms-text)'
+  const stat1ValueBorderWidth = data.stat1ValueBorderWidth ?? '1px'
+  const stat1ValueShadowColor = data.stat1ValueShadowColor ?? ''
   const stat1ValueStyle = {
     ...stat1ValueSize,
     ...(stat1ValueBorderEnabled && {
@@ -87,13 +88,13 @@ export default function AboutStory({ data = {} }) {
     }),
   }
   
-  const stat1Label = data.stat1Label || 'Established'
-  const stat1LabelColor = data.stat1LabelColor || 'text-gray-500'
+  const stat1Label = data.stat1Label ?? 'Established'
+  const stat1LabelColor = data.stat1LabelColor ?? 'text-gray-500'
   const stat1LabelSize = data.stat1LabelSize ? { fontSize: sizeMap[data.stat1LabelSize] } : {}
-  const stat1LabelBorderEnabled = data.stat1LabelBorderEnabled || false
-  const stat1LabelBorderColor = data.stat1LabelBorderColor || '#000000'
-  const stat1LabelBorderWidth = data.stat1LabelBorderWidth || '1px'
-  const stat1LabelShadowColor = data.stat1LabelShadowColor || ''
+  const stat1LabelBorderEnabled = data.stat1LabelBorderEnabled ?? false
+  const stat1LabelBorderColor = data.stat1LabelBorderColor ?? 'var(--cms-text)'
+  const stat1LabelBorderWidth = data.stat1LabelBorderWidth ?? '1px'
+  const stat1LabelShadowColor = data.stat1LabelShadowColor ?? ''
   const stat1LabelStyle = {
     ...stat1LabelSize,
     ...(stat1LabelBorderEnabled && {
@@ -102,13 +103,13 @@ export default function AboutStory({ data = {} }) {
     }),
   }
   
-  const stat2Value = data.stat2Value || '100M+'
-  const stat2ValueColor = data.stat2ValueColor || 'text-primary'
+  const stat2Value = data.stat2Value ?? '100M+'
+  const stat2ValueColor = data.stat2ValueColor ?? 'text-primary'
   const stat2ValueSize = data.stat2ValueSize ? { fontSize: sizeMap[data.stat2ValueSize] } : {}
-  const stat2ValueBorderEnabled = data.stat2ValueBorderEnabled || false
-  const stat2ValueBorderColor = data.stat2ValueBorderColor || '#000000'
-  const stat2ValueBorderWidth = data.stat2ValueBorderWidth || '1px'
-  const stat2ValueShadowColor = data.stat2ValueShadowColor || ''
+  const stat2ValueBorderEnabled = data.stat2ValueBorderEnabled ?? false
+  const stat2ValueBorderColor = data.stat2ValueBorderColor ?? 'var(--cms-text)'
+  const stat2ValueBorderWidth = data.stat2ValueBorderWidth ?? '1px'
+  const stat2ValueShadowColor = data.stat2ValueShadowColor ?? ''
   const stat2ValueStyle = {
     ...stat2ValueSize,
     ...(stat2ValueBorderEnabled && {
@@ -117,13 +118,13 @@ export default function AboutStory({ data = {} }) {
     }),
   }
   
-  const stat2Label = data.stat2Label || 'Litres Delivered'
-  const stat2LabelColor = data.stat2LabelColor || 'text-gray-500'
+  const stat2Label = data.stat2Label ?? 'Litres Delivered'
+  const stat2LabelColor = data.stat2LabelColor ?? 'text-gray-500'
   const stat2LabelSize = data.stat2LabelSize ? { fontSize: sizeMap[data.stat2LabelSize] } : {}
-  const stat2LabelBorderEnabled = data.stat2LabelBorderEnabled || false
-  const stat2LabelBorderColor = data.stat2LabelBorderColor || '#000000'
-  const stat2LabelBorderWidth = data.stat2LabelBorderWidth || '1px'
-  const stat2LabelShadowColor = data.stat2LabelShadowColor || ''
+  const stat2LabelBorderEnabled = data.stat2LabelBorderEnabled ?? false
+  const stat2LabelBorderColor = data.stat2LabelBorderColor ?? 'var(--cms-text)'
+  const stat2LabelBorderWidth = data.stat2LabelBorderWidth ?? '1px'
+  const stat2LabelShadowColor = data.stat2LabelShadowColor ?? ''
   const stat2LabelStyle = {
     ...stat2LabelSize,
     ...(stat2LabelBorderEnabled && {
@@ -198,13 +199,25 @@ export default function AboutStory({ data = {} }) {
           {/* Images */}
           <div className="ast-images relative">
             <TiltCard tiltAmount={5} className="relative z-10">
-              <div className="ast-image relative overflow-hidden shadow-lg">
-                <img src={image1Url} alt="Atlas Fuel Operations" className="w-full h-80 object-cover" />
+              <div className="ast-image relative h-80 overflow-hidden shadow-lg">
+                <CmsImage
+                  value={data.image1 ?? data.image1Image ?? image1Url}
+                  alt={data.image1Alt ?? 'Atlas Fuel Operations'}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </TiltCard>
             <TiltCard tiltAmount={8} className="absolute -bottom-8 -left-8 w-48 z-20">
-              <div className="ast-image relative overflow-hidden shadow-lg border-4 border-white">
-                <img src={image2Url} alt="Atlas Fuel Fleet" className="w-full h-32 object-cover" />
+              <div className="ast-image relative h-32 overflow-hidden shadow-lg border-4 border-white">
+                <CmsImage
+                  value={data.image2 ?? data.image2Image ?? image2Url}
+                  alt={data.image2Alt ?? 'Atlas Fuel Fleet'}
+                  fill
+                  sizes="192px"
+                  className="w-full h-full object-cover"
+                />
               </div>
             </TiltCard>
           </div>

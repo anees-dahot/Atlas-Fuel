@@ -16,7 +16,7 @@ import EnquireSection from '@/components/services/EnquireSection'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function FuelRetailersClient({ retailerHero, support, features, growth, safety, compliance, fleet, drivers, enquire, siteSettings }) {
+export default function FuelRetailersClient({ retailerHero, support, features, growth, process, safety, compliance, fleet, drivers, enquire, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export default function FuelRetailersClient({ retailerHero, support, features, g
         <RetailerSupport data={support} />
         <RetailerFeatures data={features} />
         <RetailerGrowth data={growth} />
-        <ProcessTimeline />
+        <ProcessTimeline data={process} />
         <SafetySection data={safety} />
         <ComplianceSection data={compliance} />
         <FleetCompliance data={fleet} />

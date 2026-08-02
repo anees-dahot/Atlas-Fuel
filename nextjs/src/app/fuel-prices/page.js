@@ -3,11 +3,9 @@ import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
-
-export const metadata = {
-  title: 'Fuel Prices | Live Fuel Rates | Atlas Fuel Australia',
-  description: 'View live fuel prices and subscribe for price alerts. Get competitive fuel pricing for your business with Atlas Fuel Australia.',
-}
+import FuelPriceSubscribeForm from './FuelPriceSubscribeForm'
+import CmsImage from '@/components/common/CmsImage'
+import {loadPageMetadata} from '@/lib/metadata'
 
 const fallbackSiteSettings = {
   ctaBannerHeading: 'Get Competitive Fuel Pricing',
@@ -18,17 +16,17 @@ const fallbackSiteSettings = {
 
 const fallbackData = {
   heroSubtitle: 'Fuel Prices',
-  heroSubtitleColor: '#10b981',
+  heroSubtitleColor: 'var(--cms-primary)',
   heroSubtitleSize: '14px',
   heroTitle: 'Live Fuel Rates & Pricing',
-  heroTitleColor: '#000000',
+  heroTitleColor: 'var(--cms-text)',
   heroTitleSize: '72px',
   heroDescription: 'Access real-time fuel pricing information and subscribe to price alerts. Our competitive rates help businesses across Australia optimize their fuel costs.',
-  heroDescriptionColor: '#666666',
+  heroDescriptionColor: 'var(--cms-muted)',
   heroDescriptionSize: '18px',
   heroImageUrl: '/images/atlas-fuel-hero-1c.webp',
   heading: 'Current Fuel Prices',
-  headingColor: '#000000',
+  headingColor: 'var(--cms-text)',
   headingSize: '48px',
   pricesEyebrow: 'Live Rates',
   locationColumnLabel: 'Location',
@@ -36,18 +34,21 @@ const fallbackData = {
   premiumColumnLabel: 'Premium (cpl)',
   unleadedColumnLabel: 'Unleaded (cpl)',
   trendsHeading: 'Price Trends',
-  trendsHeadingColor: '#000000',
+  trendsHeadingColor: 'var(--cms-text)',
   trendsHeadingSize: '48px',
   trendsDescription: 'Track fuel price movements over time to make informed purchasing decisions.',
-  trendsDescriptionColor: '#666666',
+  trendsDescriptionColor: 'var(--cms-muted)',
   trendsDescriptionSize: '18px',
   trendsImageUrl: '/images/atlas-fuel-hero-2.webp',
+  trendsImageAlt: 'Atlas Fuel price trends',
   trendsEyebrow: 'Market Insights',
+  dieselTrendLabel: 'Diesel',
+  premiumTrendLabel: 'Premium',
   subscribeHeading: 'Subscribe to Price Alerts',
-  subscribeHeadingColor: '#ffffff',
+  subscribeHeadingColor: 'var(--cms-background)',
   subscribeHeadingSize: '48px',
   subscribeDescription: 'Get notified when fuel prices drop in your area. Stay ahead of the market with real-time alerts.',
-  subscribeDescriptionColor: '#ffffff',
+  subscribeDescriptionColor: 'var(--cms-background)',
   subscribeDescriptionSize: '18px',
   subscribeEyebrow: 'Stay Informed',
 }
@@ -93,8 +94,24 @@ const fallbackPriceData = {
       locationPlaceholder: 'Select your location',
       buttonText: 'Subscribe to Alerts',
       locations: ['Western Australia', 'Queensland', 'Victoria'],
+      successMessage: 'Thanks. Your fuel price alert request has been submitted.',
+      errorMessage: 'Your request could not be submitted. Please try again.',
+      submittingButtonText: 'Submitting…',
+      emailFallbackText: 'Email us instead',
     },
   },
+}
+
+export async function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelPricesPage,
+    getSiteSettings,
+    path: '/fuel-prices',
+    fallbackTitle: 'Fuel Prices | Live Fuel Rates | Atlas Fuel Australia',
+    fallbackDescription:
+      'View live fuel prices and subscribe for price alerts. Get competitive fuel pricing for your business with Atlas Fuel Australia.',
+    fallbackImage: fallbackData.heroImageUrl,
+  })
 }
 
 export default async function FuelPricesPage() {
@@ -111,29 +128,47 @@ export default async function FuelPricesPage() {
     title: data.heroTitle,
     description: data.heroDescription,
     heroImageUrl: data.heroImageUrl,
+    heroImageAlt: data.heroImageUrlAlt || data.heroImageAlt || data.heroTitle,
+    subtitleColor: data.heroSubtitleColor,
+    subtitleSize: data.heroSubtitleSize,
+    titleColor: data.heroTitleColor,
+    titleSize: data.heroTitleSize,
+    descriptionColor: data.heroDescriptionColor,
+    descriptionSize: data.heroDescriptionSize,
   }
 
   const priceData = {
     heading: data.heading,
-    eyebrow: sanity?.pricesSection?.eyebrow || fallbackData.pricesEyebrow,
-    lastUpdated: data.lastUpdated || fallbackPriceData.lastUpdated,
+    eyebrow: sanity?.pricesSection?.eyebrow ?? fallbackData.pricesEyebrow,
+    lastUpdated: data.lastUpdated ?? fallbackPriceData.lastUpdated,
     columnLabels: {
-      location: sanity?.pricesSection?.locationColumnLabel || fallbackData.locationColumnLabel,
-      diesel: sanity?.pricesSection?.dieselColumnLabel || fallbackData.dieselColumnLabel,
-      premium: sanity?.pricesSection?.premiumColumnLabel || fallbackData.premiumColumnLabel,
-      unleaded: sanity?.pricesSection?.unleadedColumnLabel || fallbackData.unleadedColumnLabel,
+      location: sanity?.pricesSection?.locationColumnLabel ?? fallbackData.locationColumnLabel,
+      diesel: sanity?.pricesSection?.dieselColumnLabel ?? fallbackData.dieselColumnLabel,
+      premium: sanity?.pricesSection?.premiumColumnLabel ?? fallbackData.premiumColumnLabel,
+      unleaded: sanity?.pricesSection?.unleadedColumnLabel ?? fallbackData.unleadedColumnLabel,
     },
-    prices: data.prices?.length ? data.prices : fallbackPriceData.prices,
+    prices: Array.isArray(data.prices) ? data.prices : fallbackPriceData.prices,
     priceTrends: {
       heading: data.trendsHeading,
       description: data.trendsDescription,
-      eyebrow: sanity?.trendsSection?.eyebrow || fallbackData.trendsEyebrow,
-      trendData: data.trendData?.length ? data.trendData : fallbackPriceData.priceTrends.trendData,
+      eyebrow: sanity?.trendsSection?.eyebrow ?? fallbackData.trendsEyebrow,
+      trendData: Array.isArray(data.trendData)
+        ? data.trendData
+        : fallbackPriceData.priceTrends.trendData,
+      dieselLabel:
+        sanity?.trendsSection?.dieselTrendLabel ??
+        data.dieselTrendLabel ??
+        fallbackData.dieselTrendLabel,
+      premiumLabel:
+        sanity?.trendsSection?.premiumTrendLabel ??
+        data.premiumTrendLabel ??
+        fallbackData.premiumTrendLabel,
+      unitLabel: sanity?.trendsSection?.unitLabel ?? 'cpl',
     },
     subscribe: {
       heading: data.subscribeHeading,
       description: data.subscribeDescription,
-      eyebrow: sanity?.subscribeSection?.eyebrow || fallbackData.subscribeEyebrow,
+      eyebrow: sanity?.subscribeSection?.eyebrow ?? fallbackData.subscribeEyebrow,
       form: mergeWithFallback(fallbackPriceData.subscribe.form, sanity?.subscribeSection),
     },
   }
@@ -151,7 +186,10 @@ export default async function FuelPricesPage() {
                 <div className="w-10 h-0.5 bg-primary flex-shrink-0" />
                 <span className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]">{priceData.eyebrow}</span>
               </div>
-              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4">
+              <h2
+                className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4"
+                style={{color: data.headingColor, fontSize: data.headingSize}}
+              >
                 {priceData.heading}
               </h2>
               <p className="text-gray-600">{priceData.lastUpdated}</p>
@@ -196,34 +234,65 @@ export default async function FuelPricesPage() {
                   <div className="w-10 h-0.5 bg-primary flex-shrink-0" />
                   <span className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]">{priceData.priceTrends.eyebrow}</span>
                 </div>
-                <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-6">
+                <h2
+                  className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-6"
+                  style={{color: data.trendsHeadingColor, fontSize: data.trendsHeadingSize}}
+                >
                   {priceData.priceTrends.heading}
                 </h2>
-                <p className="text-gray-600 text-lg leading-relaxed mb-8">
+                <p
+                  className="text-gray-600 text-lg leading-relaxed mb-8"
+                  style={{color: data.trendsDescriptionColor, fontSize: data.trendsDescriptionSize}}
+                >
                   {priceData.priceTrends.description}
                 </p>
                 
                 <div className="space-y-4">
                   {priceData.priceTrends.trendData.map((trend, index) => (
-                    <div key={index} className="flex items-center gap-4">
+                    <div key={trend._key || trend.date || index} className="grid grid-cols-[6rem_1fr_auto] items-center gap-4">
                       <div className="w-24 font-semibold text-gray-900">{trend.date}</div>
-                      <div className="flex-1 h-8 bg-gray-200 overflow-hidden">
-                        <div 
-                          className="h-full bg-primary"
-                          style={{ width: `${(trend.diesel / 180) * 100}%` }}
-                        />
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="w-14 text-[10px] font-bold uppercase tracking-wide text-gray-500">{priceData.priceTrends.dieselLabel}</span>
+                          <div className="h-3 flex-1 overflow-hidden bg-gray-200">
+                            <div
+                              className="h-full bg-primary"
+                              style={{width: `${Math.min((Number(trend.diesel) / 180) * 100, 100)}%`}}
+                            />
+                          </div>
+                        </div>
+                        {trend.premium !== undefined && trend.premium !== null && (
+                          <div className="flex items-center gap-2">
+                            <span className="w-14 text-[10px] font-bold uppercase tracking-wide text-gray-500">{priceData.priceTrends.premiumLabel}</span>
+                            <div className="h-3 flex-1 overflow-hidden bg-gray-200">
+                              <div
+                                className="h-full bg-primary-dark"
+                                style={{width: `${Math.min((Number(trend.premium) / 180) * 100, 100)}%`}}
+                              />
+                            </div>
+                          </div>
+                        )}
                       </div>
-                      <div className="w-20 text-right text-gray-600">{trend.diesel} cpl</div>
+                      <div className="text-right text-sm text-gray-600">
+                        <div>{trend.diesel}{priceData.priceTrends.unitLabel ? ` ${priceData.priceTrends.unitLabel}` : ''}</div>
+                        {trend.premium !== undefined && trend.premium !== null && (
+                          <div>{trend.premium}{priceData.priceTrends.unitLabel ? ` ${priceData.priceTrends.unitLabel}` : ''}</div>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="relative h-[400px] bg-gray-100 overflow-hidden shadow-xl">
-                <img
+                <CmsImage
+                  value={data.trendsImage || data.trendsImageImage}
                   src={data.trendsImageUrl}
-                  alt="Fuel Price Trends"
-                  className="w-full h-full object-cover"
+                  fallbackSrc="/images/atlas-fuel-hero-2.webp"
+                  alt={data.trendsImageUrlAlt || data.trendsImageAlt || priceData.priceTrends.heading}
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
               </div>
@@ -239,30 +308,21 @@ export default async function FuelPricesPage() {
                 <div className="w-10 h-0.5 bg-white flex-shrink-0" />
                 <span className="text-white text-[11px] font-bold uppercase tracking-[0.2em]">{priceData.subscribe.eyebrow}</span>
               </div>
-              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-wide leading-tight mb-6">
+              <h2
+                className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-white uppercase tracking-wide leading-tight mb-6"
+                style={{color: data.subscribeHeadingColor, fontSize: data.subscribeHeadingSize}}
+              >
                 {priceData.subscribe.heading}
               </h2>
-              <p className="text-lg text-white/90 mb-8">
+              <p
+                className="text-lg text-white/90 mb-8"
+                style={{color: data.subscribeDescriptionColor, fontSize: data.subscribeDescriptionSize}}
+              >
                 {priceData.subscribe.description}
               </p>
               
               <div className="bg-white p-8">
-                <div className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder={priceData.subscribe.form.emailPlaceholder}
-                    className="w-full px-6 py-4 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                  <select className="w-full px-6 py-4 border border-gray-300 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option value="">{priceData.subscribe.form.locationPlaceholder}</option>
-                    {priceData.subscribe.form.locations.map((location) => (
-                      <option key={location} value={location}>{location}</option>
-                    ))}
-                  </select>
-                  <button className="w-full px-8 py-4 bg-primary text-white font-bold text-[13px] uppercase tracking-[0.1em] border-2 border-primary hover:bg-primary-dark transition-all duration-300">
-                    {priceData.subscribe.form.buttonText}
-                  </button>
-                </div>
+                <FuelPriceSubscribeForm form={priceData.subscribe.form} />
               </div>
             </div>
           </div>

@@ -3,15 +3,16 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function BusyTimesSection({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'In Busy & Hard times'
-  const content = data.content || `When local distributors are unable to meet rising demand or are left unsupported by their existing suppliers, Atlas Fuel steps in with immediate, practical solutions. Leveraging our national network and real-time logistics, we offer rapid-response fuel supply, short-term bridging agreements, and flexible delivery schedules to keep your operations running. Whether it's unexpected growth, peak seasonal demand, or supply chain disruptions, we provide the backup you need—fast, reliable, and without red tape. At Atlas, we don't just supply fuel—we protect your ability to serve your customers when it matters most.`
-  const primaryCta = data.primaryCta || { text: 'Learn More', link: '/fuel-prices' }
-  const secondaryCta = data.secondaryCta || { text: 'Enquire Now', link: '/contact' }
+  const heading = data.heading ?? 'In Busy & Hard times'
+  const content = data.content ?? `When local distributors are unable to meet rising demand or are left unsupported by their existing suppliers, Atlas Fuel steps in with immediate, practical solutions. Leveraging our national network and real-time logistics, we offer rapid-response fuel supply, short-term bridging agreements, and flexible delivery schedules to keep your operations running. Whether it's unexpected growth, peak seasonal demand, or supply chain disruptions, we provide the backup you need—fast, reliable, and without red tape. At Atlas, we don't just supply fuel—we protect your ability to serve your customers when it matters most.`
+  const primaryCta = data.primaryCta ?? { text: 'Learn More', link: '/fuel-prices' }
+  const secondaryCta = data.secondaryCta ?? { text: 'Enquire Now', link: '/contact' }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -68,18 +69,18 @@ export default function BusyTimesSection({ data = {} }) {
       
       <div className="relative z-10 max-w-5xl mx-auto px-6">
         <div className="text-center mb-10">
-          <h2 className="busytimes-heading text-4xl md:text-5xl font-bold text-gray-900 mb-8">
+          <h2 className="busytimes-heading text-4xl md:text-5xl font-bold text-gray-900 mb-8" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
             {heading}
           </h2>
           
-          <p className="busytimes-content text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto">
+          <p className="busytimes-content text-lg md:text-xl text-gray-600 leading-relaxed max-w-4xl mx-auto" style={cmsTextStyle(data, 'content', '#4b5563', '20px')}>
             {content}
           </p>
         </div>
 
         <div className="busytimes-cta flex flex-col sm:flex-row gap-4 justify-center">
           <Link
-            href={primaryCta.link || '#'}
+            href={primaryCta.link ?? '#'}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-gray-900 font-bold border-2 border-gray-200 hover:bg-cream hover:border-primary/30 transition-all duration-300"
           >
             {primaryCta.text}
@@ -90,7 +91,7 @@ export default function BusyTimesSection({ data = {} }) {
           </Link>
           
           <Link
-            href={secondaryCta.link || '#'}
+            href={secondaryCta.link ?? '#'}
 className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wider text-sm hover:bg-primary-dark transition-colors"
           >
             {secondaryCta.text}

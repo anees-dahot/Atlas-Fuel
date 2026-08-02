@@ -8,24 +8,24 @@ if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 export default function PremiumProductsIntro({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const tagline = data.tagline || 'Premium Quality'
-  const taglineColor = data.taglineColor || '#000000'
-  const taglineSize = data.taglineSize || '24px'
-  const taglineBorderEnabled = data.taglineBorderEnabled || false
-  const taglineBorderColor = data.taglineBorderColor || '#000000'
-  const taglineBorderWidth = data.taglineBorderWidth || '1px'
-  const taglineShadowColor = data.taglineShadowColor || ''
+  const tagline = data.tagline ?? 'Premium Quality'
+  const taglineColor = data.taglineColor ?? 'var(--cms-text)'
+  const taglineSize = data.taglineSize ?? '24px'
+  const taglineBorderEnabled = data.taglineBorderEnabled ?? false
+  const taglineBorderColor = data.taglineBorderColor ?? 'var(--cms-text)'
+  const taglineBorderWidth = data.taglineBorderWidth ?? '1px'
+  const taglineShadowColor = data.taglineShadowColor ?? ''
 
-  const content = data.content || `Atlas Fuel Australia takes pride in offering a range of premium fuel products designed to meet the diverse needs of Australian drivers. Whether you're running a family car, a high-performance vehicle, or a commercial fleet, our fuels are formulated to ensure optimal performance, efficiency, and engine care. Coupled with state-of-the-art retail facilities, we provide an unparalleled refueling experience for our customers.`
-  const contentColor = data.contentColor || '#000000'
-  const contentSize = data.contentSize || '18px'
-  const contentBorderEnabled = data.contentBorderEnabled || false
-  const contentBorderColor = data.contentBorderColor || '#000000'
-  const contentBorderWidth = data.contentBorderWidth || '1px'
-  const contentShadowColor = data.contentShadowColor || ''
+  const content = data.content ?? `Atlas Fuel Australia takes pride in offering a range of premium fuel products designed to meet the diverse needs of Australian drivers. Whether you're running a family car, a high-performance vehicle, or a commercial fleet, our fuels are formulated to ensure optimal performance, efficiency, and engine care. Coupled with state-of-the-art retail facilities, we provide an unparalleled refueling experience for our customers.`
+  const contentColor = data.contentColor ?? 'var(--cms-text)'
+  const contentSize = data.contentSize ?? '18px'
+  const contentBorderEnabled = data.contentBorderEnabled ?? false
+  const contentBorderColor = data.contentBorderColor ?? 'var(--cms-text)'
+  const contentBorderWidth = data.contentBorderWidth ?? '1px'
+  const contentShadowColor = data.contentShadowColor ?? ''
 
-  const ctaText = data.ctaText || 'Enquire Now'
-  const ctaLink = data.ctaLink || '/contact'
+  const ctaText = data.ctaText ?? 'Enquire Now'
+  const ctaLink = data.ctaLink ?? '/contact'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -94,7 +94,7 @@ export default function PremiumProductsIntro({ data = {} }) {
           </p>
         </div>
         
-        <div className="premium-intro-cta mt-10">
+        {ctaText && ctaLink && <div className="premium-intro-cta mt-10">
           <Link
             href={ctaLink}
             className="group inline-flex items-center gap-2 px-8 py-4 bg-primary text-white font-bold uppercase tracking-wide hover:bg-primary-dark transition-all"
@@ -105,7 +105,7 @@ export default function PremiumProductsIntro({ data = {} }) {
               <polyline points="12 5 19 12 12 19" />
             </svg>
           </Link>
-        </div>
+        </div>}
       </div>
     </section>
   )

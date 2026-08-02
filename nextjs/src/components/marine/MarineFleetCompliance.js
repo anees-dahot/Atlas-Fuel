@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { cmsTextStyle } from '@/components/services/cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const fleetFeatures = [
@@ -18,8 +19,12 @@ const fleetFeatures = [
 export default function MarineFleetCompliance({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Fleet Compliance'
-  const content = data.content || 'Our fleet operates with the highest standards of safety and compliance, ensuring your marine fuel deliveries are tracked, monitored, and optimized at every step.'
+  const heading = data.heading ?? 'Fleet Compliance'
+  const content = data.content ?? 'Our fleet operates with the highest standards of safety and compliance, ensuring your marine fuel deliveries are tracked, monitored, and optimized at every step.'
+  const sectionTag = data.sectionTag ?? 'Safety & Technology'
+  const standardsHeading = data.standardsHeading ?? 'Fleet Standards'
+  const features = Array.isArray(data.features) ? data.features : fleetFeatures
+  const quote = data.quote ?? 'Every vessel in our fleet is equipped with state-of-the-art tracking and monitoring systems to ensure complete transparency and safety.'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -72,18 +77,18 @@ export default function MarineFleetCompliance({ data = {} }) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           <div>
-            <span className="inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4">
-              Safety & Technology
+            <span className="inline-block text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4" style={cmsTextStyle(data, 'sectionTag', '#2db234', '14px')}>
+              {sectionTag}
             </span>
-            <h2 className="fleet-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8">
+            <h2 className="fleet-heading text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8" style={cmsTextStyle(data, 'heading', '#111827', '48px')}>
               {heading}
             </h2>
-            <p className="fleet-content text-lg text-gray-600 leading-relaxed mb-10">
+            <p className="fleet-content text-lg text-gray-600 leading-relaxed mb-10" style={cmsTextStyle(data, 'content', '#4b5563', '18px')}>
               {content}
             </p>
             <div className="bg-primary/5 border-l-4 border-primary p-6">
               <p className="text-gray-700 italic">
-                &ldquo;Every vessel in our fleet is equipped with state-of-the-art tracking and monitoring systems to ensure complete transparency and safety.&rdquo;
+                &ldquo;{quote}&rdquo;
               </p>
             </div>
           </div>
@@ -93,17 +98,17 @@ export default function MarineFleetCompliance({ data = {} }) {
               <svg className="w-6 h-6 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              Fleet Standards
+              {standardsHeading}
             </h3>
             <ul className="space-y-4">
-              {fleetFeatures.map((item, index) => (
-                <li key={index} className="fleet-item flex items-start gap-3">
+              {features.map((item, index) => (
+                <li key={item._key || index} className="fleet-item flex items-start gap-3">
                   <span className="flex-shrink-0 w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center mt-0.5">
                     <svg className="w-3.5 h-3.5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
                       <polyline points="20 6 9 17 4 12" />
                     </svg>
                   </span>
-                  <span className="text-gray-700">{item}</span>
+                  <span className="text-gray-700">{typeof item === 'string' ? item : item.title}</span>
                 </li>
               ))}
             </ul>

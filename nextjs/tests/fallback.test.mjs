@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import {mergeWithFallback} from '../src/lib/fallback.js'
+import {mapPageCta} from '../src/lib/contentFallbacks.js'
 
 const fallback = {
   hero: {
@@ -31,12 +32,30 @@ test('preserves complete CMS content', () => {
   assert.deepEqual(mergeWithFallback(fallback, content), content)
 })
 
-test('uses fallback arrays when the CMS array is empty', () => {
-  assert.deepEqual(mergeWithFallback(fallback, {cards: []}).cards, fallback.cards)
+test('preserves an intentionally empty CMS array', () => {
+  assert.deepEqual(mergeWithFallback(fallback, {cards: []}).cards, [])
 })
 
-test('fills missing fields inside non-empty CMS arrays', () => {
+test('uses CMS arrays as complete editor-authored units', () => {
   assert.deepEqual(mergeWithFallback(fallback, {cards: [{title: 'CMS card'}]}).cards, [
-    {title: 'CMS card', imageUrl: '/images/card.webp'},
+    {title: 'CMS card'},
   ])
+})
+
+test('preserves intentionally empty strings', () => {
+  assert.deepEqual(
+    mergeWithFallback({eyebrow: 'Fallback'}, {eyebrow: ''}),
+    {eyebrow: ''},
+  )
+})
+
+test('preserves intentionally blank page and global CTA contact fields', () => {
+  const result = mapPageCta(
+    {ctaBanner: {heading: '', phone: ''}},
+    {phone: '08 1234 5678', ctaBanner: {heading: 'Global heading'}},
+    {ctaBannerHeading: 'Fallback heading'},
+  )
+
+  assert.equal(result.ctaBannerHeading, '')
+  assert.equal(result.phone, '')
 })

@@ -3,15 +3,59 @@ import { notFound } from 'next/navigation'
 import { getNewsListingPage, getNewsPost, getNewsPosts, getSiteSettings } from '@/lib/sanity'
 import { mapPageCta } from '@/lib/contentFallbacks'
 import { mergeWithFallback } from '@/lib/fallback'
-import { toHTML } from '@portabletext/to-html'
+import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
+import NewsBody from '@/components/news/NewsBody'
+
+async function getPostResult(slug, options) {
+  try {
+    return {post: await getNewsPost(slug, options), failed: false}
+  } catch {
+    return {post: null, failed: true}
+  }
+}
 
 export async function generateMetadata({params}) {
   const {slug} = await params
-  const post = await getNewsPost(slug).catch(() => null)
-  const fallback = blogPosts[slug]
+  const [postResult, siteSettings] = await Promise.all([
+    getPostResult(slug, {stega: false}),
+    getSiteSettings({stega: false}).catch(() => null),
+  ])
+  const post = postResult.post
+  const fallback = postResult.failed ? blogPosts[slug] : null
+  const seo = post?.seo || {}
+  const title = seo.title || post?.title || fallback?.title || 'News Article'
+  const description =
+    seo.description ||
+    post?.excerpt ||
+    fallback?.excerpt ||
+    'Read the latest news and insights from Atlas Fuel Australia.'
+  const image =
+    seo.image?.imageUrl ||
+    seo.image?.image?.url ||
+    seo.imageUrl ||
+    post?.mainImageUrl ||
+    post?.imageUrl ||
+    fallback?.imageUrl
+  const imageAlt =
+    seo.image?.alt ||
+    seo.image?.image?.alt ||
+    post?.mainImageAlt ||
+    post?.imageAlt ||
+    title
+
   return {
-    title: `${post?.title || fallback?.title || 'News Article'} | Atlas Fuel Australia`,
-    description: post?.excerpt || fallback?.excerpt || 'Read the latest news and insights from Atlas Fuel Australia.',
+    title: seo.title ? title : `${title} | ${siteSettings?.siteName || 'Atlas Fuel Australia'}`,
+    description,
+    alternates: {canonical: seo.canonicalUrl || `/news/${slug}`},
+    ...(seo.indexMode === 'noindex' ? {robots: {index: false, follow: false}} : {}),
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      ...(post?.publishedAt ? {publishedTime: post.publishedAt} : {}),
+      ...(image ? {images: [{url: image, alt: imageAlt}]} : {}),
+    },
   }
 }
 
@@ -156,12 +200,13 @@ const fallbackDetailMeta = {
 export default async function BlogPostPage({ params }) {
   const { slug } = await params
 
-  const [sanityPost, newsPosts, newsListing, globalSettings] = await Promise.all([
-    getNewsPost(slug).catch(() => null),
+  const [postResult, newsPosts, newsListing, globalSettings] = await Promise.all([
+    getPostResult(slug),
     getNewsPosts().catch(() => null),
     getNewsListingPage().catch(() => null),
     getSiteSettings().catch(() => null),
   ])
+  const sanityPost = postResult.post
 
   let postData
 
@@ -172,23 +217,19 @@ export default async function BlogPostPage({ params }) {
       ? new Date(sanityPost.publishedAt).toLocaleDateString('en-AU', { day: 'numeric', month: 'short', year: 'numeric' })
       : 'Recent'
 
-    // Convert Sanity block content to HTML
-    const htmlContent = sanityPost.body?.length
-      ? toHTML(sanityPost.body)
-      : fallbackPost?.content || '<p>No content available.</p>'
-
     postData = {
-      title: sanityPost.title || fallbackPost?.title,
+      title: sanityPost.title ?? fallbackPost?.title,
       date: formattedDate,
-      author: sanityPost.author || 'Admin',
-      category: sanityPost.category || 'Company News',
-      imageUrl: sanityPost.imageUrl || fallbackPost?.imageUrl || '/images/what-we-do-retail.webp',
-      imageAlt: sanityPost.imageAlt || fallbackPost?.title || sanityPost.title,
-      excerpt: sanityPost.excerpt || fallbackPost?.excerpt || '',
-      content: htmlContent,
+      author: sanityPost.author ?? 'Admin',
+      category: sanityPost.category ?? 'Company News',
+      image: sanityPost.mainImage,
+      imageUrl: sanityPost.mainImageUrl || sanityPost.imageUrl || fallbackPost?.imageUrl || '/images/what-we-do-retail.webp',
+      imageAlt: sanityPost.mainImageAlt || sanityPost.imageAlt || fallbackPost?.title || sanityPost.title,
+      excerpt: sanityPost.excerpt ?? fallbackPost?.excerpt ?? '',
+      body: sanityPost.body,
+      content: fallbackPost?.content || '<p>No content available.</p>',
     }
-  } else {
-    // Fallback to hardcoded posts
+  } else if (postResult.failed) {
     postData = blogPosts[slug]
   }
 
@@ -197,19 +238,39 @@ export default async function BlogPostPage({ params }) {
   }
 
   const relatedSource = newsPosts?.length ? newsPosts : relatedArticles
-  const relatedFinal = relatedSource.filter((article) => article.slug !== slug).slice(0, 2)
+  const relatedFinal = relatedSource
+    .filter((article) => {
+      const articleSlug =
+        typeof article.slug === 'string' ? article.slug : article.slug?.current
+      return articleSlug && articleSlug !== slug
+    })
+    .slice(0, 2)
   const siteSettings = mapPageCta(newsListing, globalSettings, fallbackSiteSettings)
   const detailMeta = mergeWithFallback(fallbackDetailMeta, newsListing?.listingSection)
+  const baseUrl =
+    globalSettings?.baseUrl ||
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    'https://atlasfuel.com.au'
+  let articleUrl
+  try {
+    articleUrl = new URL(`/news/${slug}`, baseUrl).toString()
+  } catch {
+    articleUrl = `https://atlasfuel.com.au/news/${slug}`
+  }
 
   return (
     <>
       
         {/* Hero Section */}
         <section className="relative h-[400px] lg:h-[500px] overflow-hidden">
-          <img
+          <CmsImage
+            value={postData.image}
             src={postData.imageUrl}
             alt={postData.imageAlt || postData.title}
-            className="w-full h-full object-cover"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/40" />
           <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12">
@@ -235,22 +296,19 @@ export default async function BlogPostPage({ params }) {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               {/* Main Content */}
               <div className="lg:col-span-2">
-                <article
-                  className="prose prose-lg max-w-none prose-headings:text-gray-900 prose-p:text-gray-600 prose-li:text-gray-600 prose-strong:text-gray-900"
-                  dangerouslySetInnerHTML={{ __html: postData.content }}
-                />
+                <NewsBody body={postData.body} fallbackHtml={postData.content} />
 
                 {/* Share Section */}
                 <div className="mt-12 pt-8 border-t border-gray-200">
                   <h3 className="text-lg font-bold text-gray-900 mb-4">{detailMeta.shareHeading}</h3>
                   <div className="flex gap-3">
-                    <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`https://atlasfuel.com.au/news/${slug}`)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
+                    <a aria-label="Share on Facebook" href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(articleUrl)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#1877F2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                     </a>
-                    <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(`https://atlasfuel.com.au/news/${slug}`)}&text=${encodeURIComponent(postData.title)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#1DA1F2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
+                    <a aria-label="Share on X" href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(articleUrl)}&text=${encodeURIComponent(postData.title)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#1DA1F2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>
                     </a>
-                    <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://atlasfuel.com.au/news/${slug}`)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#0A66C2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
+                    <a aria-label="Share on LinkedIn" href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(articleUrl)}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-[#0A66C2] text-white rounded-full flex items-center justify-center hover:opacity-90 transition-opacity">
                       <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
                     </a>
                   </div>
@@ -265,7 +323,11 @@ export default async function BlogPostPage({ params }) {
                     <h3 className="text-lg font-bold text-gray-900 mb-4">{detailMeta.categoriesHeading}</h3>
                     <ul className="space-y-2">
                       {detailMeta.categories.map((category) => (
-                        <li key={category}><a href="/news" className="text-gray-600 hover:text-primary transition-colors">{category}</a></li>
+                        <li key={category}>
+                          <Link href={`/news?category=${encodeURIComponent(category)}`} className="text-gray-600 hover:text-primary transition-colors">
+                            {category}
+                          </Link>
+                        </li>
                       ))}
                     </ul>
                   </div>
@@ -275,15 +337,29 @@ export default async function BlogPostPage({ params }) {
                     <h3 className="text-lg font-bold text-gray-900 mb-4">{detailMeta.relatedHeading}</h3>
                     <div className="space-y-4">
                       {relatedFinal.map((article) => (
-                        <a key={article.slug} href={`/news/${article.slug}`} className="group block">
+                        <Link
+                          key={article._id || (typeof article.slug === 'string' ? article.slug : article.slug?.current)}
+                          href={`/news/${typeof article.slug === 'string' ? article.slug : article.slug?.current}`}
+                          className="group block"
+                        >
                           <div className="flex gap-4">
-                            <img src={article.imageUrl} alt={article.imageAlt || article.title} className="w-20 h-20 object-cover flex-shrink-0" />
+                            <span className="relative h-20 w-20 flex-shrink-0 overflow-hidden bg-gray-100">
+                              <CmsImage
+                                value={article.mainImage}
+                                src={article.imageUrl || article.mainImageUrl}
+                                fallbackSrc="/images/what-we-do-retail.webp"
+                                alt={article.mainImageAlt || article.imageAlt || article.mainImage?.alt || article.title || ''}
+                                fill
+                                sizes="80px"
+                                className="object-cover"
+                              />
+                            </span>
                             <div>
                               <h4 className="text-sm font-semibold text-gray-900 group-hover:text-primary transition-colors line-clamp-2">{article.title}</h4>
                               <span className="text-xs text-gray-500 mt-1 block">{article.publishedAt ? new Date(article.publishedAt).toLocaleDateString('en-AU') : article.date}</span>
                             </div>
                           </div>
-                        </a>
+                        </Link>
                       ))}
                     </div>
                   </div>

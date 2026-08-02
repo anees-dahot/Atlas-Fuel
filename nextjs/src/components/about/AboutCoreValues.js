@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import TiltCard from '@/components/shared/TiltCard'
+import CmsImage from '@/components/common/CmsImage'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 const sizeMap = {
@@ -61,13 +62,14 @@ const DefaultIcon = () => (
 export default function AboutCoreValues({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const heading = data.heading || 'Our Core Values'
-  const headingColor = data.headingColor || 'text-black'
+  const eyebrow = data.eyebrow ?? 'Core Values'
+  const heading = data.heading ?? 'Our Core Values'
+  const headingColor = data.headingColor ?? 'text-black'
   const headingSize = data.headingSize ? { fontSize: sizeMap[data.headingSize] } : {}
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
   const headingStyle = {
     ...headingSize,
     ...(headingBorderEnabled && {
@@ -76,13 +78,13 @@ export default function AboutCoreValues({ data = {} }) {
     }),
   }
 
-  const subheading = data.subheading || 'The principles that guide every decision we make.'
-  const subheadingColor = data.subheadingColor || 'text-gray-600'
+  const subheading = data.subheading ?? 'The principles that guide every decision we make.'
+  const subheadingColor = data.subheadingColor ?? 'text-gray-600'
   const subheadingSize = data.subheadingSize ? { fontSize: sizeMap[data.subheadingSize] } : {}
-  const subheadingBorderEnabled = data.subheadingBorderEnabled || false
-  const subheadingBorderColor = data.subheadingBorderColor || '#000000'
-  const subheadingBorderWidth = data.subheadingBorderWidth || '1px'
-  const subheadingShadowColor = data.subheadingShadowColor || ''
+  const subheadingBorderEnabled = data.subheadingBorderEnabled ?? false
+  const subheadingBorderColor = data.subheadingBorderColor ?? 'var(--cms-text)'
+  const subheadingBorderWidth = data.subheadingBorderWidth ?? '1px'
+  const subheadingShadowColor = data.subheadingShadowColor ?? ''
   const subheadingStyle = {
     ...subheadingSize,
     ...(subheadingBorderEnabled && {
@@ -91,8 +93,8 @@ export default function AboutCoreValues({ data = {} }) {
     }),
   }
 
-  const imageUrl = data.imageUrl || '/images/what-we-do-onsite-diesel.webp'
-  const values = data.values || [
+  const imageUrl = data.imageUrl ?? '/images/what-we-do-onsite-diesel.webp'
+  const values = data.values ?? [
     { title: 'Safety',     description: 'We place the safety of our people and communities above all else — it is non-negotiable in everything we do.',                       icon: 'shield' },
     { title: 'Respect',    description: 'We treat every customer, partner, and community with the highest level of respect, fairness, and integrity.',                       icon: 'users'  },
     { title: 'Quality',    description: 'We deliver premium fuel products and services, meeting the highest international standards every single time.',                      icon: 'star'   },
@@ -116,7 +118,7 @@ export default function AboutCoreValues({ data = {} }) {
         <div className="acv-header text-center max-w-2xl mx-auto mb-16">
           <div className="flex items-center justify-center gap-4 mb-4">
             <div className="w-12 h-0.5 bg-primary" />
-            <span className="text-primary text-sm font-bold uppercase tracking-widest">Core Values</span>
+            <span className="text-primary text-sm font-bold uppercase tracking-widest">{eyebrow}</span>
             <div className="w-12 h-0.5 bg-primary" />
           </div>
           <h2 className={`${headingColor} text-3xl md:text-4xl lg:text-5xl font-heading font-bold uppercase tracking-tight mb-4`} style={headingStyle}>{heading}</h2>
@@ -125,9 +127,11 @@ export default function AboutCoreValues({ data = {} }) {
 
         {/* Image */}
         <div className="relative h-[300px] overflow-hidden shadow-xl mb-16">
-          <img
-            src={imageUrl}
-            alt="Our Core Values"
+          <CmsImage
+            value={data.image ?? data.imageImage ?? imageUrl}
+            alt={data.imageAlt ?? 'Our Core Values'}
+            fill
+            sizes="(min-width: 1280px) 1280px, 100vw"
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
@@ -136,12 +140,12 @@ export default function AboutCoreValues({ data = {} }) {
         {/* Cards */}
         <div className="acv-grid grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {values.map((v, i) => {
-            const titleColor = v.titleColor || 'text-black'
+            const titleColor = v.titleColor ?? 'text-black'
             const titleSize = v.titleSize ? { fontSize: sizeMap[v.titleSize] } : {}
-            const titleBorderEnabled = v.titleBorderEnabled || false
-            const titleBorderColor = v.titleBorderColor || '#000000'
-            const titleBorderWidth = v.titleBorderWidth || '1px'
-            const titleShadowColor = v.titleShadowColor || ''
+            const titleBorderEnabled = v.titleBorderEnabled ?? false
+            const titleBorderColor = v.titleBorderColor ?? 'var(--cms-text)'
+            const titleBorderWidth = v.titleBorderWidth ?? '1px'
+            const titleShadowColor = v.titleShadowColor ?? ''
             const titleStyle = {
               ...titleSize,
               ...(titleBorderEnabled && {
@@ -150,12 +154,12 @@ export default function AboutCoreValues({ data = {} }) {
               }),
             }
 
-            const descriptionColor = v.descriptionColor || 'text-gray-600'
+            const descriptionColor = v.descriptionColor ?? 'text-gray-600'
             const descriptionSize = v.descriptionSize ? { fontSize: sizeMap[v.descriptionSize] } : {}
-            const descriptionBorderEnabled = v.descriptionBorderEnabled || false
-            const descriptionBorderColor = v.descriptionBorderColor || '#000000'
-            const descriptionBorderWidth = v.descriptionBorderWidth || '1px'
-            const descriptionShadowColor = v.descriptionShadowColor || ''
+            const descriptionBorderEnabled = v.descriptionBorderEnabled ?? false
+            const descriptionBorderColor = v.descriptionBorderColor ?? 'var(--cms-text)'
+            const descriptionBorderWidth = v.descriptionBorderWidth ?? '1px'
+            const descriptionShadowColor = v.descriptionShadowColor ?? ''
             const descriptionStyle = {
               ...descriptionSize,
               ...(descriptionBorderEnabled && {
@@ -165,7 +169,7 @@ export default function AboutCoreValues({ data = {} }) {
             }
 
             return (
-              <TiltCard key={i} tiltAmount={6} className="acv-card">
+              <TiltCard key={v._key ?? `${v.title}-${i}`} tiltAmount={6} className="acv-card">
               <div className="group relative bg-gray-50 p-8 hover:bg-primary transition-all duration-300 hover:shadow-lg overflow-hidden h-full border border-gray-200">
                 {/* Background number */}
                 <div className="absolute -top-2 -right-2 text-8xl font-heading font-light text-black/5 group-hover:text-white/10 transition-colors duration-500 leading-none select-none">

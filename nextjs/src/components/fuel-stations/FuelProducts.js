@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import Link from 'next/link'
+import CmsImage from '@/components/common/CmsImage'
 
 export default function FuelProducts({ products }) {
   return (
@@ -52,9 +53,11 @@ export default function FuelProducts({ products }) {
             {/* Product Image */}
             <div className={`${index % 2 === 1 ? 'md:order-1' : ''}`}>
               <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
-                <img 
-                  src={product.imageUrl} 
-                  alt={product.name}
+                <CmsImage
+                  value={product.image ?? product.imageUrl}
+                  alt={product.imageAlt ?? product.name ?? ''}
+                  fill
+                  sizes="(min-width: 768px) 50vw, 100vw"
                   className="w-full h-full object-cover"
                 />
               </div>

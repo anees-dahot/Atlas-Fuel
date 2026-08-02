@@ -31,27 +31,32 @@ function Counter({ value, style }) {
   const ref = useRef(null)
   const animated = useRef(false)
   const target = parseNum(value)
+  const numeric = /\d/.test(String(value ?? ''))
+  const decimals = (String(value ?? '').match(/\.(\d+)/)?.[1] || '').length
   const suffix = getSuffix(value)
   const prefix = getPrefix(value)
 
   useEffect(() => {
-    if (!ref.current || animated.current) return
+    if (!ref.current || animated.current || !numeric) return
     const st = ScrollTrigger.create({
       trigger: ref.current, start: 'top 85%', once: true,
       onEnter: () => {
         animated.current = true
         gsap.to({ val: 0 }, {
           val: target, duration: 2.2, ease: 'power2.out',
-          onUpdate() { setCount(Math.round(this.targets()[0].val)) },
+          onUpdate() {
+            const current = this.targets()[0].val
+            setCount(Number(current.toFixed(decimals)))
+          },
         })
       },
     })
     return () => st.kill()
-  }, [target])
+  }, [decimals, numeric, target])
 
   return (
     <span ref={ref} className="tabular-nums" style={style}>
-      {prefix}{count}{suffix}
+      {numeric ? `${prefix}${count}${suffix}` : value}
     </span>
   )
 }
@@ -59,13 +64,13 @@ function Counter({ value, style }) {
 export default function AboutIntroStrip({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const quote = data.quote || 'Trusted by Australia\'s leading industries — from mining and agriculture to marine and construction.'
-  const quoteColor = data.quoteColor || 'text-gray-900'
+  const quote = data.quote ?? 'Trusted by Australia\'s leading industries — from mining and agriculture to marine and construction.'
+  const quoteColor = data.quoteColor ?? 'text-gray-900'
   const quoteSize = data.quoteSize ? { fontSize: sizeMap[data.quoteSize] } : {}
-  const quoteBorderEnabled = data.quoteBorderEnabled || false
-  const quoteBorderColor = data.quoteBorderColor || '#000000'
-  const quoteBorderWidth = data.quoteBorderWidth || '1px'
-  const quoteShadowColor = data.quoteShadowColor || ''
+  const quoteBorderEnabled = data.quoteBorderEnabled ?? false
+  const quoteBorderColor = data.quoteBorderColor ?? 'var(--cms-text)'
+  const quoteBorderWidth = data.quoteBorderWidth ?? '1px'
+  const quoteShadowColor = data.quoteShadowColor ?? ''
   const quoteStyle = {
     ...quoteSize,
     ...(quoteBorderEnabled && {
@@ -74,7 +79,7 @@ export default function AboutIntroStrip({ data = {} }) {
     }),
   }
 
-  const counters = data.counters || [
+  const counters = data.counters ?? [
     { value: '100M+', label: 'Litres Delivered'  },
     { value: '300+',  label: 'Jobs Connected'    },
     { value: '15+',   label: 'Years Experience'  },
@@ -109,12 +114,12 @@ export default function AboutIntroStrip({ data = {} }) {
         {/* Counters */}
         <div className="intro-counters-row grid grid-cols-2 md:grid-cols-4 gap-8 border-t border-gray-200 pt-12">
           {counters.map((c, i) => {
-            const valueColor = c.valueColor || 'text-gray-900';
+            const valueColor = c.valueColor ?? 'text-gray-900';
             const valueSize = c.valueSize ? { fontSize: sizeMap[c.valueSize] } : {};
-            const valueBorderEnabled = c.valueBorderEnabled || false;
-            const valueBorderColor = c.valueBorderColor || '#000000';
-            const valueBorderWidth = c.valueBorderWidth || '1px';
-            const valueShadowColor = c.valueShadowColor || '';
+            const valueBorderEnabled = c.valueBorderEnabled ?? false;
+            const valueBorderColor = c.valueBorderColor ?? 'var(--cms-text)';
+            const valueBorderWidth = c.valueBorderWidth ?? '1px';
+            const valueShadowColor = c.valueShadowColor ?? '';
             const valueStyle = {
               ...valueSize,
               ...(valueBorderEnabled && {
@@ -123,12 +128,12 @@ export default function AboutIntroStrip({ data = {} }) {
               }),
             };
 
-            const labelColor = c.labelColor || 'text-gray-500';
+            const labelColor = c.labelColor ?? 'text-gray-500';
             const labelSize = c.labelSize ? { fontSize: sizeMap[c.labelSize] } : {};
-            const labelBorderEnabled = c.labelBorderEnabled || false;
-            const labelBorderColor = c.labelBorderColor || '#000000';
-            const labelBorderWidth = c.labelBorderWidth || '1px';
-            const labelShadowColor = c.labelShadowColor || '';
+            const labelBorderEnabled = c.labelBorderEnabled ?? false;
+            const labelBorderColor = c.labelBorderColor ?? 'var(--cms-text)';
+            const labelBorderWidth = c.labelBorderWidth ?? '1px';
+            const labelShadowColor = c.labelShadowColor ?? '';
             const labelStyle = {
               ...labelSize,
               ...(labelBorderEnabled && {
@@ -138,7 +143,7 @@ export default function AboutIntroStrip({ data = {} }) {
             };
 
             return (
-              <div key={i} className="intro-counter text-center group">
+              <div key={c._key ?? `${c.label}-${i}`} className="intro-counter text-center group">
                 <div className={`${valueColor} text-4xl md:text-5xl lg:text-6xl font-heading font-light mb-3 group-hover:text-primary transition-colors duration-300`} style={valueStyle}>
                   <Counter value={c.value} style={valueStyle} />
                 </div>

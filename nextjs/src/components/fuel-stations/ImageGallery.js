@@ -1,17 +1,18 @@
 'use client'
 
 import React from 'react'
+import CmsImage from '@/components/common/CmsImage'
 
 export default function ImageGallery({ data = {} }) {
-  const heading = data.heading || 'Our Stations'
-  const headingColor = data.headingColor || '#000000'
-  const headingSize = data.headingSize || '48px'
-  const headingBorderEnabled = data.headingBorderEnabled || false
-  const headingBorderColor = data.headingBorderColor || '#000000'
-  const headingBorderWidth = data.headingBorderWidth || '1px'
-  const headingShadowColor = data.headingShadowColor || ''
+  const heading = data.heading ?? 'Our Stations'
+  const headingColor = data.headingColor ?? 'var(--cms-text)'
+  const headingSize = data.headingSize ?? '48px'
+  const headingBorderEnabled = data.headingBorderEnabled ?? false
+  const headingBorderColor = data.headingBorderColor ?? 'var(--cms-text)'
+  const headingBorderWidth = data.headingBorderWidth ?? '1px'
+  const headingShadowColor = data.headingShadowColor ?? ''
 
-  const displayImages = data.images
+  const displayImages = data.images ?? []
 
   return (
     <section className="py-16 lg:py-24 bg-gray-50">
@@ -30,7 +31,12 @@ export default function ImageGallery({ data = {} }) {
         
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {displayImages.map((image, index) => {
-            const imageUrl = typeof image === 'string' ? image : image?.url
+            const imageUrl = typeof image === 'string'
+              ? image
+              : image?.url ?? image?.imageUrl
+            const imageAlt = typeof image === 'string'
+              ? `Atlas Fuel station ${index + 1}`
+              : image?.alt ?? image?.imageAlt ?? ''
             return (
             <div
               key={image?._key || imageUrl || index}
@@ -38,9 +44,12 @@ export default function ImageGallery({ data = {} }) {
                 index === 0 ? 'col-span-2 md:col-span-2 row-span-2' : ''
               }`}
             >
-              <img
+              <CmsImage
+                value={image}
                 src={imageUrl}
-                alt={`Station image ${index + 1}`}
+                alt={imageAlt}
+                fill
+                sizes="(min-width: 768px) 33vw, 50vw"
                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>

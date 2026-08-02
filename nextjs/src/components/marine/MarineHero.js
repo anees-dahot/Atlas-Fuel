@@ -3,10 +3,11 @@ import PageHero from "@/components/shared/PageHero";
 import { cmsTextStyle } from '@/components/services/cmsStyles'
 
 export default function MarineHero({ data = {} }) {
-  const eyebrow = data.subtitle || 'MARINE FUEL';
-  const title = data.title || 'Marine Bunkering Solutions for Australian Waters';
-  const description = data.description || 'Comprehensive marine fuel services for vessels across major Australian ports with reliable delivery and quality assurance.';
-  const backgroundImage = data.heroImageUrl || '/images/hero-trucks.jpg';
+  const eyebrow = data.subtitle ?? 'MARINE FUEL';
+  const title = data.title ?? 'Marine Bunkering Solutions for Australian Waters';
+  const description = data.description ?? 'Comprehensive marine fuel services for vessels across major Australian ports with reliable delivery and quality assurance.';
+  const backgroundImage =
+    data.heroImageImage ?? data.heroImage ?? data.backgroundImage ?? data.heroImageUrl ?? '/images/hero-trucks.jpg';
 
   return (
     <PageHero
@@ -14,7 +15,8 @@ export default function MarineHero({ data = {} }) {
       title={title}
       description={description}
       backgroundImage={backgroundImage}
-      stats={data.stats?.length ? data.stats : null}
+      backgroundAlt={data.heroImageAlt ?? data.heroImageUrlAlt ?? title}
+      stats={Array.isArray(data.stats) ? data.stats : null}
       eyebrowStyle={cmsTextStyle(data, 'subtitle')}
       titleStyle={cmsTextStyle(data, 'title')}
       descriptionStyle={cmsTextStyle(data, 'description')}

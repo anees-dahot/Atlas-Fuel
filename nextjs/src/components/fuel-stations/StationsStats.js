@@ -7,21 +7,21 @@ if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 export default function StationsStats({ data = {} }) {
   const sectionRef = useRef(null)
 
-  const statValue = data.statValue || '35,224'
-  const statValueColor = data.statValueColor || '#000000'
-  const statValueSize = data.statValueSize || '64px'
-  const statValueBorderEnabled = data.statValueBorderEnabled || false
-  const statValueBorderColor = data.statValueBorderColor || '#000000'
-  const statValueBorderWidth = data.statValueBorderWidth || '1px'
-  const statValueShadowColor = data.statValueShadowColor || ''
+  const statValue = data.statValue ?? '35,224'
+  const statValueColor = data.statValueColor ?? 'var(--cms-text)'
+  const statValueSize = data.statValueSize ?? '64px'
+  const statValueBorderEnabled = data.statValueBorderEnabled ?? false
+  const statValueBorderColor = data.statValueBorderColor ?? 'var(--cms-text)'
+  const statValueBorderWidth = data.statValueBorderWidth ?? '1px'
+  const statValueShadowColor = data.statValueShadowColor ?? ''
 
-  const statLabel = data.statLabel || 'Happy Customers Every Day'
-  const statLabelColor = data.statLabelColor || '#000000'
-  const statLabelSize = data.statLabelSize || '18px'
-  const statLabelBorderEnabled = data.statLabelBorderEnabled || false
-  const statLabelBorderColor = data.statLabelBorderColor || '#000000'
-  const statLabelBorderWidth = data.statLabelBorderWidth || '1px'
-  const statLabelShadowColor = data.statLabelShadowColor || ''
+  const statLabel = data.statLabel ?? 'Happy Customers Every Day'
+  const statLabelColor = data.statLabelColor ?? 'var(--cms-text)'
+  const statLabelSize = data.statLabelSize ?? '18px'
+  const statLabelBorderEnabled = data.statLabelBorderEnabled ?? false
+  const statLabelBorderColor = data.statLabelBorderColor ?? 'var(--cms-text)'
+  const statLabelBorderWidth = data.statLabelBorderWidth ?? '1px'
+  const statLabelShadowColor = data.statLabelShadowColor ?? ''
 
   useEffect(() => {
     const ctx = gsap.context(() => {

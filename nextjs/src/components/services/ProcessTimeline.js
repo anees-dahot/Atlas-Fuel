@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import CmsImage from '@/components/common/CmsImage'
 import { cmsTextStyle } from './cmsStyles'
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
@@ -36,9 +37,10 @@ export default function ProcessTimeline({ data = {} }) {
   const sectionRef = useRef(null)
   const lineRef = useRef(null)
 
-  const heading = data.heading || 'Our Simple Process'
-  const subheading = data.subheading || 'Four easy steps to get reliable fuel delivery for your business'
-  const steps = data.steps?.length ? data.steps : defaultSteps
+  const heading = data.heading ?? 'Our Simple Process'
+  const subheading = data.subheading ?? 'Four easy steps to get reliable fuel delivery for your business'
+  const steps = Array.isArray(data.steps) ? data.steps : defaultSteps
+  const sectionTag = data.sectionTag ?? 'How It Works'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -91,7 +93,9 @@ export default function ProcessTimeline({ data = {} }) {
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-20">
-          <span className="tag">How It Works</span>
+          <span className="tag" style={cmsTextStyle(data, 'sectionTag', '#2db234', '14px')}>
+            {sectionTag}
+          </span>
           <h2
             className="process-heading mb-4"
             style={cmsTextStyle(data, 'heading', '#111827', '48px')}
@@ -117,9 +121,17 @@ export default function ProcessTimeline({ data = {} }) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
             {steps.map((step, index) => (
               <div key={step._key || index} className="process-step relative">
-                {step.imageUrl && (
-                  <div className="mb-5 aspect-[4/3] overflow-hidden bg-gray-100">
-                    <img src={step.imageUrl} alt={step.title || `Process step ${index + 1}`} className="h-full w-full object-cover" />
+                {(step.image ?? step.imageImage ?? step.imageUrl) && (
+                  <div className="relative mb-5 aspect-[4/3] overflow-hidden bg-gray-100">
+                    <CmsImage
+                      value={step.image ?? step.imageImage ?? step.imageUrl}
+                      alt={step.imageAlt ?? step.imageUrlAlt ?? step.title ?? `Process step ${index + 1}`}
+                      width={800}
+                      height={600}
+                      fill
+                      sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
+                      className="object-cover"
+                    />
                   </div>
                 )}
                 {/* Step Number & Icon */}
@@ -135,7 +147,12 @@ export default function ProcessTimeline({ data = {} }) {
 
                 {/* Content */}
                 <div className="text-center lg:text-left">
-                  <div className="text-primary font-bold text-lg mb-2">{step.number || step.step}</div>
+                  <div
+                    className="text-primary font-bold text-lg mb-2"
+                    style={cmsTextStyle(step, 'step', '#2db234', '18px')}
+                  >
+                    {step.number ?? step.step}
+                  </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-3" style={cmsTextStyle(step, 'title', '#111827')}>
                     {step.title}
                   </h3>

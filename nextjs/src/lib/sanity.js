@@ -1,22 +1,139 @@
-import { createClient } from 'next-sanity'
 import createImageUrlBuilder from '@sanity/image-url'
+import {sanityFetch} from '@/lib/live'
+import {client} from '@/lib/sanityClient'
 
-export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
-  apiVersion: '2024-01-01',
-  useCdn: process.env.CMS_ROUNDTRIP_TEST !== '1',
-})
+export {client}
 
 const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
 const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
 const cmsRoundtripTest = process.env.CMS_ROUNDTRIP_TEST === '1'
-const cacheOptions = (tags, revalidate = 60) =>
-  cmsRoundtripTest
-    ? {cache: 'no-store'}
-    : {next: {revalidate, tags}}
 
 const imageBuilder = createImageUrlBuilder({ projectId, dataset })
+
+const singletonIds = {
+  siteSettings: 'siteSettings',
+  themeSettings: 'themeSettings',
+  megaMenu: 'megaMenu',
+  footerNavigation: 'footerNavigation',
+  errorPages: 'errorPages',
+  homePage: 'homePage',
+  aboutPage: 'aboutPage',
+  servicesPage: 'servicesPage',
+  miningFuelPage: 'miningFuelPage',
+  marineFuelPage: 'marineFuelPage',
+  agricultureFuelPage: 'agricultureFuelPage',
+  fuelRetailersPage: 'fuelRetailersPage',
+  onsiteBulkDieselPage: 'onsiteBulkDieselPage',
+  localFuelDistributorsPage: 'localFuelDistributorsPage',
+  contactPage: 'contactPage',
+  fuelStationsPage: 'fuelStationsPage',
+  fuelTransportationPage: 'fuelTransportationPage',
+  careersPage: 'careersPage',
+  communityPage: 'communityPage',
+  atlasCarRacingPage: 'atlasCarRacingPage',
+  commercialDieselPage: 'commercialDieselPage',
+  fuelStationEnquiryPage: 'fuelStationEnquiryPage',
+  productsPage: 'productsPage',
+  storeLocatorPage: 'storeLocatorPage',
+  franchisingPage: 'franchisingPage',
+  fuelPricesPage: 'fuelPricesPage',
+  newsListingPage: 'newsListingPage',
+}
+
+const legacySectionOrder = {
+  contactPage: ['heroSection', 'infoSection', 'formSection', 'ctaBanner'],
+  careersPage: [
+    'heroSection',
+    'whyWorkSection',
+    'cultureSection',
+    'openingsSection',
+    'talentSection',
+    'teamGallerySection',
+    'officeSection',
+    'trainingSection',
+    'eventsSection',
+    'excellenceSection',
+    'applicationSection',
+    'ctaBanner',
+  ],
+  communityPage: [
+    'heroSection',
+    'initiativesSection',
+    'genderEqualitySection',
+    'impactSection',
+    'supportingLocalsSection',
+    'regionalSection',
+    'storySection',
+    'ctaBanner',
+  ],
+  atlasCarRacingPage: [
+    'heroSection',
+    'meetGtrSection',
+    'gallerySection',
+    'pillarsSection',
+    'sponsorshipSection',
+    'pradoSection',
+    'contactSection',
+    'ctaBanner',
+  ],
+  commercialDieselPage: [
+    'heroSection',
+    'industriesSection',
+    'sectorsSection',
+    'bunkerSection',
+    'ownStationSection',
+    'doYouKnowSection',
+    'miningSection',
+    'agricultureSection',
+    'whatWeOfferSection',
+    'transportationSection',
+    'complianceSection',
+    'ctaBanner',
+  ],
+  fuelStationEnquiryPage: [
+    'heroSection',
+    'introSection',
+    'benefitsSection',
+    'journeySection',
+    'trainingSection',
+    'investmentSection',
+    'internationalSection',
+    'ctaBanner',
+  ],
+  productsPage: [
+    'heroSection',
+    'introSection',
+    'statsSection',
+    'servicePromiseSection',
+    'additionalProductsSection',
+    'ctaBanner',
+  ],
+  storeLocatorPage: [
+    'heroSection',
+    'mapSection',
+    'locationsSection',
+    'contactSection',
+    'ctaBanner',
+  ],
+  franchisingPage: [
+    'heroSection',
+    'introSection',
+    'benefitsSection',
+    'journeySection',
+    'trainingSection',
+    'investmentSection',
+    'internationalSection',
+    'ctaBanner',
+  ],
+  fuelPricesPage: [
+    'heroSection',
+    'pricesSection',
+    'trendsSection',
+    'subscribeSection',
+    'ctaBanner',
+  ],
+  newsListingPage: ['heroSection', 'listingSection', 'ctaBanner'],
+}
 
 const buildImageUrl = (ref) => {
   if (!ref) return ''
@@ -30,15 +147,27 @@ const buildImageUrl = (ref) => {
 const isSanityImage = (value) =>
   value &&
   typeof value === 'object' &&
-  value._type === 'image' &&
-  value.asset
+  value._type === 'image'
 
-const normalizeSanityContent = (value) => {
+const normalizeImage = (image) => {
+  const url =
+    image?.asset?.url ||
+    buildImageUrl(image?.asset?._ref) ||
+    (typeof image?.url === 'string' ? image.url : '')
+
+  return {
+    ...image,
+    url,
+    imageUrl: url,
+    alt: image?.alt || '',
+  }
+}
+
+export const normalizeSanityContent = (value) => {
   if (Array.isArray(value)) {
     return value.map((item) => {
       if (!isSanityImage(item)) return normalizeSanityContent(item)
-      const url = item.asset?.url || buildImageUrl(item.asset?._ref)
-      return {...item, url, imageUrl: url, alt: item.alt || ''}
+      return normalizeImage(item)
     })
   }
 
@@ -50,39 +179,96 @@ const normalizeSanityContent = (value) => {
         return [[key, normalizeSanityContent(child)]]
       }
 
-      const url = child.asset?.url || buildImageUrl(child.asset?._ref)
-      const normalizedImage = {...child, url, alt: child.alt || ''}
+      const normalizedImage = normalizeImage(child)
+      const url = normalizedImage.url
+      const baseKey = key.endsWith('Url') ? key.slice(0, -3) : key
       const entries = key.endsWith('Url')
-        ? [[key, url]]
+        ? [[key, url], [`${baseKey}Image`, normalizedImage]]
         : [[key, normalizedImage], [`${key}Url`, url]]
 
-      return [...entries, [`${key}Alt`, child.alt || '']]
+      return [
+        ...entries,
+        [`${key}Alt`, normalizedImage.alt],
+        ...(baseKey !== key ? [[`${baseKey}Alt`, normalizedImage.alt]] : []),
+      ]
     })
   )
 }
 
-const flattenNestedLegacySections = (document) => {
+const addLegacySectionAliases = (document, type) => {
   if (!document) return document
   const flattened = {...document}
+  const nestedAliases = new Set()
+  const configuredOrder = legacySectionOrder[type] || []
+  const remainingSections = Object.keys(document)
+    .filter(
+      (key) =>
+        !configuredOrder.includes(key) &&
+        (key.endsWith('Section') || key === 'ctaBanner')
+    )
+    .sort()
 
-  Object.entries(document).forEach(([key, value]) => {
-    if (key.endsWith('Section') && value && typeof value === 'object') {
-      Object.assign(flattened, value)
+  for (const key of [...configuredOrder, ...remainingSections]) {
+    const value = document[key]
+    if (!value || typeof value !== 'object' || Array.isArray(value)) continue
+
+    for (const [field, fieldValue] of Object.entries(value)) {
+      if (
+        fieldValue !== undefined &&
+        fieldValue !== null &&
+        !nestedAliases.has(field)
+      ) {
+        flattened[field] = fieldValue
+        nestedAliases.add(field)
+      }
     }
-  })
+  }
 
   return flattened
 }
 
-async function getSingleton(type, {flatten = false, revalidate = 60} = {}) {
-  const query = `*[_type == $type][0]{...}`
-  const result = await client.fetch(
-    query,
-    {type},
-    cacheOptions([type], revalidate)
-  )
+export async function fetchSanity({
+  query,
+  params = {},
+  tags = ['sanity'],
+  stega,
+}) {
+  if (cmsRoundtripTest) {
+    return client.fetch(query, params, {
+      cache: 'no-store',
+      perspective: 'published',
+      stega: false,
+      useCdn: false,
+    })
+  }
+
+  const {data} = await sanityFetch({query, params, tags, stega})
+  return data
+}
+
+async function getSingleton(type, {flatten = false, stega} = {}) {
+  const id = singletonIds[type] || type
+  const byIdQuery = `*[_id == $id][0]{...}`
+  let result = await fetchSanity({
+    query: byIdQuery,
+    params: {id},
+    tags: [type, `${type}:${id}`],
+    stega,
+  })
+
+  // Transitional safety for the existing non-canonical footer document.
+  // The migration replaces it with the fixed singleton ID.
+  if (!result) {
+    result = await fetchSanity({
+      query: `*[_type == $type][0]{...}`,
+      params: {type},
+      tags: [type],
+      stega,
+    })
+  }
+
   const normalized = normalizeSanityContent(result)
-  return flatten ? flattenNestedLegacySections(normalized) : normalized
+  return flatten ? addLegacySectionAliases(normalized, type) : normalized
 }
 
 // Cached megaMenu fetch - revalidates every 60 seconds
@@ -90,71 +276,75 @@ export async function getMegaMenu() {
   return getSingleton('megaMenu')
 }
 
-export async function getAboutPage() {
-  return getSingleton("aboutPage")
+export async function getHomePage(options) {
+  return getSingleton('homePage', options)
 }
 
-export async function getServicesPage() {
-  return getSingleton("servicesPage")
+export async function getAboutPage(options) {
+  return getSingleton("aboutPage", options)
 }
 
-export async function getMiningFuelPage() {
-  return getSingleton("miningFuelPage")
+export async function getServicesPage(options) {
+  return getSingleton("servicesPage", options)
 }
 
-export async function getMarineFuelPage() {
-  return getSingleton("marineFuelPage")
+export async function getMiningFuelPage(options) {
+  return getSingleton("miningFuelPage", options)
 }
 
-export async function getAgricultureFuelPage() {
-  return getSingleton("agricultureFuelPage")
+export async function getMarineFuelPage(options) {
+  return getSingleton("marineFuelPage", options)
 }
 
-export async function getFuelRetailersPage() {
-  return getSingleton("fuelRetailersPage")
+export async function getAgricultureFuelPage(options) {
+  return getSingleton("agricultureFuelPage", options)
 }
 
-export async function getOnsiteBulkDieselPage() {
-  return getSingleton("onsiteBulkDieselPage")
+export async function getFuelRetailersPage(options) {
+  return getSingleton("fuelRetailersPage", options)
 }
 
-export async function getLocalFuelDistributorsPage() {
-  return getSingleton("localFuelDistributorsPage")
+export async function getOnsiteBulkDieselPage(options) {
+  return getSingleton("onsiteBulkDieselPage", options)
 }
 
-export async function getContactPage() {
-  return getSingleton('contactPage', {flatten: true})
+export async function getLocalFuelDistributorsPage(options) {
+  return getSingleton("localFuelDistributorsPage", options)
 }
 
-export async function getFuelStationsPage() {
-  return getSingleton("fuelStationsPage")
+export async function getContactPage(options = {}) {
+  return getSingleton('contactPage', {...options, flatten: true})
 }
 
-export async function getFuelTransportationPage() {
-  return getSingleton("fuelTransportationPage")
+export async function getFuelStationsPage(options) {
+  return getSingleton("fuelStationsPage", options)
 }
 
-export async function getCareersPage() {
-  return getSingleton('careersPage', {flatten: true})
+export async function getFuelTransportationPage(options) {
+  return getSingleton("fuelTransportationPage", options)
 }
 
-export async function getCommunityPage() {
-  return getSingleton('communityPage', {flatten: true})
+export async function getCareersPage(options = {}) {
+  return getSingleton('careersPage', {...options, flatten: true})
 }
 
-export async function getAtlasCarRacingPage() {
-  return getSingleton('atlasCarRacingPage', {flatten: true})
+export async function getCommunityPage(options = {}) {
+  return getSingleton('communityPage', {...options, flatten: true})
 }
 
-export async function getCommercialDieselPage() {
-  return getSingleton('commercialDieselPage', {flatten: true})
+export async function getAtlasCarRacingPage(options = {}) {
+  return getSingleton('atlasCarRacingPage', {...options, flatten: true})
 }
 
-export async function getFuelStationEnquiryPage() {
-  return getSingleton('fuelStationEnquiryPage', {flatten: true})
+export async function getCommercialDieselPage(options = {}) {
+  return getSingleton('commercialDieselPage', {...options, flatten: true})
 }
 
-export async function getProductsPage() {
+export async function getFuelStationEnquiryPage(options = {}) {
+  return getSingleton('fuelStationEnquiryPage', {...options, flatten: true})
+}
+
+export async function getProductsPage(options = {}) {
   const productsQuery = `*[_type in [
     "fuelProduct",
     "additionalProduct",
@@ -162,41 +352,66 @@ export async function getProductsPage() {
     "premium95",
     "premium98",
     "diesel"
-  ] && active != false] | order(order asc, name asc){
+  ]] | order(order asc, name asc){
     ...,
-    "name": coalesce(name, title),
-    "subtitle": coalesce(subtitle, tagline),
-    "octane": coalesce(octane, octaneNumber),
+    "name": coalesce(title, name),
+    "title": coalesce(title, name),
+    "subtitle": coalesce(tagline, subtitle),
+    "tagline": coalesce(tagline, subtitle),
+    "octane": coalesce(octaneNumber, octane),
+    "octaneNumber": coalesce(octaneNumber, octane),
+    image{
+      ...,
+      asset->{_id, url, metadata{lqip, dimensions}},
+      alt,
+      hotspot,
+      crop
+    },
     "imageUrl": coalesce(image.asset->url, imageUrl.asset->url),
     "imageAlt": coalesce(image.alt, imageUrl.alt)
   }`
 
   const [page, products] = await Promise.all([
-    getSingleton('productsPage', {flatten: true}),
-    client.fetch(
-      productsQuery,
-      {},
-      cacheOptions(['fuelProduct', 'additionalProduct', 'legacyFuelProduct'])
-    ),
+    getSingleton('productsPage', {...options, flatten: true}),
+    fetchSanity({
+      query: productsQuery,
+      tags: ['fuelProduct', 'additionalProduct', 'legacyFuelProduct'],
+      stega: options.stega,
+    }),
   ])
 
-  const normalized = normalizeSanityContent(products)
+  const normalized = normalizeSanityContent(products) || []
+  const fuelProductDocuments = normalized.filter(
+    (product) => product._type !== 'additionalProduct'
+  )
+  const additionalProductDocuments = normalized.filter(
+    (product) => product._type === 'additionalProduct'
+  )
+
   return {
     ...page,
-    products: normalized.filter((product) => product._type !== 'additionalProduct'),
-    additionalProducts: normalized.filter((product) => product._type === 'additionalProduct'),
+    products: fuelProductDocuments.length
+      ? fuelProductDocuments.filter((product) => product.active !== false)
+      : undefined,
+    additionalProducts: additionalProductDocuments.length
+      ? additionalProductDocuments.filter((product) => product.active !== false)
+      : undefined,
   }
 }
 
-export async function getStoreLocatorPage() {
-  return getSingleton('storeLocatorPage', {flatten: true})
+export async function getStoreLocatorPage(options = {}) {
+  return getSingleton('storeLocatorPage', {...options, flatten: true})
 }
 
-export async function getSiteSettings() {
-  return getSingleton('siteSettings')
+export async function getSiteSettings(options) {
+  return getSingleton('siteSettings', options)
 }
 
-export async function getNewsPosts() {
+export async function getThemeSettings(options) {
+  return getSingleton('themeSettings', options)
+}
+
+export async function getNewsPosts(options = {}) {
   const query = `*[_type == "newsPost"] | order(publishedAt desc){
     _id,
     title,
@@ -205,14 +420,24 @@ export async function getNewsPosts() {
     publishedAt,
     author,
     category,
-    "imageUrl": mainImage.asset->url,
-    "imageAlt": mainImage.alt
+    mainImage{
+      ...,
+      asset->{_id, url, metadata{lqip, dimensions}},
+      alt,
+      hotspot,
+      crop
+    }
   }`
 
-  return await client.fetch(query, {}, cacheOptions(['newsPost']))
+  const posts = await fetchSanity({
+    query,
+    tags: ['newsPost'],
+    stega: options.stega,
+  })
+  return normalizeSanityContent(posts)
 }
 
-export async function getNewsPost(slug) {
+export async function getNewsPost(slug, options = {}) {
   const query = `*[_type == "newsPost" && slug.current == $slug][0]{
     _id,
     title,
@@ -221,24 +446,69 @@ export async function getNewsPost(slug) {
     publishedAt,
     author,
     category,
-    "imageUrl": mainImage.asset->url,
-    "imageAlt": mainImage.alt,
-    body
+    mainImage{
+      ...,
+      asset->{_id, url, metadata{lqip, dimensions}},
+      alt,
+      hotspot,
+      crop
+    },
+    seo{
+      ...,
+      image{
+        ...,
+        image{
+          ...,
+          asset->{_id, url, metadata{lqip, dimensions}},
+          hotspot,
+          crop
+        }
+      }
+    },
+    body[]{
+      ...,
+      _type == "image" => {
+        ...,
+        asset->{_id, url, metadata{lqip, dimensions}}
+      },
+      _type == "cmsVideo" => {
+        ...,
+        file{
+          ...,
+          asset->{_id, url, mimeType, originalFilename}
+        },
+        poster{
+          ...,
+          image{
+            ...,
+            asset->{_id, url, metadata{lqip, dimensions}},
+            hotspot,
+            crop
+          }
+        }
+      }
+    }
   }`
 
-  return await client.fetch(query, {slug}, cacheOptions(['newsPost']))
+  const post = await fetchSanity({
+    query,
+    params: {slug},
+    tags: ['newsPost', `newsPost:${slug}`],
+    stega: options.stega,
+  })
+  return normalizeSanityContent(post)
 }
 
-export async function getFranchisingPage() {
-  return getSingleton('franchisingPage', {flatten: true})
+export async function getFranchisingPage(options = {}) {
+  return getSingleton('franchisingPage', {...options, flatten: true})
 }
 
-export async function getFuelPricesPage() {
-  return getSingleton('fuelPricesPage', {flatten: true})
+export async function getFuelPricesPage(options = {}) {
+  return getSingleton('fuelPricesPage', {...options, flatten: true})
 }
 
-export async function getNewsListingPage() {
-  return getSingleton('newsListingPage', {flatten: true})
+export async function getNewsListingPage(options = {}) {
+  return getSingleton('newsListingPage', {...options, flatten: true})
 }
 
 export async function getFooterNavigation() {
