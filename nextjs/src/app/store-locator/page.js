@@ -28,18 +28,11 @@ const fallbackData = {
     eyebrow: 'Find Us',
     heading: 'Our Location',
     description: "Visit our Kwinana Beach location for all your fuel needs. We're conveniently located and ready to serve you.",
-    locationName: 'Atlas Fuel Kwinana Beach',
-    address: '1 Mandurah Road, Kwinana WA 6167',
-    mapEmbedUrl: '',
-    mapLink: 'https://maps.google.com/?q=1+Mandurah+Road,+Kwinana+WA+6167',
-    mapLinkLabel: 'Open in Google Maps',
-    phone: '+61-8-6377-7644',
-    email: 'info@atlasfuel.com.au',
-    hours: 'Mon-Fri: 8am - 7pm',
+    defaultZoom: 15,
+    mapAriaLabel: 'Interactive map showing Atlas Fuel store locations',
+    markerHintText: 'Select a marker to view store details',
     mapLoadingText: 'Interactive map loading...',
-    phoneLabel: 'Phone',
-    emailLabel: 'Email',
-    hoursLabel: 'Hours',
+    mapUnavailableText: 'No store coordinates are available yet.',
   },
   locationsSection: {
     eyebrow: 'Station Details',
@@ -53,9 +46,18 @@ const fallbackData = {
     phoneLabel: 'Phone',
     emailLabel: 'Email',
     hoursLabel: 'Hours',
+    dialogEyebrow: 'Atlas Fuel Station',
+    closeDialogLabel: 'Close store details',
     locations: [{
+      _key: 'kwinana-beach',
       name: 'Kwinana Beach',
+      badge: 'Atlas Fuel Station',
+      summary: 'Convenient fuel, fleet and commercial services at our Kwinana Beach location.',
+      imageUrl: '/images/store-locator.jpg',
       address: '1 Mandurah Road, Kwinana WA 6167',
+      latitude: -32.2358956,
+      longitude: 115.7805562,
+      showOnMap: true,
       phone: '+61-8-6377-7644',
       email: 'info@atlasfuel.com.au',
       hours: 'Mon-Fri: 8am - 7pm',
@@ -107,7 +109,7 @@ export default async function StoreLocatorPage() {
     <>
       
         <LocatorHero data={heroData} />
-        <LocationMap data={data.mapSection} />
+        <LocationMap data={data.mapSection} locationsData={data.locationsSection} />
         <LocationDetail data={data.locationsSection} />
         <ContactSection data={data.contactSection} />
         <CTABanner data={settings} />

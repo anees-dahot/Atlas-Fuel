@@ -170,6 +170,15 @@ const notImmediatelyVisibleNames = new Set([
   'seoImage',
 ])
 
+const conditionallyVisiblePaths = [
+  'storeLocatorPage.locationsSection.locations.0.badge',
+  'storeLocatorPage.locationsSection.locations.0.summary',
+  'storeLocatorPage.locationsSection.locations.0.image',
+  'storeLocatorPage.locationsSection.locations.1.badge',
+  'storeLocatorPage.locationsSection.locations.1.summary',
+  'storeLocatorPage.locationsSection.locations.1.image',
+]
+
 const hash = (value) => {
   let result = 2166136261
   for (const character of value) {
@@ -243,7 +252,9 @@ const buildValue = (field, path, assetId, evidence, arrayIndex = 0) => {
     field: field.name || path.at(-1),
     type: field.type,
     marker,
-    immediate: !notImmediatelyVisibleNames.has(field.name),
+    immediate:
+      !notImmediatelyVisibleNames.has(field.name) &&
+      !conditionallyVisiblePaths.includes(path.join('.')),
   }
 
   switch (field.type) {
@@ -274,6 +285,9 @@ const buildValue = (field, path, assetId, evidence, arrayIndex = 0) => {
       return value
     }
     case 'number': {
+      if (field.name === 'latitude') return -32.2358956 + (arrayIndex * 0.01)
+      if (field.name === 'longitude') return 115.7805562 + (arrayIndex * 0.01)
+      if (field.name === 'defaultZoom') return 15
       if (path[0] === 'themeSettings') {
         const value = field.name === 'headingWeight' ? 800 : 300
         evidence.push({
@@ -540,9 +554,14 @@ const restoreBatch = async (target, backup, topFieldName, firstMarker) => {
 const emergencyRestore = async (target, backup) => {
   if (!backup) {
     await deleteDocument(target.id)
-    return
+  } else {
+    await createOrReplaceDocument(cleanDocument(backup))
   }
-  await createOrReplaceDocument(cleanDocument(backup))
+  await signedRevalidate({
+    _id: target.id,
+    _type: target.type,
+    slug: target.type === 'newsPost' ? {current: 'cms-roundtrip-verification'} : undefined,
+  })
 }
 
 const report = {

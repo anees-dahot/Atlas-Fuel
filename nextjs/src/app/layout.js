@@ -1,6 +1,7 @@
 import localFont from 'next/font/local'
 import {draftMode} from 'next/headers'
 import VisualEditing from 'next-sanity/visual-editing/client-component'
+import 'leaflet/dist/leaflet.css'
 import '../styles/global.css'
 import HeaderServer from '@/components/layout/HeaderServer'
 import FooterServer from '@/components/layout/FooterServer'

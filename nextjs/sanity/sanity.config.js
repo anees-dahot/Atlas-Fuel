@@ -2,11 +2,13 @@ import { defineConfig } from 'sanity'
 import { structureTool } from 'sanity/structure'
 import { presentationTool } from 'sanity/presentation'
 import { visionTool } from '@sanity/vision'
+import {HelpCircleIcon} from '@sanity/icons'
 import { schemaTypes } from './schemaTypes'
 import { isSingleton } from './schemaTypes/singletons'
 import structure from './structure'
 import {presentationResolve} from './presentation/resolve'
 import AtlasFuelLogo from './studio/AtlasFuelLogo'
+import EditorGuide from './studio/EditorGuide'
 
 const previewUrl =
   process.env.SANITY_STUDIO_PREVIEW_URL ||
@@ -40,6 +42,14 @@ export default defineConfig({
     ...(process.env.NODE_ENV === 'development'
       ? [visionTool({defaultApiVersion: '2024-01-01'})]
       : []),
+  ],
+  tools: [
+    {
+      name: 'start-here',
+      title: 'Start Here',
+      icon: HelpCircleIcon,
+      component: EditorGuide,
+    },
   ],
   studio: {
     components: {

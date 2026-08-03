@@ -113,7 +113,6 @@ export default function structure(S) {
       schemaType: 'fuelStationEnquiryPage',
     }),
     singleton(S, {title: 'Products', schemaType: 'productsPage'}),
-    singleton(S, {title: 'Store Locator', schemaType: 'storeLocatorPage'}),
     singleton(S, {title: 'Franchising', schemaType: 'franchisingPage'}),
     singleton(S, {title: 'Fuel Prices', schemaType: 'fuelPricesPage'}),
     singleton(S, {title: 'News Listing', schemaType: 'newsListingPage'}),
@@ -126,6 +125,11 @@ export default function structure(S) {
       ...websiteSettings,
       S.divider(),
       singleton(S, {title: 'Home Page', schemaType: 'homePage', icon: HomeIcon}),
+      singleton(S, {
+        title: 'Store Locator and Map',
+        schemaType: 'storeLocatorPage',
+        icon: PinIcon,
+      }),
       group(S, {
         id: 'main-pages',
         title: 'Main Pages',
