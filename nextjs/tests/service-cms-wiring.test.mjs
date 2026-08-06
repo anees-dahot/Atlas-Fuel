@@ -38,12 +38,13 @@ test('shared service content, links, images and arrays are data-driven', () => {
   assert.doesNotMatch(timeline, /<img/)
 })
 
-test('service collections preserve authored empty arrays and CMS images keep crop data', () => {
+test('service collections preserve authored empty arrays and CMS images keep configurable crop data', () => {
   const showcase = read('src/components/services/ServicesShowcase.js')
   const industries = read('src/components/services/VisualIndustriesGrid.js')
   const onsite = read('src/components/services/OnsiteIntro.js')
   const marine = read('src/components/marine/MarineIntro.js')
   const cmsImage = read('src/components/common/CmsImage.js')
+  const certifications = read('src/components/home/Certifications.js')
 
   assert.match(showcase, /Array\.isArray\(data\.services\)/)
   assert.match(industries, /Array\.isArray\(data\.industries\)/)
@@ -52,7 +53,10 @@ test('service collections preserve authored empty arrays and CMS images keep cro
   assert.doesNotMatch(showcase, /<img/)
   assert.doesNotMatch(onsite, /<img/)
   assert.doesNotMatch(marine, /<img/)
-  assert.match(cmsImage, /resolveSource\(imageValue, width, height\)/)
+  assert.match(cmsImage, /resolveSource\(imageValue, width, height, fit\)/)
+  assert.match(cmsImage, /fit = 'crop'/)
+  assert.match(cmsImage, /\.fit\(fit\)/)
+  assert.match(certifications, /fit="max"/)
   assert.match(cmsImage, /const imageValue = value \?\? src/)
   assert.match(cmsImage, /imageValue == null\s*\? fallbackSrc/)
   assert.doesNotMatch(cmsImage, /resolveSource\(imageValue[^)]*\)\s*\|\|\s*fallbackSrc/)

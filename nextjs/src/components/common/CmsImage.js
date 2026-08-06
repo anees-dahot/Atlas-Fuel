@@ -11,7 +11,7 @@ const validString = (value) =>
   value.length > 0 &&
   value !== '[object Object]'
 
-function resolveSource(value, width, height) {
+function resolveSource(value, width, height, fit) {
   if (!value) return ''
   if (validString(value)) return value
 
@@ -19,7 +19,7 @@ function resolveSource(value, width, height) {
     try {
       let image = builder.image(value).auto('format')
       if (width) image = image.width(width)
-      if (height) image = image.height(height).fit('crop')
+      if (height) image = image.height(height).fit(fit)
       return image.url()
     } catch {
       return validString(value?.url) ? value.url : ''
@@ -46,11 +46,12 @@ export default function CmsImage({
   style,
   priority = false,
   quality = 85,
+  fit = 'crop',
 }) {
   const imageValue = value ?? src
   const resolvedSrc = imageValue == null
     ? fallbackSrc
-    : resolveSource(imageValue, width, height)
+    : resolveSource(imageValue, width, height, fit)
 
   if (!resolvedSrc) return null
 
