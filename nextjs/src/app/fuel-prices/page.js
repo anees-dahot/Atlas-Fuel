@@ -44,31 +44,6 @@ const fallbackData = {
 }
 
 const fallbackPriceData = {
-  lastUpdated: 'Last updated: Just now',
-  prices: [
-    {
-      state: 'Western Australia',
-      locations: [
-        { name: 'Kwinana', diesel: '168.45', premium: '172.95', unleaded: '165.20' },
-        { name: 'Perth Metro', diesel: '169.80', premium: '174.30', unleaded: '166.55' },
-        { name: 'Fremantle', diesel: '170.15', premium: '174.65', unleaded: '166.90' },
-      ],
-    },
-    {
-      state: 'Queensland',
-      locations: [
-        { name: 'Brisbane', diesel: '171.20', premium: '175.70', unleaded: '167.95' },
-        { name: 'Gold Coast', diesel: '172.50', premium: '177.00', unleaded: '169.25' },
-      ],
-    },
-    {
-      state: 'Victoria',
-      locations: [
-        { name: 'Melbourne', diesel: '169.80', premium: '174.30', unleaded: '166.55' },
-        { name: 'Geelong', diesel: '170.30', premium: '174.80', unleaded: '167.05' },
-      ],
-    },
-  ],
   subscribe: {
     form: {
       emailPlaceholder: 'Enter your email address',
@@ -123,9 +98,7 @@ export default async function FuelPricesPage() {
   const priceData = {
     heading: data.heading,
     eyebrow: sanity?.pricesSection?.eyebrow ?? fallbackData.pricesEyebrow,
-    lastUpdated: liveRates?.pricing_date
-      ? `Last updated: ${liveRates.pricing_date}`
-      : (data.lastUpdated ?? fallbackPriceData.lastUpdated),
+    lastUpdated: liveRates?.pricing_date ? `Last updated: ${liveRates.pricing_date}` : null,
     columnLabels: {
       location: sanity?.pricesSection?.locationColumnLabel ?? fallbackData.locationColumnLabel,
       diesel: sanity?.pricesSection?.dieselColumnLabel ?? fallbackData.dieselColumnLabel,
@@ -134,9 +107,7 @@ export default async function FuelPricesPage() {
       unleaded: sanity?.pricesSection?.unleadedColumnLabel ?? fallbackData.unleadedColumnLabel,
       pulp95: sanity?.pricesSection?.pulp95ColumnLabel ?? 'Pulp 95 (cpl)',
     },
-    prices: livePriceGroups?.length
-      ? livePriceGroups
-      : (Array.isArray(data.prices) ? data.prices : fallbackPriceData.prices),
+    prices: livePriceGroups?.length ? livePriceGroups : null,
     subscribe: {
       heading: data.subscribeHeading,
       description: data.subscribeDescription,
@@ -164,40 +135,47 @@ export default async function FuelPricesPage() {
               >
                 {priceData.heading}
               </h2>
-              <p className="text-gray-600">{priceData.lastUpdated}</p>
+              {priceData.lastUpdated && <p className="text-gray-600">{priceData.lastUpdated}</p>}
             </div>
 
-            {priceData.prices.map((stateData, index) => (
-              <div key={index} className="mb-12">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">{stateData.state}</h3>
-                <div className="overflow-x-auto">
-                  <table className="w-full border-collapse">
-                    <thead>
-                      <tr className="bg-primary text-white">
-                        <th className="px-6 py-4 text-left font-semibold">{priceData.columnLabels.location}</th>
-                        <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.diesel}</th>
-                        <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.premium}</th>
-                        <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.e10}</th>
-                        <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.unleaded}</th>
-                        <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.pulp95}</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {stateData.locations.map((location, locIndex) => (
-                        <tr key={locIndex} className={locIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                          <td className="px-6 py-4 font-medium">{location.name}</td>
-                          <td className="px-6 py-4 text-right">{location.diesel}</td>
-                          <td className="px-6 py-4 text-right">{location.premium}</td>
-                          <td className="px-6 py-4 text-right">{location.e10 ?? '--'}</td>
-                          <td className="px-6 py-4 text-right">{location.unleaded}</td>
-                          <td className="px-6 py-4 text-right">{location.pulp95 ?? '--'}</td>
+            {priceData.prices ? (
+              priceData.prices.map((stateData, index) => (
+                <div key={index} className="mb-12">
+                  <h3 className="text-2xl font-bold text-gray-900 mb-6">{stateData.state}</h3>
+                  <div className="overflow-x-auto">
+                    <table className="w-full border-collapse">
+                      <thead>
+                        <tr className="bg-primary text-white">
+                          <th className="px-6 py-4 text-left font-semibold">{priceData.columnLabels.location}</th>
+                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.diesel}</th>
+                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.premium}</th>
+                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.e10}</th>
+                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.unleaded}</th>
+                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.pulp95}</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody>
+                        {stateData.locations.map((location, locIndex) => (
+                          <tr key={locIndex} className={locIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                            <td className="px-6 py-4 font-medium">{location.name}</td>
+                            <td className="px-6 py-4 text-right">{location.diesel}</td>
+                            <td className="px-6 py-4 text-right">{location.premium}</td>
+                            <td className="px-6 py-4 text-right">{location.e10 ?? '--'}</td>
+                            <td className="px-6 py-4 text-right">{location.unleaded}</td>
+                            <td className="px-6 py-4 text-right">{location.pulp95 ?? '--'}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            ) : (
+              <p className="text-gray-600 py-8">
+                Live pricing is temporarily unavailable. Please check back shortly or{' '}
+                <a href="/contact" className="text-primary font-semibold underline">contact us</a> for current rates.
+              </p>
+            )}
           </div>
         </section>
 
