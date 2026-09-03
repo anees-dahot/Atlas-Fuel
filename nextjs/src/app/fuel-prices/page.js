@@ -1,7 +1,7 @@
 import { getFuelPricesPage, getSiteSettings } from '@/lib/sanity'
 import { mergeWithFallback } from '@/lib/fallback'
 import { mapPageCta } from '@/lib/contentFallbacks'
-import { getLiveFuelRates, mapFuelRatesToPriceGroups } from '@/lib/fuelRates'
+import { getLiveFuelRates, mapFuelRatesToRows } from '@/lib/fuelRates'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import FuelPriceSubscribeForm from './FuelPriceSubscribeForm'
@@ -26,14 +26,6 @@ const fallbackData = {
   heroDescriptionColor: 'var(--cms-background)',
   heroDescriptionSize: '18px',
   heroImageUrl: '/images/atlas-fuel-hero-1c.webp',
-  heading: 'Current Fuel Prices',
-  headingColor: 'var(--cms-text)',
-  headingSize: '48px',
-  pricesEyebrow: 'Live Rates',
-  locationColumnLabel: 'Location',
-  dieselColumnLabel: 'Diesel (cpl)',
-  premiumColumnLabel: 'Premium (cpl)',
-  unleadedColumnLabel: 'Unleaded (cpl)',
   subscribeHeading: 'Subscribe to Price Alerts',
   subscribeHeadingColor: 'var(--cms-background)',
   subscribeHeadingSize: '48px',
@@ -79,7 +71,7 @@ export default async function FuelPricesPage() {
 
   const data = mergeWithFallback(fallbackData, sanity)
   const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
-  const livePriceGroups = liveRates ? mapFuelRatesToPriceGroups(liveRates) : null
+  const liveRows = liveRates ? mapFuelRatesToRows(liveRates) : null
 
   const hero = {
     subtitle: data.heroSubtitle,
@@ -96,18 +88,10 @@ export default async function FuelPricesPage() {
   }
 
   const priceData = {
-    heading: data.heading,
-    eyebrow: sanity?.pricesSection?.eyebrow ?? fallbackData.pricesEyebrow,
-    lastUpdated: liveRates?.pricing_date ? `Last updated: ${liveRates.pricing_date}` : null,
-    columnLabels: {
-      location: sanity?.pricesSection?.locationColumnLabel ?? fallbackData.locationColumnLabel,
-      diesel: sanity?.pricesSection?.dieselColumnLabel ?? fallbackData.dieselColumnLabel,
-      premium: sanity?.pricesSection?.premiumColumnLabel ?? fallbackData.premiumColumnLabel,
-      e10: sanity?.pricesSection?.e10ColumnLabel ?? 'Blended E10 (cpl)',
-      unleaded: sanity?.pricesSection?.unleadedColumnLabel ?? fallbackData.unleadedColumnLabel,
-      pulp95: sanity?.pricesSection?.pulp95ColumnLabel ?? 'Pulp 95 (cpl)',
-    },
-    prices: livePriceGroups?.length ? livePriceGroups : null,
+    title: liveRates?.pricing_date
+      ? `Atlas Fuel Australia Terminal Gate Pricing (TGP) at ${liveRates.pricing_date}`
+      : 'Atlas Fuel Australia Terminal Gate Pricing (TGP)',
+    rows: liveRows?.length ? liveRows : null,
     subscribe: {
       heading: data.subscribeHeading,
       description: data.subscribeDescription,
@@ -124,54 +108,41 @@ export default async function FuelPricesPage() {
         {/* Current Prices Section */}
         <section className="py-16 lg:py-24 bg-white">
           <div className="max-w-7xl mx-auto px-6">
-            <div className="mb-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-0.5 bg-primary flex-shrink-0" />
-                <span className="text-primary text-[11px] font-bold uppercase tracking-[0.2em]">{priceData.eyebrow}</span>
-              </div>
-              <h2
-                className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 uppercase tracking-wide leading-tight mb-4"
-                style={{color: data.headingColor, fontSize: data.headingSize}}
-              >
-                {priceData.heading}
-              </h2>
-              {priceData.lastUpdated && <p className="text-gray-600">{priceData.lastUpdated}</p>}
-            </div>
+            <h2 className="font-heading text-2xl md:text-3xl font-bold text-gray-900 text-center mb-8">
+              {priceData.title}
+            </h2>
 
-            {priceData.prices ? (
-              priceData.prices.map((stateData, index) => (
-                <div key={index} className="mb-12">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-6">{stateData.state}</h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="bg-primary text-white">
-                          <th className="px-6 py-4 text-left font-semibold">{priceData.columnLabels.location}</th>
-                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.diesel}</th>
-                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.premium}</th>
-                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.e10}</th>
-                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.unleaded}</th>
-                          <th className="px-6 py-4 text-right font-semibold">{priceData.columnLabels.pulp95}</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {stateData.locations.map((location, locIndex) => (
-                          <tr key={locIndex} className={locIndex % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                            <td className="px-6 py-4 font-medium">{location.name}</td>
-                            <td className="px-6 py-4 text-right">{location.diesel}</td>
-                            <td className="px-6 py-4 text-right">{location.premium}</td>
-                            <td className="px-6 py-4 text-right">{location.e10 ?? '--'}</td>
-                            <td className="px-6 py-4 text-right">{location.unleaded}</td>
-                            <td className="px-6 py-4 text-right">{location.pulp95 ?? '--'}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-              ))
+            {priceData.rows ? (
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse">
+                  <thead>
+                    <tr className="bg-primary text-white">
+                      <th className="px-6 py-4 text-center font-semibold">State</th>
+                      <th className="px-6 py-4 text-center font-semibold">City</th>
+                      <th className="px-6 py-4 text-center font-semibold">Diesel</th>
+                      <th className="px-6 py-4 text-center font-semibold">Premium - 98</th>
+                      <th className="px-6 py-4 text-center font-semibold">Blended E10</th>
+                      <th className="px-6 py-4 text-center font-semibold">Unleaded 91 (ULP)</th>
+                      <th className="px-6 py-4 text-center font-semibold">Pulp - 95</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {priceData.rows.map((row, index) => (
+                      <tr key={`${row.state}-${row.city}`} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
+                        <td className="px-6 py-4 text-center font-medium">{row.state}</td>
+                        <td className="px-6 py-4 text-center">{row.city}</td>
+                        <td className="px-6 py-4 text-center">{row.diesel ?? '--'}</td>
+                        <td className="px-6 py-4 text-center">{row.premium ?? '--'}</td>
+                        <td className="px-6 py-4 text-center">{row.e10 ?? '--'}</td>
+                        <td className="px-6 py-4 text-center">{row.unleaded ?? '--'}</td>
+                        <td className="px-6 py-4 text-center">{row.pulp95 ?? '--'}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             ) : (
-              <p className="text-gray-600 py-8">
+              <p className="text-gray-600 py-8 text-center">
                 Live pricing is temporarily unavailable. Please check back shortly or{' '}
                 <a href="/contact" className="text-primary font-semibold underline">contact us</a> for current rates.
               </p>

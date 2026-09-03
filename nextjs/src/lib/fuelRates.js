@@ -8,10 +8,8 @@ const PRODUCT_TO_KEY = {
   'Pulp - 95': 'pulp95',
 }
 
-// Prices from Fuel Rates API are per-litre in dollars (e.g. 2.3281); the site displays cents-per-litre.
-function toCpl(value) {
-  if (typeof value !== 'number') return typeof value === 'string' ? value : '--'
-  return (value * 100).toFixed(2)
+function formatPrice(value) {
+  return typeof value === 'number' ? String(value) : '--'
 }
 
 export async function getLiveFuelRates() {
@@ -24,8 +22,7 @@ export async function getLiveFuelRates() {
   return json
 }
 
-export function mapFuelRatesToPriceGroups(payload) {
-  const byState = new Map()
+export function mapFuelRatesToRows(payload) {
   const byCity = new Map()
 
   for (const row of payload.data) {
@@ -33,16 +30,14 @@ export function mapFuelRatesToPriceGroups(payload) {
     if (!row?.state_name || !row?.city_name || !key) continue
 
     const cityKey = `${row.state_name}::${row.city_name}`
-    let location = byCity.get(cityKey)
-    if (!location) {
-      location = { name: row.city_name }
-      byCity.set(cityKey, location)
-      if (!byState.has(row.state_name)) byState.set(row.state_name, [])
-      byState.get(row.state_name).push(location)
+    let entry = byCity.get(cityKey)
+    if (!entry) {
+      entry = { state: row.state_name, city: row.city_name }
+      byCity.set(cityKey, entry)
     }
 
-    location[key] = toCpl(row.final_price)
+    entry[key] = formatPrice(row.final_price)
   }
 
-  return Array.from(byState.entries()).map(([state, locations]) => ({ state, locations }))
+  return Array.from(byCity.values()).sort((a, b) => a.state.localeCompare(b.state))
 }
