@@ -1,4 +1,12 @@
-const FUEL_RATES_API_URL = 'https://globalcrm.atlasfuel.com.au/api/fuel-rates/table'
+const FUEL_RATES_API_URL = 'https://globalcrm.atlasfuel.com.au/api/fuel-rates'
+
+const PRODUCT_TO_KEY = {
+  'Diesel': 'diesel',
+  'Premium - 98': 'premium',
+  'Blended E10': 'e10',
+  'Unleaded 91 (ULP)': 'unleaded',
+  'Pulp - 95': 'pulp95',
+}
 
 // Prices from Fuel Rates API are per-litre in dollars (e.g. 2.3281); the site displays cents-per-litre.
 function toCpl(value) {
@@ -18,18 +26,22 @@ export async function getLiveFuelRates() {
 
 export function mapFuelRatesToPriceGroups(payload) {
   const byState = new Map()
+  const byCity = new Map()
 
   for (const row of payload.data) {
-    if (!row?.state) continue
-    if (!byState.has(row.state)) byState.set(row.state, [])
-    byState.get(row.state).push({
-      name: row.city,
-      diesel: toCpl(row['Diesel']),
-      premium: toCpl(row['Premium - 98']),
-      e10: toCpl(row['Blended E10']),
-      unleaded: toCpl(row['Unleaded 91 (ULP)']),
-      pulp95: toCpl(row['Pulp - 95']),
-    })
+    const key = PRODUCT_TO_KEY[row?.product_name]
+    if (!row?.state_name || !row?.city_name || !key) continue
+
+    const cityKey = `${row.state_name}::${row.city_name}`
+    let location = byCity.get(cityKey)
+    if (!location) {
+      location = { name: row.city_name }
+      byCity.set(cityKey, location)
+      if (!byState.has(row.state_name)) byState.set(row.state_name, [])
+      byState.get(row.state_name).push(location)
+    }
+
+    location[key] = toCpl(row.final_price)
   }
 
   return Array.from(byState.entries()).map(([state, locations]) => ({ state, locations }))
