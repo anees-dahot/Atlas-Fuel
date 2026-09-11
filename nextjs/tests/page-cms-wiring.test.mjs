@@ -48,7 +48,43 @@ test('Fuel Transportation renders every authored image and hides blank CTAs', ()
   assert.doesNotMatch(client, /fleetGalleryImages\.slice/)
   assert.match(client, /data\.heroCtaText && data\.heroCtaLink/)
   assert.match(client, /data\.excellenceCtaText && data\.excellenceCtaLink/)
+  assert.match(client, /fit="crop"/)
+  assert.match(client, /object-cover object-center/)
+  assert.doesNotMatch(client, /gsap\.to\('\.hero-image'/)
   assert.doesNotMatch(client, /<img/)
+})
+
+test('Hero images crop responsively while the header logo remains fully visible', () => {
+  const homeHero = read('src/components/home/Hero.js')
+  const pageHero = read('src/components/shared/PageHero.js')
+  const header = read('src/components/layout/Header.js')
+
+  assert.match(homeHero, /fit="crop"/)
+  assert.match(homeHero, /minHeight: '80svh'/)
+  assert.match(pageHero, /fit="crop"/)
+  assert.match(pageHero, /object-cover object-center/)
+  assert.match(header, /fit="max"/)
+  assert.match(header, /object-contain object-center/)
+  assert.match(header, /object-contain object-center/)
+  assert.doesNotMatch(pageHero, /-inset-\[10%\]/)
+  assert.doesNotMatch(pageHero, /gsap\.to\(bgRef/)
+  assert.match(homeHero, /i === 1 \? data\?\.titleLine2Color : "text-white"/)
+})
+
+test('Homepage content images use responsive fixed media frames', () => {
+  const paths = [
+    'src/components/home/About.js',
+    'src/components/home/FeatureBoxes.js',
+    'src/components/home/NewsSection.js',
+    'src/components/home/People.js',
+    'src/components/home/Vision.js',
+    'src/components/home/WhatWeDo.js',
+  ]
+
+  for (const path of paths) {
+    assert.match(read(path), /object-cover/, `${path} must use responsive cover images`)
+    assert.doesNotMatch(read(path), /adaptive/, `${path} must not resize the layout from uploaded dimensions`)
+  }
 })
 
 test('Store Locator connects Sanity stores to interactive map markers and dialogs', () => {

@@ -80,10 +80,12 @@ const defaultNavItems = [
         links: [
           { label: 'Store Locator', excerpt: 'Find your nearest Atlas Fuel station with real-time availability.', href: '/store-locator', image: '/images/hero-trucks.jpg' },
           { label: 'Station Services', excerpt: 'More than just fuel — discover our full range of services.', href: '/fuel-stations', image: '/images/what-we-do-fuel-transportation.webp' },
-          { label: 'Franchise Opportunities', excerpt: 'Partner with us to own and operate an Atlas Fuel station.', href: '/franchising', image: '/images/what-we-do-mining-civil.webp' },
+          { label: 'Station Opportunities', excerpt: 'Partner with us to own and operate an Atlas Fuel station.', href: '/station-opportunities', image: '/images/what-we-do-mining-civil.webp' },
           { label: 'Station Enquiry', excerpt: 'Enquire about becoming an Atlas Fuel station partner.', href: '/fuel-station-enquiry', image: '/images/hero-trucks.jpg' },
           { label: 'Fuel Products', excerpt: 'Premium diesel, petrol, and specialty fuels for every need.', href: '/products', image: '/images/what-we-do-fuel-transportation.webp' },
           { label: 'Fuel Prices', excerpt: 'Check current fuel prices at our stations.', href: '/fuel-prices', image: '/images/what-we-do-mining-civil.webp' },
+          { label: 'Fuel Card', excerpt: 'One card for your fleet — competitive pricing and full spend control.', href: '/fuel-card', image: '/images/atlas-fuel-hero-2.webp' },
+          { label: 'Fuel Testing Laboratory', excerpt: 'Independent fuel quality testing and compliance certification.', href: '/fuel-testing-laboratory', image: '/images/atlas-fuel-hero-2.webp' },
         ],
       },
     ],
@@ -245,7 +247,8 @@ function MegaMenu({ item, visible }) {
                       alt={item.featured.imageAlt || item.featured.label}
                       fill
                       sizes="96px"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      ratio="3/2"
+          className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   </span>
                   <span className="text-sm font-semibold text-gray-900 transition-colors group-hover:text-primary">
@@ -315,7 +318,11 @@ function MegaMenu({ item, visible }) {
                                   alt={link.imageAlt || link.label || ''}
                                   fill
                                   sizes="(min-width: 1024px) 240px, 100vw"
-                                  className="block-link__image block-link__image--vertical object-cover transition-transform duration-500 group-hover:scale-105"
+                                  ratio="10/7"
+          className={cn(
+                                    'block-link__image block-link__image--vertical transition-transform duration-500 group-hover:scale-105',
+                                    link._key === 'storeLocator' ? 'object-contain' : 'object-cover'
+                                  )}
                                 />
                               </figure>
                               <div className="block-link__content block-link__content--vertical">
@@ -351,9 +358,6 @@ function MegaMenu({ item, visible }) {
           </div>
         </div>
       </div>
-
-      {/* Bottom shadow */}
-      <div className="h-6 bg-gradient-to-b from-white/5 to-transparent pointer-events-none" />
     </div>
   )
 }
@@ -490,15 +494,26 @@ export default function Header({ navItems: propNavItems, siteSettings }) {
           <div className={cn('flex items-center justify-between gap-8 transition-all duration-300', isScrolled ? 'h-16' : 'h-[72px]')}>
 
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0 z-10" onClick={() => setActiveMenu(null)}>
+            <Link
+              href="/"
+              className={cn(
+                'relative flex-shrink-0 z-10 transition-all duration-300',
+                isScrolled ? 'h-9 w-28' : 'h-11 w-32'
+              )}
+              onClick={() => setActiveMenu(null)}
+            >
               <CmsImage
                 value={siteSettings?.logo}
                 src={siteSettings?.logoUrl}
                 fallbackSrc="/images/logo.png"
                 alt={siteSettings?.logoAlt ?? siteSettings?.logo?.alt ?? siteSettings?.siteName ?? 'Atlas Fuel'}
-                width={180}
-                height={72}
-                className={cn('w-auto transition-all duration-300', isScrolled ? 'h-9' : 'h-11')}
+                width={320}
+                height={180}
+                fit="max"
+                fill
+                sizes="128px"
+                className="object-contain object-center"
+                style={{ objectFit: 'contain' }}
               />
             </Link>
 

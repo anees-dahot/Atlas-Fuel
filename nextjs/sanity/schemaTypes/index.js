@@ -48,11 +48,12 @@ const styledTextFields = (name, title, type = 'string', extra = {}) => [
   {name: `${name}ShadowColor`, title: `${title} Shadow Color`, type: 'string', options: {list: cmsShadowOptions}},
 ]
 
-const cmsImageField = (name, title) => ({
+const cmsImageField = (name, title, description) => ({
   name,
   title,
   type: 'image',
   options: {hotspot: true},
+  description: description ?? 'Recommended: 1600 × 900 px (16:9) for cards, 2400 × 1080 px (2.22:1) for full-width heroes',
   fields: [{name: 'alt', title: 'Alt Text', type: 'string'}],
   validation: (Rule) =>
     Rule.custom((image) => !image?.asset || image?.alt ? true : 'Add alt text for accessibility').warning(),
@@ -70,7 +71,7 @@ const newsPost = {
     { name: 'author',      title: 'Author',       type: 'string' },
     { name: 'category',    title: 'Category',     type: 'string' },
     { name: 'excerpt',     title: 'Excerpt',      type: 'text', rows: 3 },
-    cmsImageField('mainImage', 'Main Image'),
+    cmsImageField('mainImage', 'Main Image', 'Recommended: 2400 × 1350 px (16:9) — fills the news banner and cards exactly'),
     { name: 'body',        title: 'Body Content', type: 'array', of: [{ type: 'block' }] },
   ],
 }
@@ -155,6 +156,7 @@ const homePage = {
             { name: 'href', title: 'URL', type: 'string' },
             { name: 'icon', title: 'Icon', type: 'string', description: 'dollar, map, phone, truck, building, alert' },
             { name: 'isEmergency', title: 'Emergency Style?', type: 'boolean' },
+            { name: 'isPrimary', title: 'Solid Green Style?', type: 'boolean' },
           ]}],
         },
         {
@@ -942,7 +944,7 @@ const aboutPage = {
             ],
           },
         },
-        cmsImageField('heroImageUrl', 'Hero Image'),
+        cmsImageField('heroImageUrl', 'Hero Image', 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens'),
         {
           name: 'stats',
           title: 'Hero Stats',
@@ -3434,7 +3436,7 @@ const servicesPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -3771,7 +3773,7 @@ const miningFuelPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -4078,7 +4080,7 @@ const marineFuelPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
         {
           name: 'stats', title: 'Stats', type: 'array',
           of: [{ type: 'object', fields: [
@@ -4375,7 +4377,7 @@ const agricultureFuelPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -4702,7 +4704,7 @@ const fuelRetailersPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -4974,7 +4976,7 @@ const onsiteBulkDieselPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -5233,7 +5235,7 @@ const localFuelDistributorsPage = {
         { name: 'descriptionBorderColor', title: 'Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
         { name: 'descriptionBorderWidth', title: 'Description Border Width (px)', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }, { title: '4px', value: '4px' }, { title: '5px', value: '5px' }] } },
         { name: 'descriptionShadowColor', title: 'Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.5)' }, { title: 'White', value: 'rgba(255,255,255,0.8)' }, { title: 'Primary', value: 'rgba(0,102,204,0.5)' }] } },
-        { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+        { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
       ],
     },
     {
@@ -5506,7 +5508,7 @@ export const contactPage = {
     { name: 'heroDescriptionBorderColor',  title: 'Hero Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
     { name: 'heroDescriptionBorderWidth',  title: 'Hero Description Border Width', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }] } },
     { name: 'heroDescriptionShadowColor',  title: 'Hero Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.3)' }, { title: 'White', value: 'rgba(255,255,255,0.3)' }] } },
-    { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+    { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
     { name: 'address',  title: 'Address', type: 'string' },
     { name: 'phone',  title: 'Phone', type: 'string' },
     { name: 'email',  title: 'Email', type: 'string' },
@@ -5991,7 +5993,7 @@ export const careersPage = {
     { name: 'heroDescriptionBorderColor',  title: 'Hero Description Border Color', type: 'string', options: { list: [{ title: 'Black', value: '#000000' }, { title: 'Primary', value: '#0066cc' }, { title: 'White', value: '#ffffff' }, { title: 'Gray', value: '#666666' }, { title: 'Green', value: '#10b981' }] } },
     { name: 'heroDescriptionBorderWidth',  title: 'Hero Description Border Width', type: 'string', options: { list: [{ title: '1px', value: '1px' }, { title: '2px', value: '2px' }, { title: '3px', value: '3px' }] } },
     { name: 'heroDescriptionShadowColor',  title: 'Hero Description Shadow Color', type: 'string', options: { list: [{ title: 'None', value: '' }, { title: 'Black', value: 'rgba(0,0,0,0.3)' }, { title: 'White', value: 'rgba(255,255,255,0.3)' }] } },
-    { name: 'heroImageUrl',  title: 'Hero Image', type: 'image', options: { hotspot: true } },
+    { name: 'heroImageUrl', title: 'Hero Image', type: 'image', options: { hotspot: true }, description: 'Recommended: 2400 × 1080 px (2.22:1) — fills the full-width hero exactly, no cropping on 16:9 screens' },
     { name: 'heroCtaText', title: 'Hero CTA Text', type: 'string', group: 'hero' },
     { name: 'heroCtaLink', title: 'Hero CTA Link', type: 'string', group: 'hero' },
 
@@ -7291,11 +7293,59 @@ organizePageSchema(newsListingPage, [
   ['ctaBanner', 'cta'],
 ])
 
-const withAccessibleImages = (field) => {
+const imageUploadGuidance = (field, context = '') => {
+  const key = `${context} ${field.name || ''} ${field.title || ''}`.toLowerCase()
+
+  if (/certificate/.test(key)) {
+    return 'Recommended: 1200 × 1697 px (A4 portrait). The complete document will be shown without cropping.'
+  }
+  if (/logo/.test(key)) {
+    return 'Recommended: transparent PNG or SVG, approximately 1200 × 675 px. The complete logo will be shown without cropping.'
+  }
+  if (/ctabanner|cta banner/.test(key)) {
+    return 'Recommended: 2400 × 800 px (3:1 wide banner). Keep the main subject centred because the edges crop on tablets and phones.'
+  }
+  if (/hero|background|cover|excellencebg|coveragesection|sectorscover/.test(key)) {
+    return 'Recommended: 2400 × 1080 px (2.22:1 full-width hero), matching the hero layout so the full image is shown without cropping on desktop. Keep important subjects in the centre 60% and set the hotspot for tablet and mobile cropping.'
+  }
+  if (/mainimage|postimage|newsimage/.test(key)) {
+    return 'Recommended: 2400 × 1350 px (16:9 landscape) for news cards and the article banner. Set the hotspot on the main subject for responsive cropping.'
+  }
+  if (/imageleft|imageright|portrait|profile|person|talentrising/.test(key)) {
+    return 'Recommended: 1200 × 1500 px (4:5 portrait). Set the hotspot on the main subject for responsive cropping.'
+  }
+  if (/icon|square|onsiteintro|initiativessection|safetysection|officelocations|teamevents/.test(key)) {
+    return 'Recommended: 1200 × 1200 px (1:1 square).'
+  }
+  if (/valuessection|corevaluessection/.test(key)) {
+    return 'Recommended: 2400 × 600 px (4:1 wide section image). Keep the main subject centred.'
+  }
+  if (/culturesection/.test(key) && !/cultureitems/.test(key)) {
+    return 'Recommended: 2400 × 600 px (4:1 wide section image). Keep the main subject centred.'
+  }
+  if (/storysection/.test(key) && /image2/.test(key)) {
+    return 'Recommended: 2400 × 600 px (4:1 wide detail image). Keep the main subject centred.'
+  }
+  if (/gender equality|genderequality|supporting locals|supportinglocals|storysection|cultureitems/.test(key)) {
+    return 'Recommended: 1800 × 1200 px (3:2 landscape). Set the hotspot on the main subject for responsive cropping.'
+  }
+  if (/process|timeline|gallery|retailintro|customerservice|supportsection|partnersection|fuelproduct|additionalproduct|fueltypes|productssection|industriessection|servicepromise|introsection|trainingsection|driverscompliance|independentdealers|teamsection|howwework|cultureimages/.test(key)) {
+    return 'Recommended: 1600 × 1200 px (4:3 landscape). Keep the main subject centred and set the hotspot for responsive cropping.'
+  }
+  return 'Recommended: 1600 × 900 px (16:9 landscape). Set the hotspot on the main subject for tablet and mobile cropping.'
+}
+
+const withAccessibleImages = (field, context = '') => {
+  const fieldContext = `${context} ${field.name || ''} ${field.title || ''}`.trim()
   if (field.type === 'image') {
     const existingFields = field.fields || []
+    const guidance = imageUploadGuidance(field, context)
+    const existingDescription = (field.description || '')
+      .replace(/\s*Recommended:.*$/s, '')
+      .trim()
     return {
       ...field,
+      description: [existingDescription, guidance].filter(Boolean).join(' '),
       options: { ...field.options, hotspot: true },
       fields: existingFields.some((item) => item.name === 'alt')
         ? existingFields
@@ -7315,14 +7365,14 @@ const withAccessibleImages = (field) => {
   if (field.type === 'array') {
     return {
       ...field,
-      of: (field.of || []).map((member) => withAccessibleImages(member)),
+      of: (field.of || []).map((member) => withAccessibleImages(member, fieldContext)),
     }
   }
 
   if (field.type === 'object') {
     return {
       ...field,
-      fields: (field.fields || []).map((child) => withAccessibleImages(child)),
+      fields: (field.fields || []).map((child) => withAccessibleImages(child, fieldContext)),
     }
   }
 
@@ -7970,6 +8020,15 @@ appendSectionFields(fuelStationEnquiryPage, 'heroSection', [
     }],
   },
 ])
+appendSectionFields(fuelStationEnquiryPage, 'ctaBanner', [
+  {
+    name: 'applicationFormFile',
+    title: 'Application Form PDF',
+    type: 'file',
+    options: {accept: '.pdf'},
+    description: 'Upload the Station Enquiry application form here. When a file is present, the CTA button below automatically becomes a "Download Form" button linking to this PDF.',
+  },
+])
 
 const franchiseIconOptions = [
   {title: 'Chart', value: 'chart'},
@@ -8337,6 +8396,15 @@ appendSectionFields(franchisingPage, 'internationalSection', [
   {name: 'buttonText', title: 'WhatsApp Button Text', type: 'string'},
   {name: 'whatsappNumber', title: 'WhatsApp Number', type: 'string'},
   {name: 'whatsappUrl', title: 'WhatsApp Link', type: 'url'},
+])
+appendSectionFields(franchisingPage, 'ctaBanner', [
+  {
+    name: 'applicationFormFile',
+    title: 'Application Form PDF',
+    type: 'file',
+    options: {accept: '.pdf'},
+    description: 'Upload the Station Opportunity application form here. When a file is present, the CTA button below automatically becomes a "Download Form" button linking to this PDF.',
+  },
 ])
 
 appendSectionFields(commercialDieselPage, 'industriesSection', [{
@@ -8806,6 +8874,28 @@ servicePageSchemas.forEach((schema) => {
   ])
 })
 
+;[miningFuelPage, marineFuelPage, agricultureFuelPage].forEach((schema) => {
+  insertBeforeCta(schema, [{
+    name: 'gallerySection',
+    title: 'Photo Gallery',
+    type: 'object',
+    options: {collapsible: true, collapsed: true},
+    fields: [
+      {name: 'heading', title: 'Heading', type: 'string'},
+      {
+        name: 'images',
+        title: 'Gallery Images',
+        type: 'array',
+        of: [{
+          type: 'image',
+          options: {hotspot: true},
+          fields: [{name: 'alt', title: 'Alt Text', type: 'string'}],
+        }],
+      },
+    ],
+  }])
+})
+
 appendSectionFields(miningFuelPage, 'miningSectorSection', [
   {name: 'sectionTag', title: 'Section Tag', type: 'string'},
   {name: 'ctaText', title: 'CTA Text', type: 'string'},
@@ -9272,4 +9362,9 @@ allSchemaTypes.forEach((schema) => {
     .filter(Boolean)
 })
 
-export const schemaTypes = [...allSchemaTypes, ...cmsV2SchemaTypes]
+const guidedCmsV2SchemaTypes = cmsV2SchemaTypes.map((schema) => ({
+  ...schema,
+  fields: (schema.fields || []).map((field) => withAccessibleImages(field, schema.name)),
+}))
+
+export const schemaTypes = [...allSchemaTypes, ...guidedCmsV2SchemaTypes]

@@ -127,15 +127,15 @@ export default function DriversCompliance({ data = {} }) {
 
           {/* Right Image/Visual */}
           <div className="drivers-image relative">
-            <div className="relative overflow-hidden shadow-lg">
+            <div className="relative aspect-[4/3] overflow-hidden shadow-lg">
               <CmsImage
                 value={data.imageImage ?? data.image ?? data.imageUrl}
                 fallbackSrc="/images/truck-new.jpg"
                 alt={imageAlt}
-                width={720}
-                height={500}
+                fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="h-[500px] w-full object-cover"
+                ratio="4/3"
+          className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-gray-900/60 via-transparent to-transparent" />
               

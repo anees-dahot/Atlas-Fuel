@@ -48,7 +48,8 @@ export default function MiningSector({ data = {} }) {
                 alt={data.imageAlt ?? heading}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
+                ratio="4/3"
+          className="object-cover"
               />
             </div>
             {(statValue || statLabel) && (

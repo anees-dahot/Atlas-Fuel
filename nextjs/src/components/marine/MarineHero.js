@@ -20,6 +20,7 @@ export default function MarineHero({ data = {} }) {
       eyebrowStyle={cmsTextStyle(data, 'subtitle')}
       titleStyle={cmsTextStyle(data, 'title')}
       descriptionStyle={cmsTextStyle(data, 'description')}
+      showOverlay={false}
     />
   );
 }

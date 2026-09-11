@@ -84,13 +84,14 @@ export default function FuelTypes({ data = {}, products }) {
               className="fuel-type-card group bg-white border border-gray-100 hover:border-primary/30 hover:shadow-2xl transition-all duration-300 overflow-hidden"
             >
               {/* Image */}
-              <div className="relative h-48 overflow-hidden">
+              <div className="relative aspect-[4/3] overflow-hidden">
                 <CmsImage
                   value={product.image ?? product.imageImage ?? product.imageUrl}
                   alt={product.imageAlt ?? product.alt ?? product.name ?? product.title ?? ''}
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  ratio="4/3"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute top-4 right-4 w-16 h-16 bg-primary flex items-center justify-center">
                   <span className="text-2xl font-bold text-white">{product.octane}</span>

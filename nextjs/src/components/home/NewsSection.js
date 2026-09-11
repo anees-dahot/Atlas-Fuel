@@ -54,14 +54,15 @@ export default function NewsSection({ data }) {
               className="bg-white overflow-hidden border border-gray-200 hover:border-primary transition-colors group"
             >
               <Link href={article.link} className="block">
-                <div className="relative h-48 bg-gray-100 overflow-hidden">
+                <div className="relative aspect-video bg-gray-100 overflow-hidden">
                   <CmsImage
                     value={article.image || article.imageUrl}
                     fallbackSrc="/images/what-we-do-retail.webp"
                     alt={article.imageAlt || article.title || ""}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    ratio="16/9"
+          className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
                 <div className="p-6">

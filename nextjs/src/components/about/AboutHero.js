@@ -26,6 +26,7 @@ export default function AboutHero({ data = {} }) {
       }))}
       eyebrowStyle={eyebrowStyle}
       titleStyle={titleStyle}
+      showOverlay={false}
     />
   );
 }

@@ -247,7 +247,8 @@ className="py-16 lg:py-24 bg-white overflow-hidden"
                     alt={data?.image1Alt ?? "Atlas Fuel depot"}
                     fill
                     sizes="(min-width: 1024px) 25vw, 50vw"
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                    ratio="4/5"
+          className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
                   />
                 </div>
                 <div className="bg-primary text-white p-6">
@@ -270,7 +271,8 @@ className="py-16 lg:py-24 bg-white overflow-hidden"
                     alt={data?.image2Alt ?? "Atlas Fuel fleet"}
                   fill
                   sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  ratio="4/5"
+          className="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-700"
                 />
                 </div>
               </div>

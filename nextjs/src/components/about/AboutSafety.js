@@ -149,14 +149,15 @@ export default function AboutSafety({ data = {} }) {
           </div>
 
           {/* Right — image */}
-          <div className="asaf-image order-1 lg:order-2 relative h-[480px] lg:h-[600px] overflow-hidden group shadow-lg">
+          <div className="asaf-image order-1 lg:order-2 relative aspect-square overflow-hidden group shadow-lg">
             <div className="absolute inset-0 bg-primary/10 mix-blend-multiply z-10 group-hover:bg-transparent transition-all duration-700" />
             <CmsImage
               value={data.safetyImage ?? imageUrl}
               alt={data.safetyImageAlt ?? 'Atlas Fuel Safety'}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[1500ms]" />
+              ratio="1/1"
+          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-[1500ms]" />
             {/* Overlay text */}
             <div className="absolute bottom-0 left-0 right-0 p-8 bg-gradient-to-t from-white/70 to-transparent z-20">
               <div className="flex items-center gap-3">

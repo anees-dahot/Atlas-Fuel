@@ -123,13 +123,14 @@ export default function AboutValues({ data = {} }) {
               {heading}
             </h2>
             <p className={`${bodyColor} text-lg leading-relaxed mb-10 font-light`} style={bodyStyle}>{body}</p>
-            <div className="relative h-[250px] overflow-hidden shadow-xl mb-10">
+            <div className="relative aspect-[4/1] overflow-hidden shadow-xl mb-10">
               <CmsImage
                 value={data.image ?? data.imageImage ?? imageUrl}
                 alt={data.imageAlt ?? eyebrow}
                 fill
                 sizes="(min-width: 1024px) 42vw, 100vw"
-                className="w-full h-full object-cover"
+                ratio="4/1"
+          className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
             </div>

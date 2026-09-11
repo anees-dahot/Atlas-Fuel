@@ -11,15 +11,27 @@ const validString = (value) =>
   value.length > 0 &&
   value !== '[object Object]'
 
-function resolveSource(value, width, height, fit) {
+function resolveSource(value, width, height, fit, quality, ratio) {
   if (!value) return ''
   if (validString(value)) return value
 
   if (value?.asset) {
     try {
-      let image = builder.image(value).auto('format')
-      if (width) image = image.width(width)
-      if (height) image = image.height(height).fit(fit)
+      const source = fit === 'crop' ? value : value.asset
+      let image = builder.image(source).auto('format').quality(quality)
+      const hasCropBox = fit === 'crop' && width && height
+      if (hasCropBox) {
+        if (ratio) {
+          const [rw, rh] = ratio.split('/').map(Number)
+          if (rw && rh) image = image.width(width).height(Math.round((width * rh) / rw)).fit('crop')
+          else image = image.width(width).height(height).fit('crop')
+        } else {
+          image = image.width(width).height(height).fit('crop')
+        }
+      } else {
+        if (width) image = image.width(width)
+        image = image.fit(width ? 'min' : fit)
+      }
       return image.url()
     } catch {
       return validString(value?.url) ? value.url : ''
@@ -45,13 +57,14 @@ export default function CmsImage({
   className,
   style,
   priority = false,
-  quality = 85,
+  quality = 75,
   fit = 'crop',
+  ratio,
 }) {
   const imageValue = value ?? src
   const resolvedSrc = imageValue == null
     ? fallbackSrc
-    : resolveSource(imageValue, width, height, fit)
+    : resolveSource(imageValue, width, height, fit, quality, ratio)
 
   if (!resolvedSrc) return null
 
@@ -60,6 +73,19 @@ export default function CmsImage({
     (typeof imageValue === 'object' ? imageValue?.alt : '') ??
     ''
 
+  const blurDataURL =
+    typeof imageValue === 'object'
+      ? imageValue?.asset?.metadata?.lqip
+      : null
+  const resolvedStyle = fit === 'crop'
+    ? style
+    : {
+        ...style,
+        objectFit: style?.objectFit ?? (fill ? 'cover' : 'contain'),
+        objectPosition: style?.objectPosition ?? 'center',
+        transform: style?.transform ?? 'none',
+      }
+
   return (
     <Image
       src={resolvedSrc}
@@ -67,9 +93,12 @@ export default function CmsImage({
       {...(fill ? {fill: true} : {width, height})}
       sizes={sizes}
       className={className}
-      style={style}
+      style={resolvedStyle}
       priority={priority}
       quality={quality}
+      unoptimized={resolvedSrc.startsWith('https://cdn.sanity.io/')}
+      placeholder={blurDataURL ? 'blur' : 'empty'}
+      blurDataURL={blurDataURL || undefined}
     />
   )
 }

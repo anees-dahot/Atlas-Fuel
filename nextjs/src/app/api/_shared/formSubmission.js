@@ -11,6 +11,14 @@ const FORM_TYPES = {
     subject: 'Fuel price alert subscription',
     required: ['email', 'location'],
   },
+  fuelCard: {
+    subject: 'Website fuel card application',
+    required: ['companyName', 'fullName', 'email', 'phone', 'cardType'],
+  },
+  fuelTesting: {
+    subject: 'Website fuel testing enquiry',
+    required: ['fullName', 'email', 'testType'],
+  },
 }
 
 const MAX_BODY_BYTES = 64 * 1024
@@ -66,7 +74,7 @@ const buildMessages = (formType, fields) => {
   const deliveryAddress =
     process.env.ATLAS_FORMS_TO_EMAIL ||
     process.env.FORM_TO_EMAIL ||
-    'info@atlasfuel.com.au'
+    'headoffice@atlasfuel.com.au'
   const rows = Object.entries(fields)
     .filter(([key, value]) => key !== 'website' && value)
     .map(([key, value]) => [

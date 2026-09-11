@@ -134,7 +134,8 @@ export default function RetailIntro({ data = {} }) {
                 alt={data.imageAlt ?? 'Atlas Fuel Retail Station'}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="w-full h-full object-cover"
+                ratio="4/3"
+          className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
             </div>

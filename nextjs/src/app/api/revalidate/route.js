@@ -21,7 +21,7 @@ const routeByType = {
   fuelStationEnquiryPage: '/fuel-station-enquiry',
   productsPage: '/products',
   storeLocatorPage: '/store-locator',
-  franchisingPage: '/franchising',
+  franchisingPage: '/station-opportunities',
   fuelPricesPage: '/fuel-prices',
   atlasCarRacingPage: '/atlas-car-racing',
   newsListingPage: '/news',

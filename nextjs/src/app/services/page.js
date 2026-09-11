@@ -2,8 +2,6 @@ import CTABanner from '@/components/shared/CTABanner'
 import CmsImage from '@/components/common/CmsImage'
 import ServiceHero from '@/components/services/ServiceHero'
 import ServicesShowcase from '@/components/services/ServicesShowcase'
-import VisualIndustriesGrid from '@/components/services/VisualIndustriesGrid'
-import AnimatedStatsSection from '@/components/services/AnimatedStatsSection'
 import ProcessTimeline from '@/components/services/ProcessTimeline'
 import { getServicesPage, getSiteSettings } from '@/lib/sanity'
 import { mapPageCta } from '@/lib/contentFallbacks'
@@ -40,7 +38,7 @@ const fallbackHero = {
   subtitle: 'Our Services',
   title: 'Comprehensive Fuel Solutions for Every Industry',
   description: 'From mining to marine, agriculture to retail, Atlas Fuel delivers reliable, high-quality fuel solutions tailored to meet the unique needs of every industry we serve across Australia.',
-  heroImageUrl: '/images/atlas-fuel-hero-1b.webp',
+  heroImageUrl: '/images/atlas-fuel-hero-2.webp',
   heroImageAlt: 'Atlas Fuel trucks delivering fuel solutions',
 }
 
@@ -90,22 +88,6 @@ const fallbackServices = {
       link: '/services/local-fuel-distributors',
       imageUrl: '/images/local-fuel-distributors.jpg',
     },
-  ],
-}
-
-const fallbackStats = {
-  sectionTag: 'Our Impact',
-  heading: 'Our Impact',
-  displayHeading: 'Numbers That Speak',
-  description: 'Atlas Fuel is a trusted partner for businesses across Australia',
-  footerText: 'Join hundreds of businesses that trust Atlas Fuel for their energy needs',
-  ctaText: 'Become a Partner',
-  ctaLink: '/contact',
-  stats: [
-    { value: '100M+', label: 'Litres Delivered', description: 'Across Australia' },
-    { value: '300+', label: 'Jobs Connected', description: 'In local communities' },
-    { value: '99.5%', label: 'On-Time Rate', description: 'Delivery reliability' },
-    { value: '24/7', label: 'Support', description: 'Always available' },
   ],
 }
 
@@ -192,13 +174,13 @@ export default async function ServicesPage() {
     subtitleBorderColor: sanity?.heroSection?.subtitleBorderColor ?? '#000000',
     subtitleBorderWidth: sanity?.heroSection?.subtitleBorderWidth ?? '1px',
     subtitleShadowColor: sanity?.heroSection?.subtitleShadowColor ?? '',
-    titleColor: sanity?.heroSection?.titleColor ?? 'text-gray-900',
+    titleColor: sanity?.heroSection?.titleColor,
     titleSize: sanity?.heroSection?.titleSize ?? null,
     titleBorderEnabled: sanity?.heroSection?.titleBorderEnabled ?? false,
     titleBorderColor: sanity?.heroSection?.titleBorderColor ?? '#000000',
     titleBorderWidth: sanity?.heroSection?.titleBorderWidth ?? '1px',
     titleShadowColor: sanity?.heroSection?.titleShadowColor ?? '',
-    descriptionColor: sanity?.heroSection?.descriptionColor ?? 'text-gray-600',
+    descriptionColor: sanity?.heroSection?.descriptionColor,
     descriptionSize: sanity?.heroSection?.descriptionSize ?? null,
     descriptionBorderEnabled: sanity?.heroSection?.descriptionBorderEnabled ?? false,
     descriptionBorderColor: sanity?.heroSection?.descriptionBorderColor ?? '#000000',
@@ -249,48 +231,6 @@ export default async function ServicesPage() {
       imageImage: s.imageImage,
       imageAlt: s.imageAlt ?? s.imageUrlAlt ?? s.title ?? fallbackServices.services[i]?.title ?? '',
     })) : fallbackServices.services,
-  }
-
-  const stats = {
-    ...fallbackStats,
-    sectionTag: sanity?.statsSection?.sectionTag ?? fallbackStats.sectionTag,
-    heading: sanity?.statsSection?.heading ?? fallbackStats.heading,
-    displayHeading: sanity?.statsSection?.displayHeading ?? sanity?.statsSection?.heading ?? fallbackStats.displayHeading,
-    description: sanity?.statsSection?.description ?? fallbackStats.description,
-    footerText: sanity?.statsSection?.footerText ?? fallbackStats.footerText,
-    ctaText: sanity?.statsSection?.ctaText ?? fallbackStats.ctaText,
-    ctaLink: sanity?.statsSection?.ctaLink ?? fallbackStats.ctaLink,
-    headingColor: sanity?.statsSection?.headingColor ?? 'text-gray-900',
-    headingSize: sanity?.statsSection?.headingSize ?? null,
-    headingBorderEnabled: sanity?.statsSection?.headingBorderEnabled ?? false,
-    headingBorderColor: sanity?.statsSection?.headingBorderColor ?? '#000000',
-    headingBorderWidth: sanity?.statsSection?.headingBorderWidth ?? '1px',
-    headingShadowColor: sanity?.statsSection?.headingShadowColor ?? '',
-    stats: Array.isArray(sanity?.statsSection?.stats) ? sanity.statsSection.stats.map((s, i) => ({
-      value: s.value ?? fallbackStats.stats[i]?.value ?? '',
-      prefix: s.prefix ?? '',
-      suffix: s.suffix ?? '',
-      valueColor: s.valueColor ?? 'text-gray-900',
-      valueSize: s.valueSize ?? null,
-      valueBorderEnabled: s.valueBorderEnabled ?? false,
-      valueBorderColor: s.valueBorderColor ?? '#000000',
-      valueBorderWidth: s.valueBorderWidth ?? '1px',
-      valueShadowColor: s.valueShadowColor ?? '',
-      label: s.label ?? fallbackStats.stats[i]?.label ?? '',
-      labelColor: s.labelColor ?? 'text-gray-600',
-      labelSize: s.labelSize ?? null,
-      labelBorderEnabled: s.labelBorderEnabled ?? false,
-      labelBorderColor: s.labelBorderColor ?? '#000000',
-      labelBorderWidth: s.labelBorderWidth ?? '1px',
-      labelShadowColor: s.labelShadowColor ?? '',
-      description: s.description ?? fallbackStats.stats[i]?.description ?? '',
-      descriptionColor: s.descriptionColor ?? 'text-gray-600',
-      descriptionSize: s.descriptionSize ?? null,
-      descriptionBorderEnabled: s.descriptionBorderEnabled ?? false,
-      descriptionBorderColor: s.descriptionBorderColor ?? '#000000',
-      descriptionBorderWidth: s.descriptionBorderWidth ?? '1px',
-      descriptionShadowColor: s.descriptionShadowColor ?? '',
-    })) : fallbackStats.stats,
   }
 
   const timeline = {
@@ -401,7 +341,7 @@ export default async function ServicesPage() {
       primaryCTABorderColor: sanity?.ownStationSection?.primaryCTABorderColor ?? '#000000',
       primaryCTABorderWidth: sanity?.ownStationSection?.primaryCTABorderWidth ?? '1px',
       primaryCTAShadowColor: sanity?.ownStationSection?.primaryCTAShadowColor ?? '',
-      primaryCTALink: sanity?.ownStationSection?.primaryCTALink ?? '/franchising',
+      primaryCTALink: sanity?.ownStationSection?.primaryCTALink ?? '/station-opportunities',
       secondaryCTAText: sanity?.ownStationSection?.secondaryCTAText ?? 'Enquire Now',
       secondaryCTAColor: sanity?.ownStationSection?.secondaryCTAColor ?? 'text-primary',
       secondaryCTASize: sanity?.ownStationSection?.secondaryCTASize ?? null,
@@ -451,53 +391,6 @@ export default async function ServicesPage() {
         imageAlt: s.imageAlt ?? s.imageUrlAlt ?? s.name ?? additionalSections.sectorsCover.sectors[i]?.name ?? '',
       })) : additionalSections.sectorsCover.sectors,
     },
-  }
-
-  const industriesGrid = {
-    sectionTag: sanity?.industriesGridSection?.sectionTag ?? 'Industries',
-    sectionTagColor: sanity?.industriesGridSection?.sectionTagColor ?? 'text-primary',
-    sectionTagSize: sanity?.industriesGridSection?.sectionTagSize ?? null,
-    sectionTagBorderEnabled: sanity?.industriesGridSection?.sectionTagBorderEnabled ?? false,
-    sectionTagBorderColor: sanity?.industriesGridSection?.sectionTagBorderColor ?? '#000000',
-    sectionTagBorderWidth: sanity?.industriesGridSection?.sectionTagBorderWidth ?? '1px',
-    sectionTagShadowColor: sanity?.industriesGridSection?.sectionTagShadowColor ?? '',
-    ctaLabel: sanity?.industriesGridSection?.ctaLabel ?? 'Explore',
-    heading: sanity?.industriesGridSection?.heading ?? 'Sectors We Serve',
-    headingColor: sanity?.industriesGridSection?.headingColor ?? 'text-gray-900',
-    headingSize: sanity?.industriesGridSection?.headingSize ?? null,
-    headingBorderEnabled: sanity?.industriesGridSection?.headingBorderEnabled ?? false,
-    headingBorderColor: sanity?.industriesGridSection?.headingBorderColor ?? '#000000',
-    headingBorderWidth: sanity?.industriesGridSection?.headingBorderWidth ?? '1px',
-    headingShadowColor: sanity?.industriesGridSection?.headingShadowColor ?? '',
-    description: sanity?.industriesGridSection?.description ?? 'Delivering reliable fuel solutions across diverse industries nationwide',
-    descriptionColor: sanity?.industriesGridSection?.descriptionColor ?? 'text-gray-600',
-    descriptionSize: sanity?.industriesGridSection?.descriptionSize ?? null,
-    descriptionBorderEnabled: sanity?.industriesGridSection?.descriptionBorderEnabled ?? false,
-    descriptionBorderColor: sanity?.industriesGridSection?.descriptionBorderColor ?? '#000000',
-    descriptionBorderWidth: sanity?.industriesGridSection?.descriptionBorderWidth ?? '1px',
-    descriptionShadowColor: sanity?.industriesGridSection?.descriptionShadowColor ?? '',
-    industries: Array.isArray(sanity?.industriesGridSection?.industries)
-      ? sanity.industriesGridSection.industries.map(ind => ({
-          _key: ind._key,
-          id: ind.id ?? 'distribution',
-          title: ind.title ?? '',
-          titleColor: ind.titleColor ?? 'text-gray-900',
-          titleSize: ind.titleSize ?? null,
-          titleBorderEnabled: ind.titleBorderEnabled ?? false,
-          titleBorderColor: ind.titleBorderColor ?? '#000000',
-          titleBorderWidth: ind.titleBorderWidth ?? '1px',
-          titleShadowColor: ind.titleShadowColor ?? '',
-          description: ind.description ?? '',
-          descriptionColor: ind.descriptionColor ?? 'text-gray-600',
-          descriptionSize: ind.descriptionSize ?? null,
-          descriptionBorderEnabled: ind.descriptionBorderEnabled ?? false,
-          descriptionBorderColor: ind.descriptionBorderColor ?? '#000000',
-          descriptionBorderWidth: ind.descriptionBorderWidth ?? '1px',
-          descriptionShadowColor: ind.descriptionShadowColor ?? '',
-          link: ind.link ?? '#',
-          ctaText: ind.ctaText ?? '',
-        }))
-      : null,
   }
 
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
@@ -586,17 +479,15 @@ export default async function ServicesPage() {
 
   return (
     <>
-      <ServiceHero data={hero} />
+      <ServiceHero data={hero} showOverlay={false} />
         <ServicesShowcase data={services} />
-        <VisualIndustriesGrid data={industriesGrid} />
-        <AnimatedStatsSection data={stats} />
-        
+
         {/* Do You Know Section */}
         <section className="py-16 lg:py-24 bg-primary text-white">
           <div className="max-w-[1440px] mx-auto px-8 lg:px-12">
             <div className="max-w-3xl">
               <h2 className={`${additionalSectionsData.doYouKnow.headingColor} text-3xl lg:text-4xl font-bold mb-6`} style={doYouKnowHeadingStyle}>{additionalSectionsData.doYouKnow.heading}</h2>
-              <p className={`${additionalSectionsData.doYouKnow.contentColor} text-lg text-white/90 leading-relaxed`} style={doYouKnowContentStyle}>{additionalSectionsData.doYouKnow.content}</p>
+              <p className={`${additionalSectionsData.doYouKnow.contentColor} text-xl lg:text-2xl leading-relaxed`} style={doYouKnowContentStyle}>{additionalSectionsData.doYouKnow.content}</p>
             </div>
           </div>
         </section>

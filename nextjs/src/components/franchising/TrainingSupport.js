@@ -29,10 +29,10 @@ export default function TrainingSupport() {
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8">Training and Support</h2>
             <div className="space-y-6">
               <p className="text-lg text-gray-600 leading-relaxed">
-                In addition to the training and support that we provide, Atlas Fuel franchisees also benefit from our strong brand recognition and reputation in the fuel industry. Our brand is well-known and respected throughout Australia, and our franchisees have the opportunity to leverage that brand recognition to build their own successful businesses.
+                In addition to the training and support that we provide, Atlas Fuel station opportunity partners also benefit from our strong brand recognition and reputation in the fuel industry. Our brand is well-known and respected throughout Australia, and our station opportunity partners have the opportunity to leverage that brand recognition to build their own successful businesses.
               </p>
               <p className="text-lg text-gray-600 leading-relaxed">
-                We also offer exclusive products and services to our franchisees, providing them with access to cutting-edge technology and innovative fuel solutions. Our commitment to innovation and customer service sets us apart from other fuel providers and ensures that our franchisees are always at the forefront of the industry.
+                We also offer exclusive products and services to our station opportunity partners, providing them with access to cutting-edge technology and innovative fuel solutions. Our commitment to innovation and customer service sets us apart from other fuel providers and ensures that our station opportunity partners are always at the forefront of the industry.
               </p>
             </div>
           </div>
@@ -40,7 +40,7 @@ export default function TrainingSupport() {
           <div className="ts-cta bg-primary-dark text-white p-10">
             <h3 className="text-2xl font-bold uppercase tracking-wide mb-6">Start Your Journey</h3>
             <p className="text-white/80 mb-8 leading-relaxed">
-              Ready to take the next step? Register now to learn more about franchise opportunities with Atlas Fuel Australia.
+              Ready to take the next step? Register now to learn more about station opportunities with Atlas Fuel Australia.
             </p>
             <Link href="/contact" 
                   className="group inline-flex items-center gap-3 px-8 py-4 bg-white text-gray-900 font-bold uppercase tracking-wide hover:bg-primary hover:text-white transition-all duration-300 hover:scale-105 w-full justify-center">

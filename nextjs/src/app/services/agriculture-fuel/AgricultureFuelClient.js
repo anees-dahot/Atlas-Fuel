@@ -13,12 +13,12 @@ import ComplianceSection from '@/components/services/ComplianceSection'
 import FleetCompliance from '@/components/services/FleetCompliance'
 import DriversCompliance from '@/components/services/DriversCompliance'
 import DieselHarvests from '@/components/services/DieselHarvests'
-import SustainableFueling from '@/components/services/SustainableFueling'
 import EquipmentGrowth from '@/components/services/EquipmentGrowth'
+import ImageGallery from '@/components/fuel-stations/ImageGallery'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function AgricultureFuelClient({ hero, agricultureSection, features, process, excellence, equipmentGrowth, dieselHarvests, sustainableFueling, safety, compliance, fleet, drivers, siteSettings }) {
+export default function AgricultureFuelClient({ hero, agricultureSection, features, process, excellence, equipmentGrowth, dieselHarvests, safety, compliance, fleet, drivers, gallery, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -75,18 +75,18 @@ export default function AgricultureFuelClient({ hero, agricultureSection, featur
   return (
     <>
       <main ref={pageRef}>
-        <ServiceHero data={hero} />
+        <ServiceHero data={hero} showOverlay={false} />
         <AgricultureSection data={agricultureSection} />
         <ServiceFeatures data={features} />
         <ProcessTimeline data={process} />
         <ExcellenceSection data={excellence} />
         <EquipmentGrowth data={equipmentGrowth} />
         <DieselHarvests data={dieselHarvests} />
-        <SustainableFueling data={sustainableFueling} />
         <SafetySection data={safety} />
         <ComplianceSection data={compliance} />
         <FleetCompliance data={fleet} />
         <DriversCompliance data={drivers} />
+        <ImageGallery data={gallery} />
         <CTABanner data={siteSettings} />
       </main>
     </>

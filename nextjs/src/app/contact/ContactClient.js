@@ -96,20 +96,22 @@ export default function ContactClient({ data, siteSettings }) {
     <>
       <main ref={pageRef}>
         {/* Hero Section */}
-        <section className="section-heading relative flex items-start overflow-hidden" style={{ minHeight: '80svh' }}>
+        <section className="section-heading relative flex flex-col overflow-hidden h-[80svh] max-lg:min-h-[560px] lg:h-[clamp(560px,calc(100vw/2.222),80svh)]">
           <div className="absolute inset-0">
             <CmsImage
               value={data.heroImage ?? data.heroImageImage}
               src={data.heroImageUrl}
-              fallbackSrc="/images/atlas-fuel-hero-1b.webp"
+              fallbackSrc="/images/atlas-fuel-hero-2.webp"
               alt={data.heroImageUrlAlt ?? data.heroImageAlt ?? data.heroTitle ?? 'Atlas Fuel'}
+              width={2400}
+              fit="min"
               fill
               priority
               sizes="100vw"
-              className="object-cover"
+              className="object-cover object-center"
             />
           </div>
-          <div className="relative z-10 max-w-[1440px] mx-auto px-8 lg:px-12">
+          <div className="relative z-10 flex-1 w-full max-w-[1440px] mx-auto px-8 lg:px-12 pt-14 sm:pt-20 lg:pt-24 pb-8 sm:pb-10">
             <div className="max-w-3xl">
               <div className="flex items-center gap-4 mb-4">
                 <div className="h-0.5 w-16 bg-primary" />
@@ -126,7 +128,14 @@ export default function ContactClient({ data, siteSettings }) {
                   textShadow: heroTitleShadowColor ? `0 2px 4px ${heroTitleShadowColor}` : 'none',
                 }}
               >
-                {data.heroTitle}
+                {String(data.heroTitle ?? '').split(' ').map((word, wordIndex) => (
+                  <span
+                    key={wordIndex}
+                    className={wordIndex % 2 === 1 ? 'text-primary' : 'text-white'}
+                  >
+                    {word}{' '}
+                  </span>
+                ))}
               </h1>
               <p
                 className="max-w-xl leading-relaxed mb-8 font-semibold"

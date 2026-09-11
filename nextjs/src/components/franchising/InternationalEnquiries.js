@@ -48,13 +48,13 @@ export default function InternationalEnquiries() {
           <div className="ie-contacts grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="ie-contact-card bg-white p-6 border border-sand">
               <h3 className="text-xl font-bold uppercase tracking-wide text-gray-900 mb-4">Corporate Office</h3>
-              <p className="text-gray-600 mb-2">1 Mandurah Rd, Kwinana Beach WA 6167, Australia</p>
+              <p className="text-gray-600 mb-2">5 Mandurah Rd, Kwinana Beach WA 6167, Australia</p>
               <a href="tel:+61863777644" className="text-primary hover:text-primary-dark transition-colors block mb-2">+61 8 6377 7644</a>
               <a href="mailto:info@atlasfuel.com.au" className="text-gray-600 hover:text-primary transition-colors">info@atlasfuel.com.au</a>
             </div>
             <div className="ie-contact-card bg-white p-6 border border-sand">
               <h3 className="text-xl font-bold uppercase tracking-wide text-gray-900 mb-4">Australia Office</h3>
-              <p className="text-gray-600 mb-2">1 Mandurah Rd, Kwinana Beach WA 6167, Australia</p>
+              <p className="text-gray-600 mb-2">5 Mandurah Rd, Kwinana Beach WA 6167, Australia</p>
               <a href="tel:+61863777644" className="text-primary hover:text-primary-dark transition-colors block mb-2">+61 8 6377 7644</a>
               <a href="mailto:info@atlasfuel.com.au" className="text-gray-600 hover:text-primary transition-colors">info@atlasfuel.com.au</a>
             </div>

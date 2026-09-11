@@ -32,49 +32,6 @@ const defaultCards = [
   },
 ];
 
-function CardIcon({ title }) {
-  if (title?.includes("Locator"))
-    return (
-      <svg
-        className="w-6 h-6"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-        <circle cx="12" cy="10" r="3" />
-      </svg>
-    );
-  if (title?.includes("Fleet"))
-    return (
-      <svg
-        className="w-6 h-6"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <rect x="1" y="3" width="15" height="13" />
-        <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
-        <circle cx="5.5" cy="18.5" r="2.5" />
-        <circle cx="18.5" cy="18.5" r="2.5" />
-      </svg>
-    );
-  return (
-    <svg
-      className="w-6 h-6"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-    >
-      <rect x="2" y="7" width="20" height="14" rx="2" />
-      <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
-    </svg>
-  );
-}
-
 const sizeMap = { '1': '12px', '2': '16px', '3': '20px', '4': '24px', '5': '32px', '6': '48px', '7': '70px' };
 
 export default function FeatureBoxes({ data }) {
@@ -106,25 +63,16 @@ export default function FeatureBoxes({ data }) {
               className="group relative block overflow-hidden bg-white shadow-lg hover:shadow-xl transition-all duration-300 h-full border border-gray-200 hover:border-primary/40"
             >
               {/* Image Container */}
-              <div className="relative h-52 overflow-hidden">
+              <div className="relative aspect-video overflow-hidden">
                 <CmsImage
                   value={card.image || card.imageUrl}
                   fallbackSrc="/images/what-we-do-fuel-transportation.webp"
                   alt={card.imageAlt || card.title || "Feature"}
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  ratio="16/9"
+          className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                 />
-                {/* Green Label */}
-                <div className="absolute top-4 left-4">
-                  <span className={`${card.eyebrowColor || "text-white"} inline-block px-3 py-1.5 bg-primary text-xs font-bold uppercase tracking-wider`} style={getCardStyle(card, 'eyebrow')}>
-                    {card.eyebrow || "Services"}
-                  </span>
-                </div>
-                {/* Icon Circle */}
-                <div className="absolute bottom-4 left-4 w-10 h-10 bg-primary flex items-center justify-center text-white">
-                  <CardIcon title={card.title} />
-                </div>
               </div>
 
               {/* Content */}

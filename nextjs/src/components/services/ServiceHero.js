@@ -2,7 +2,7 @@
 import PageHero from "@/components/shared/PageHero";
 import { cmsTextStyle } from './cmsStyles'
 
-export default function ServiceHero({ data = {} }) {
+export default function ServiceHero({ data = {}, showOverlay = true }) {
   const eyebrow = data.subtitle ?? 'OUR SERVICES';
   const title = data.title ?? 'Comprehensive Fuel Solutions for Every Industry';
   const description = data.description ?? 'From mining to marine, agriculture to retail — we deliver reliable fuel solutions tailored to your industry needs.';
@@ -20,6 +20,7 @@ export default function ServiceHero({ data = {} }) {
       eyebrowStyle={cmsTextStyle(data, 'subtitle')}
       titleStyle={cmsTextStyle(data, 'title')}
       descriptionStyle={cmsTextStyle(data, 'description')}
+      showOverlay={showOverlay}
     />
   );
 }

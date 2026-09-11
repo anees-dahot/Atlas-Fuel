@@ -126,13 +126,14 @@ export default function AboutCoreValues({ data = {} }) {
         </div>
 
         {/* Image */}
-        <div className="relative h-[300px] overflow-hidden shadow-xl mb-16">
+        <div className="relative aspect-[4/1] overflow-hidden shadow-xl mb-16">
           <CmsImage
             value={data.image ?? data.imageImage ?? imageUrl}
             alt={data.imageAlt ?? 'Our Core Values'}
             fill
             sizes="(min-width: 1280px) 1280px, 100vw"
-            className="w-full h-full object-cover"
+            ratio="4/1"
+          className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
         </div>

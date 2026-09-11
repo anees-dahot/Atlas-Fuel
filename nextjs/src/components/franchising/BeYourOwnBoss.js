@@ -7,17 +7,17 @@ if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 const qualities = [
   {
     title: 'Leadership',
-    description: 'The ideal franchisee should be proactive, innovative, and able to lead a motivated team. Strong leadership ensures growth and helps create a positive, high-performing work environment.',
+    description: 'The ideal station opportunity partner should be proactive, innovative, and able to lead a motivated team. Strong leadership ensures growth and helps create a positive, high-performing work environment.',
     icon: 'crown'
   },
   {
     title: 'Values and Sustainability',
-    description: 'A strong commitment to sustainability and community involvement is key. The franchisee should align with Atlas Fuel Australia\'s values and foster a responsible, positive impact in the local community.',
+    description: 'A strong commitment to sustainability and community involvement is key. The station opportunity partner should align with Atlas Fuel Australia\'s values and foster a responsible, positive impact in the local community.',
     icon: 'leaf'
   },
   {
     title: 'Business Expertise',
-    description: 'Franchisees must possess solid financial acumen and business management skills. This ensures profitability and smooth operations, while the ability to problem-solve and communicate effectively is essential for success.',
+    description: 'Station Opportunity Partners must possess solid financial acumen and business management skills. This ensures profitability and smooth operations, while the ability to problem-solve and communicate effectively is essential for success.',
     icon: 'briefcase'
   }
 ]

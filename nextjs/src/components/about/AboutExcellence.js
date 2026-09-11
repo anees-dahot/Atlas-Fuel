@@ -109,7 +109,8 @@ export default function AboutExcellence({ data = {} }) {
             alt={data.excellenceBgAlt ?? 'Excellence'}
             fill
             sizes="100vw"
-            className="object-cover opacity-10"
+            ratio="16/9"
+          className="object-cover opacity-10"
           />
         </div>
         <div className="absolute inset-0 bg-gradient-to-t from-white via-white/90 to-white/70" />

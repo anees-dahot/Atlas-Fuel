@@ -1,4 +1,5 @@
 import localFont from 'next/font/local'
+import Script from 'next/script'
 import {draftMode} from 'next/headers'
 import VisualEditing from 'next-sanity/visual-editing/client-component'
 import 'leaflet/dist/leaflet.css'
@@ -62,6 +63,19 @@ export default async function RootLayout({ children }) {
       style={buildThemeStyle(themeSettings)}
     >
       <body className="font-body">
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18433169100"
+          strategy="afterInteractive"
+        />
+        <Script id="google-tag" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'AW-18433169100');
+          `}
+        </Script>
         <ErrorSettingsProvider settings={errorSettings}>
           <HeaderServer />
           <main>{children}</main>

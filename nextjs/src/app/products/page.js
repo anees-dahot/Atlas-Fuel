@@ -184,14 +184,15 @@ export default async function ProductsPage() {
                   data-product-slug={product.slug?.current || product.slug || undefined}
                   className="bg-white overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <div className="relative h-48 overflow-hidden">
+                  <div className="relative aspect-[4/3] overflow-hidden">
                     <CmsImage
                       value={product.image ?? product.imageUrl}
                       fallbackSrc="/images/fuel-stations.jpg"
                       alt={product.imageAlt ?? product.name ?? product.title ?? ''}
                       fill
                       sizes="(min-width: 768px) 50vw, 100vw"
-                      className="w-full h-full object-cover"
+                      ratio="4/3"
+          className="w-full h-full object-cover"
                     />
                     <div className={`absolute top-4 right-4 w-16 h-16 ${product.color ?? 'bg-primary'} rounded-full flex items-center justify-center text-white font-bold text-xl`}>
                       {product.octane ?? product.octaneNumber}
@@ -261,13 +262,14 @@ export default async function ProductsPage() {
                   className="bg-gray-50 overflow-hidden hover:bg-primary hover:text-white transition-colors group"
                 >
                   {(product.image ?? product.imageUrl) && (
-                    <div className="relative h-40">
+                    <div className="relative aspect-[4/3]">
                       <CmsImage
                         value={product.image ?? product.imageUrl}
                         alt={product.imageAlt ?? product.name ?? product.title ?? ''}
                         fill
                         sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
-                        className="h-40 w-full object-cover"
+                        ratio="4/3"
+          className="h-full w-full object-cover"
                       />
                     </div>
                   )}
@@ -320,7 +322,8 @@ export default async function ProductsPage() {
                   alt={productsData.servicePromise.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="w-full h-full object-cover"
+                  ratio="3/2"
+          className="w-full h-full object-cover"
                 />
               </div>
             </div>

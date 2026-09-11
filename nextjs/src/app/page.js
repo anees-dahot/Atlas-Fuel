@@ -277,7 +277,7 @@ const fbPeople = {
 const fbSettings = {
   phone: "+61 8 6377 7644",
   email: "info@atlasfuel.com.au",
-  address: "1 Mandurah Rd, Kwinana WA 6167",
+  address: "5 Mandurah Rd, Kwinana WA 6167",
   ctaBannerHeading: "Work With Us",
   ctaBannerText:
     "Join Atlas Fuel and build a rewarding career powering growth across Australia.",
@@ -352,7 +352,7 @@ const homeQuery = groq`*[_id == "homePage"][0]{
     },
     backgroundImage{..., asset->{_id, url, metadata{lqip, dimensions}}, alt, hotspot, crop},
     "heroImageUrl": backgroundImage.asset->url, "heroImageAlt": backgroundImage.alt,
-    quickLinks[]{ _key, label, href, icon, isEmergency },
+    quickLinks[]{ _key, label, href, icon, isEmergency, isPrimary },
     heroStats[]{ _key, value, label }
   },
   featureBoxesSection {

@@ -67,13 +67,14 @@ export default function IndependentDealers({ data = {} }) {
 
           {/* Right: Image */}
           <div className="order-1 lg:order-2">
-            <div className="relative h-[400px] lg:h-[500px] bg-gray-100 overflow-hidden">
+            <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
               <CmsImage
                 value={data.image ?? imageUrl}
                 alt={data.imageAlt ?? heading}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="w-full h-full object-cover"
+                ratio="4/3"
+          className="w-full h-full object-cover"
               />
             </div>
           </div>

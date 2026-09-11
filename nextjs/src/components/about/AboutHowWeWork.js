@@ -12,10 +12,11 @@ export default function AboutHowWeWork({ data = {} }) {
   const heading    = data.heading    ?? 'How We Work'
   const subheading = data.subheading ?? 'A simple, reliable process built around your needs.'
   const eyebrow    = data.eyebrow    ?? 'The Process'
+  const defaultStepImages = ['/images/what-we-do-fuel-transportation.webp', '/images/hero-trucks.jpg', '/images/what-we-do-mining-civil.webp']
   const steps      = data.steps      ?? [
-    { step: '01', title: 'You Contact Us',          description: 'Reach out by phone, email or our online form. Our team responds within 24 hours to understand your exact fuel requirements.',     imageUrl: '/images/what-we-do-fuel-transportation.webp'  },
-    { step: '02', title: 'We Plan the Delivery',    description: 'Our logistics team coordinates your order, schedules the tanker, and confirms delivery time — tracked live via GPS throughout.', imageUrl: '/images/hero-trucks.jpg'  },
-    { step: '03', title: 'Fuel Delivered On Time',  description: 'Our certified driver delivers your fuel safely and on schedule, every time. Zero downtime. 99.5% on-time delivery rate.',         imageUrl: '/images/what-we-do-mining-civil.webp'  },
+    { step: '01', title: 'You Contact Us',          description: 'Reach out by phone, email or our online form. Our team responds within 24 hours to understand your exact fuel requirements.',     imageUrl: defaultStepImages[0]  },
+    { step: '02', title: 'We Plan the Delivery',    description: 'Our logistics team coordinates your order, schedules the tanker, and confirms delivery time — tracked live via GPS throughout.', imageUrl: defaultStepImages[1]  },
+    { step: '03', title: 'Fuel Delivered On Time',  description: 'Our certified driver delivers your fuel safely and on schedule, every time. Zero downtime. 99.5% on-time delivery rate.',         imageUrl: defaultStepImages[2]  },
   ]
 
   useEffect(() => {
@@ -54,13 +55,15 @@ export default function AboutHowWeWork({ data = {} }) {
               )}
 
               {/* Image */}
-              <div className="relative h-52 overflow-hidden mb-6 shadow-md group-hover:shadow-lg transition-all duration-300">
+              <div className="relative aspect-[4/3] overflow-hidden mb-6 shadow-md group-hover:shadow-lg transition-all duration-300">
                 <CmsImage
                   value={step.image ?? step.imageImage ?? step.imageUrl}
+                  fallbackSrc={defaultStepImages[i % defaultStepImages.length]}
                   alt={step.imageAlt ?? step.alt ?? step.title ?? ''}
                   fill
                   sizes="(min-width: 768px) 33vw, 100vw"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                  ratio="4/3"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
                 <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
 
                 {/* Step badge */}

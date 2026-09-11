@@ -8,7 +8,7 @@ export default function Contact({ data = {} }) {
 
   const phone = data?.phone || '+61 8 6377 7644'
   const email = data?.email || 'info@atlasfuel.com.au'
-  const address = data?.address || '1 Mandurah Rd, Kwinana WA 6167'
+  const address = data?.address || '5 Mandurah Rd, Kwinana WA 6167'
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -117,7 +117,7 @@ export default function Contact({ data = {} }) {
                   <option value="bulk">Bulk Fuel Enquiry</option>
                   <option value="station">Fuel Station Enquiry</option>
                   <option value="transport">Fuel Transportation</option>
-                  <option value="franchise">Franchise Opportunity</option>
+                  <option value="station opportunity">Station Opportunity</option>
                   <option value="careers">Careers</option>
                   <option value="other">Other</option>
                 </select>

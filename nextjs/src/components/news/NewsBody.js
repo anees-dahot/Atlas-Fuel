@@ -62,7 +62,8 @@ function VideoBlock({value}) {
             alt={posterAlt}
             fill
             sizes="(min-width: 1024px) 900px, 100vw"
-            className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
+            ratio="16/9"
+          className="object-cover opacity-80 transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <span className="absolute inset-0 bg-gradient-to-br from-gray-900 to-black" />
@@ -117,7 +118,8 @@ export default function NewsBody({body, fallbackHtml = ''}) {
               alt={block.alt || block.image?.alt || ''}
               fill
               sizes="(min-width: 1024px) 900px, 100vw"
-              className="object-cover"
+              ratio="16/10"
+          className="object-cover"
             />
           </div>
           {block.caption && <figcaption className="mt-3 text-sm text-gray-500">{block.caption}</figcaption>}

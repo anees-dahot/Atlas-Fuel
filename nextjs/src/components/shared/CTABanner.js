@@ -74,6 +74,16 @@ const getStyle = (obj, field) => {
 }
 
 function CtaLink({href, className, style, children}) {
+  const isDownloadable = /\.(pdf|docx?|xlsx?)$/i.test(href ?? '')
+
+  if (isDownloadable) {
+    return (
+      <a href={href} className={className} style={style} download>
+        {children}
+      </a>
+    )
+  }
+
   if (/^(https?:|mailto:|tel:)/i.test(href)) {
     const external = /^https?:/i.test(href)
     return (

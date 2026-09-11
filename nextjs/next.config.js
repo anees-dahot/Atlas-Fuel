@@ -12,6 +12,11 @@ const nextConfig = {
         destination: '/services',
         permanent: true,
       },
+      {
+        source: '/franchising',
+        destination: '/station-opportunities',
+        permanent: true,
+      },
     ]
   },
   images: {

@@ -75,7 +75,7 @@ export default function OnsiteBulkDieselClient({ hero, onsiteIntro, features, pr
   return (
     <>
       <main ref={pageRef}>
-        <ServiceHero data={hero} />
+        <ServiceHero data={hero} showOverlay={false} />
         <OnsiteIntro data={onsiteIntro} />
         <OnsiteFeatures data={features} />
         <ProcessTimeline data={process} />

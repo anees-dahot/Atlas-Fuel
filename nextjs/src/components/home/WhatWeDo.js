@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import CmsImage from "@/components/common/CmsImage";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const sectorIcons = {
   stations: (
@@ -227,15 +227,12 @@ export default function WhatWeDo({ data }) {
     : defaultSectors;
   const sectionTag = content.sectionTag || "Sectors We Cover";
   const sectionHeading = content.sectionHeading || "What We Do";
-  const scrollHintText = content.scrollHintText || "Scroll to explore";
 
   const [activeIndex, setActiveIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
   const sectionRef = useRef(null);
   const contentRef = useRef(null);
-  const stRef = useRef(null); // ScrollTrigger instance
-  const currentIdx = useRef(0); // track index without re-render
 
   // ── Scroll reveal trigger ──
   useEffect(() => {
@@ -248,59 +245,6 @@ export default function WhatWeDo({ data }) {
     if (sectionRef.current) observer.observe(sectionRef.current);
     return () => observer.disconnect();
   }, []);
-
-  // ── Scroll-driven sector cycling (pinned) ──
-  useLayoutEffect(() => {
-    if (!isVisible || sectors.length === 0) return;
-
-    let killed = false;
-
-    const init = async () => {
-      const { default: gsap } = await import("gsap");
-      const { ScrollTrigger } = await import("gsap/ScrollTrigger");
-      gsap.registerPlugin(ScrollTrigger);
-
-      if (killed || !sectionRef.current) return;
-
-      const scrollPerSector = Math.min(window.innerHeight * 0.25, 220);
-      const totalScroll = scrollPerSector * (sectors.length - 1);
-
-      stRef.current = ScrollTrigger.create({
-        trigger: sectionRef.current,
-        start: "top top",
-        end: `+=${totalScroll}`,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        snap: {
-          snapTo: sectors.length > 1 ? 1 / (sectors.length - 1) : 1,
-          duration: { min: 0.3, max: 0.5 },
-          ease: "power2.inOut",
-          delay: 0.05,
-        },
-        onUpdate: (self) => {
-          const idx = Math.min(
-            sectors.length - 1,
-            Math.floor(self.progress * sectors.length),
-          );
-          if (idx !== currentIdx.current) {
-            currentIdx.current = idx;
-            setActiveIndex(idx);
-          }
-        },
-      });
-    };
-
-    init();
-
-    return () => {
-      killed = true;
-      if (stRef.current) {
-        stRef.current.kill();
-        stRef.current = null;
-      }
-    };
-  }, [isVisible, sectors.length]);
 
   // ── Animate card on index change ──
   const animateCard = useCallback(async () => {
@@ -317,23 +261,13 @@ export default function WhatWeDo({ data }) {
     if (isVisible) animateCard();
   }, [activeIndex, isVisible, animateCard]);
 
-  // ── Tab click: jump to sector + update scroll position ──
+  // ── Tab hover/click: switch active sector (no scroll-jacking) ──
   const handleTabClick = useCallback(
     (i) => {
       if (i === activeIndex) return;
-      currentIdx.current = i;
       setActiveIndex(i);
-
-      // Scroll to the matching pinned position
-      if (stRef.current && sectors.length > 1) {
-        const progress = i / (sectors.length - 1);
-        const target =
-          stRef.current.start +
-          (stRef.current.end - stRef.current.start) * progress;
-        window.scrollTo({ top: target, behavior: "smooth" });
-      }
     },
-    [activeIndex, sectors.length],
+    [activeIndex],
   );
 
   const sector = sectors[activeIndex] || sectors[0] || {};
@@ -385,6 +319,7 @@ export default function WhatWeDo({ data }) {
               <button
                 key={s.slug || i}
                 onClick={() => handleTabClick(i)}
+                onMouseEnter={() => handleTabClick(i)}
                 className={cn(
                   "group w-full text-left px-5 py-4 transition-all duration-300 flex items-center gap-4",
                   activeIndex === i
@@ -418,23 +353,6 @@ export default function WhatWeDo({ data }) {
                 )}
               </button>
             ))}
-
-            {/* Scroll hint */}
-            {isVisible && (
-              <p className="text-xs text-gray-400 uppercase tracking-widest mt-6 flex items-center gap-2">
-                <svg
-                  className="w-3 h-3"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                >
-                  <line x1="12" y1="5" x2="12" y2="19" />
-                  <polyline points="19 12 12 19 5 12" />
-                </svg>
-                {scrollHintText}
-              </p>
-            )}
           </div>
 
           {/* Right: Content card */}
@@ -449,7 +367,7 @@ export default function WhatWeDo({ data }) {
           >
             <div className="bg-white border border-gray-100 shadow-lg overflow-hidden">
               {/* Image */}
-              <div className="relative h-72 overflow-hidden bg-gray-100">
+              <div className="relative aspect-video overflow-hidden bg-gray-100">
                 <CmsImage
                   key={sector.slug}
                   value={sector.image || sector.imageUrl}
@@ -457,23 +375,10 @@ export default function WhatWeDo({ data }) {
                   alt={sector.imageAlt || sector.title || ""}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="w-full h-full object-cover"
+                  ratio="16/9"
+          className="w-full h-full object-cover object-center"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                {sector.stats?.length > 0 && (
-                  <div className="absolute bottom-6 left-6 right-6 flex gap-8">
-                    {sector.stats.map((stat, i) => (
-                      <div key={i}>
-                        <div className={`${stat.valueColor || "text-white"} text-3xl font-bold font-heading leading-none`} style={getStyle(stat, 'value')}>
-                          {stat.value}
-                        </div>
-                        <div className={`${stat.labelColor || "text-white/80"} text-xs mt-1 uppercase tracking-wide`} style={getStyle(stat, 'label')}>
-                          {stat.label}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* Text */}

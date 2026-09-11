@@ -65,11 +65,12 @@ export default function AboutBusinessAreas({ data = {} }) {
   const subheading = data.subheading ?? 'Comprehensive fuel solutions across every sector of Australian industry.'
   const eyebrow    = data.eyebrow    ?? 'Our Business Areas'
   const linkLabel  = data.linkLabel  ?? 'Learn More'
+  const defaultAreaImages = ['/images/what-we-do-retail.webp', '/images/what-we-do-mining-civil.webp', '/images/what-we-do-fuel-transportation.webp', '/images/what-we-do-onsite-diesel.webp']
   const areas      = data.areas      ?? [
-    { title: 'Fuel Stations',       description: 'World-class retail fuel stations delivering quality, convenience and competitive pricing for everyday Australians.', icon: 'fuel',      link: '/fuel-stations',   imageUrl: '/images/what-we-do-retail.webp' },
-    { title: 'Bulk Diesel Supply',  description: 'Large-scale bulk fuel delivery for mining, agriculture, construction and industrial operations across Australia.',   icon: 'truck',     link: '/fuel-transportation', imageUrl: '/images/what-we-do-mining-civil.webp' },
-    { title: 'Fuel Transportation', description: 'GPS-tracked road tanker fleet providing safe, on-time fuel logistics across Western Australia and beyond.',          icon: 'transport', link: '/fuel-transportation', imageUrl: '/images/what-we-do-fuel-transportation.webp' },
-    { title: 'Construction & Civil',description: 'On-site fuel management and delivery for civil works, road projects and remote construction sites.',                 icon: 'hardhat',   link: '/services/mining-fuel', imageUrl: '/images/what-we-do-onsite-diesel.webp' },
+    { title: 'Fuel Stations',       description: 'World-class retail fuel stations delivering quality, convenience and competitive pricing for everyday Australians.', icon: 'fuel',      link: '/fuel-stations',   imageUrl: defaultAreaImages[0] },
+    { title: 'Bulk Diesel Supply',  description: 'Large-scale bulk fuel delivery for mining, agriculture, construction and industrial operations across Australia.',   icon: 'truck',     link: '/fuel-transportation', imageUrl: defaultAreaImages[1] },
+    { title: 'Fuel Transportation', description: 'GPS-tracked road tanker fleet providing safe, on-time fuel logistics across Western Australia and beyond.',          icon: 'transport', link: '/fuel-transportation', imageUrl: defaultAreaImages[2] },
+    { title: 'Construction & Civil',description: 'On-site fuel management and delivery for civil works, road projects and remote construction sites.',                 icon: 'hardhat',   link: '/services/mining-fuel', imageUrl: defaultAreaImages[3] },
   ]
 
   useEffect(() => {
@@ -105,17 +106,17 @@ export default function AboutBusinessAreas({ data = {} }) {
             <CardWrapper {...(area.link ? {href: area.link} : {})}
               className="group relative block bg-white shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden h-full border border-gray-200">
               {/* Image */}
-              {area.imageUrl && (
-                <div className="h-40 overflow-hidden">
-                  <CmsImage
-                    value={area.image ?? area.imageImage ?? area.imageUrl}
-                    alt={area.imageAlt ?? area.alt ?? area.title ?? ''}
-                    fill
-                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                </div>
-              )}
+              <div className="relative aspect-video overflow-hidden">
+                <CmsImage
+                  value={area.image ?? area.imageImage ?? area.imageUrl}
+                  fallbackSrc={defaultAreaImages[i % defaultAreaImages.length]}
+                  alt={area.imageAlt ?? area.alt ?? area.title ?? ''}
+                  fill
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+                  ratio="16/9"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+              </div>
               
               {/* Content */}
               <div className="p-6">

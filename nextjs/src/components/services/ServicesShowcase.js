@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useLayoutEffect, useRef, useState, useCallback } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import CmsImage from '@/components/common/CmsImage'
@@ -37,10 +37,6 @@ const defaultServices = [
     fullDescription: 'With a steadfast commitment to quality, Atlas Fuel ensures uninterrupted operations by delivering fuel on-site precisely when needed, eliminating costly downtime. Our rigorous adherence to industry standards guarantees the highest level of safety, crucial for the demanding environments of mining operations.',
     imageUrl: '/images/what-we-do-mining-civil.webp',
     link: '/services/mining-fuel',
-    stats: [
-      { value: '24/7', label: 'On-Site Delivery' },
-      { value: '99.9%', label: 'Reliability' },
-    ],
   },
   {
     id: 'marine',
@@ -49,10 +45,6 @@ const defaultServices = [
     fullDescription: 'With years of experience in the industry, Atlas Fuel ensures efficient and timely delivery, even in the most challenging conditions, making it the preferred choice for clients worldwide. Their extensive network and customer-centric approach guarantee that clients receive the best refueling solutions for their vessels.',
     imageUrl: '/images/marine-fuel.jpg',
     link: '/services/marine-fuel',
-    stats: [
-      { value: 'Global', label: 'Coverage' },
-      { value: 'Fast', label: 'Turnaround' },
-    ],
   },
   {
     id: 'agriculture',
@@ -61,10 +53,6 @@ const defaultServices = [
     fullDescription: 'Whether it\'s supplying diesel for machinery or other fuel needs essential to agriculture, Atlas Fuel Australia combines reliability with cost-efficiency. Our dedication to customer satisfaction and understanding of agricultural needs makes us a trusted partner in the industry.',
     imageUrl: '/images/agriculture.jpg',
     link: '/services/agriculture-fuel',
-    stats: [
-      { value: 'Best', label: 'Prices' },
-      { value: 'Flexible', label: 'Delivery' },
-    ],
   },
   {
     id: 'retail',
@@ -73,10 +61,6 @@ const defaultServices = [
     fullDescription: 'Enquiring about Atlas Fuel branding can offer you a range of benefits, from distinctive branding that attracts more customers to operational support that helps streamline your business. Explore how Atlas Fuel branding can elevate your station\'s presence.',
     imageUrl: '/images/fuel-stations.jpg',
     link: '/services/fuel-retailers',
-    stats: [
-      { value: '200+', label: 'Partners' },
-      { value: 'Full', label: 'Support' },
-    ],
   },
   {
     id: 'transport',
@@ -85,10 +69,6 @@ const defaultServices = [
     fullDescription: 'Recognizing the critical role that transportation plays in the movement of goods across the country, Atlas Fuel offers cost-effective solutions tailored to the needs of logistics and transport companies. We help businesses reduce operating costs and maximize efficiency.',
     imageUrl: '/images/fuel-logistics.jpg',
     link: '/fuel-transportation',
-    stats: [
-      { value: 'Cost', label: 'Effective' },
-      { value: 'Quality', label: 'Assured' },
-    ],
   },
   {
     id: 'distribution',
@@ -97,10 +77,6 @@ const defaultServices = [
     fullDescription: 'Our extensive network and logistical expertise ensure seamless delivery of high-quality fuel, no matter where our clients are located. With a strong commitment to efficiency, competitive pricing, and customer satisfaction, Atlas Fuel has become a leading choice.',
     imageUrl: '/images/local-fuel-distributors.jpg',
     link: '/services/local-fuel-distributors',
-    stats: [
-      { value: '200+', label: 'Clients' },
-      { value: '24/7', label: 'Support' },
-    ],
   },
 ]
 
@@ -111,8 +87,6 @@ export default function ServicesShowcase({ data = {} }) {
 
   const sectionRef  = useRef(null)
   const contentRef  = useRef(null)
-  const stRef       = useRef(null)
-  const currentIdx  = useRef(0)
 
   // ── Scroll reveal trigger ──
   useEffect(() => {
@@ -123,59 +97,6 @@ export default function ServicesShowcase({ data = {} }) {
     if (sectionRef.current) observer.observe(sectionRef.current)
     return () => observer.disconnect()
   }, [])
-
-  // ── Scroll-driven service cycling (pinned) ──
-  useLayoutEffect(() => {
-    if (!isVisible || displayServices.length === 0) return
-
-    let killed = false
-
-    const init = async () => {
-      const { default: gsap } = await import('gsap')
-      const { ScrollTrigger }  = await import('gsap/ScrollTrigger')
-      gsap.registerPlugin(ScrollTrigger)
-
-      if (killed || !sectionRef.current) return
-
-      const scrollPerService = window.innerHeight * 0.55
-      const totalScroll      = scrollPerService * (displayServices.length - 1)
-
-      stRef.current = ScrollTrigger.create({
-        trigger:      sectionRef.current,
-        start:        'top top',
-        end:          `+=${totalScroll}`,
-        pin:          true,
-        pinSpacing:   true,
-        anticipatePin: 1,
-        snap: {
-          snapTo:   displayServices.length > 1 ? 1 / (displayServices.length - 1) : 1,
-          duration: { min: 0.3, max: 0.5 },
-          ease:     'power2.inOut',
-          delay:    0.05,
-        },
-        onUpdate: (self) => {
-          const idx = Math.min(
-            displayServices.length - 1,
-            Math.floor(self.progress * displayServices.length)
-          )
-          if (idx !== currentIdx.current) {
-            currentIdx.current = idx
-            setActiveIndex(idx)
-          }
-        },
-      })
-    }
-
-    init()
-
-    return () => {
-      killed = true
-      if (stRef.current) {
-        stRef.current.kill()
-        stRef.current = null
-      }
-    }
-  }, [isVisible, displayServices.length])
 
   // ── Animate card on index change ──
   const animateCard = useCallback(async () => {
@@ -192,22 +113,14 @@ export default function ServicesShowcase({ data = {} }) {
     if (isVisible) animateCard()
   }, [activeIndex, isVisible, animateCard])
 
-  // ── Tab click: jump to service + update scroll position ──
+  // ── Tab hover/click: switch active service (no scroll-jacking) ──
   const handleTabClick = useCallback((i) => {
     if (i === activeIndex) return
-    currentIdx.current = i
     setActiveIndex(i)
-
-    if (stRef.current && displayServices.length > 1) {
-      const progress = i / (displayServices.length - 1)
-      const target   = stRef.current.start + (stRef.current.end - stRef.current.start) * progress
-      window.scrollTo({ top: target, behavior: 'smooth' })
-    }
-  }, [activeIndex, displayServices.length])
+  }, [activeIndex])
 
   const service = displayServices[activeIndex] ?? displayServices[0] ?? {}
   const activeServiceId = getServiceId(service)
-  const scrollHint = data.scrollHint ?? 'Scroll to explore'
   const ctaLabel = service.ctaText ?? data.ctaLabel ?? 'Learn More'
 
   return (
@@ -237,6 +150,7 @@ export default function ServicesShowcase({ data = {} }) {
               <button
                 key={s._key || s.id || i}
                 onClick={() => handleTabClick(i)}
+                onMouseEnter={() => handleTabClick(i)}
                 className={cn(
                   'group w-full text-left px-5 py-4 transition-all duration-300 flex items-center gap-4',
                   activeIndex === i
@@ -258,16 +172,6 @@ export default function ServicesShowcase({ data = {} }) {
                 )}
               </button>
             ))}
-
-            {/* Scroll hint */}
-            {isVisible && (
-              <p className="text-xs text-gray-400 uppercase tracking-widest mt-6 flex items-center gap-2">
-                <svg className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <line x1="12" y1="5" x2="12" y2="19"/><polyline points="19 12 12 19 5 12"/>
-                </svg>
-                {scrollHint}
-              </p>
-            )}
           </div>
 
           {/* Right: Content card */}
@@ -289,16 +193,6 @@ export default function ServicesShowcase({ data = {} }) {
                   sizes="(min-width: 1024px) 55vw, 100vw"
                   className="object-cover"
                 />
-                {service.stats?.length > 0 && (
-                  <div className="absolute bottom-6 left-6 right-6 flex gap-8">
-                    {service.stats.map((stat, i) => (
-                      <div key={i}>
-                        <div className="text-3xl font-bold text-white font-heading leading-none" style={cmsTextStyle(stat, 'value', '#ffffff', '30px')}>{stat.value}</div>
-                        <div className="text-xs text-white/80 mt-1 uppercase tracking-wide" style={cmsTextStyle(stat, 'label', 'rgba(255,255,255,0.8)', '12px')}>{stat.label}</div>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
 
               {/* Text */}

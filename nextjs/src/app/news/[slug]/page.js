@@ -267,10 +267,12 @@ export default async function BlogPostPage({ params }) {
             value={postData.image}
             src={postData.imageUrl}
             alt={postData.imageAlt || postData.title}
+            width={2400}
+            fit="min"
             fill
             priority
             sizes="100vw"
-            className="object-cover"
+            className="object-cover object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-white/80 via-white/60 to-white/40" />
           <div className="absolute bottom-0 left-0 right-0 p-8 lg:p-12">
@@ -278,8 +280,12 @@ export default async function BlogPostPage({ params }) {
               <span className="inline-block px-4 py-1 bg-primary text-white text-sm font-semibold uppercase tracking-wider mb-4">
                 {postData.category}
               </span>
-              <h1 className="text-3xl lg:text-5xl font-bold text-gray-900 max-w-4xl">
-                {postData.title}
+              <h1 className="text-3xl lg:text-5xl font-bold max-w-4xl">
+                {String(postData.title ?? '').split(' ').map((word, wordIndex) => (
+                  <span key={wordIndex} className={wordIndex % 2 === 1 ? 'text-primary' : 'text-gray-900'}>
+                    {word}{' '}
+                  </span>
+                ))}
               </h1>
               <div className="flex items-center gap-4 mt-4 text-gray-700">
                 <span>{postData.date}</span>
@@ -351,7 +357,8 @@ export default async function BlogPostPage({ params }) {
                                 alt={article.mainImageAlt || article.imageAlt || article.mainImage?.alt || article.title || ''}
                                 fill
                                 sizes="80px"
-                                className="object-cover"
+                                ratio="1/1"
+          className="object-cover"
                               />
                             </span>
                             <div>

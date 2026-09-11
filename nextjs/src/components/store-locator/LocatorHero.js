@@ -15,6 +15,7 @@ export default function LocatorHero({ data = {} }) {
       description={description}
       backgroundImage={backgroundImage}
       backgroundAlt={data.heroImageAlt ?? data.heroImageUrlAlt ?? title}
+      showOverlay={false}
     />
   );
 }

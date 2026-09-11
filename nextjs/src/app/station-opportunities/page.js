@@ -5,38 +5,48 @@ import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import FranchisingClient from '@/components/franchising/FranchisingClient'
 
+function sanityFileUrl(fileField) {
+  const ref = fileField?.asset?._ref
+  const match = ref?.match(/^file-([a-f0-9]+)-(\w+)$/)
+  if (!match) return null
+  const [, id, ext] = match
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
+  return `https://cdn.sanity.io/files/${projectId}/${dataset}/${id}.${ext}`
+}
+
 export function generateMetadata() {
   return loadPageMetadata({
     getPage: getFranchisingPage,
     getSiteSettings,
-    path: '/franchising',
-    fallbackTitle: 'Franchising | Atlas Fuel Australia',
-    fallbackDescription: 'Own your own Atlas Fuel station. Join a proven franchise model with comprehensive training and ongoing support.',
+    path: '/station-opportunities',
+    fallbackTitle: 'Station Opportunities | Atlas Fuel Australia',
+    fallbackDescription: 'Own your own Atlas Fuel station. Join a proven station opportunity model with comprehensive training and ongoing support.',
   })
 }
 
 const fallbackSiteSettings = {
-  ctaBannerHeading: 'Ready to Start Your Franchise Journey?',
-  ctaBannerText: 'Contact us today to learn more about Atlas Fuel franchise opportunities and take the first step toward owning your own business.',
+  ctaBannerHeading: 'Ready to Start Your Station Opportunity Journey?',
+  ctaBannerText: 'Contact us today to learn more about Atlas Fuel station opportunities and take the first step toward owning your own business.',
   ctaBannerButtonText: 'Enquire Now',
   ctaBannerButtonLink: '/contact',
 }
 
 const fallbackHero = {
-  subtitle: 'Franchising',
+  subtitle: 'Station Opportunities',
   title: 'Be Your Own Boss with Atlas Fuel',
-  description: 'Join a growing network of successful fuel station owners. Atlas Fuel offers a proven franchise model with comprehensive training, ongoing support, and the backing of a trusted Australian brand.',
+  description: 'Join a growing network of successful fuel station owners. Atlas Fuel offers a proven station opportunity model with comprehensive training, ongoing support, and the backing of a trusted Australian brand.',
   heroImageUrl: '/images/independent-fuel-stations.jpg',
-  heroImageAlt: 'Atlas Fuel station franchise',
+  heroImageAlt: 'Atlas Fuel station opportunity',
 }
 
 const fallbackFranchisingData = {
   intro: {
     eyebrow: 'Become Part of Our Growing Family',
-    heading: 'Atlas Franchise',
-    description: 'We are turning passion into profits for our franchisees. At Atlas Fuel, we believe in empowering entrepreneurs to build successful businesses while delivering quality fuel and service to their communities. Our franchise model is designed for success, combining industry expertise with personalized support.',
+    heading: 'Atlas Station Opportunity',
+    description: 'We are turning passion into profits for our station opportunity partners. At Atlas Fuel, we believe in empowering entrepreneurs to build successful businesses while delivering quality fuel and service to their communities. Our station opportunity model is designed for success, combining industry expertise with personalized support.',
     image: '/images/what-we-do-retail.webp',
-    imageAlt: 'Atlas Fuel franchise station',
+    imageAlt: 'Atlas Fuel station opportunity',
   },
   benefitsHeading: 'Why Choose Atlas Fuel?',
   benefitsDescription: 'We provide everything you need to build a successful fuel station business',
@@ -53,7 +63,7 @@ const fallbackFranchisingData = {
     },
     {
       title: 'Ongoing Support',
-      description: 'Our dedicated franchise support team is always available to help with marketing, operations, and any challenges you face.',
+      description: 'Our dedicated station opportunity support team is always available to help with marketing, operations, and any challenges you face.',
       icon: 'support',
     },
     {
@@ -74,7 +84,7 @@ const fallbackFranchisingData = {
   ],
   journey: {
     heading: 'Your Success Journey',
-    description: 'Your path to franchise success',
+    description: 'Your path to station opportunity success',
     steps: [
       {
         step: '01',
@@ -84,7 +94,7 @@ const fallbackFranchisingData = {
       {
         step: '02',
         title: 'Application & Assessment',
-        description: 'Complete our franchise application. We assess your suitability, financial capacity, and commitment to the Atlas Fuel brand values.',
+        description: 'Complete our station opportunity application. We assess your suitability, financial capacity, and commitment to the Atlas Fuel brand values.',
       },
       {
         step: '03',
@@ -110,7 +120,7 @@ const fallbackFranchisingData = {
   },
   training: {
     heading: 'Training and Support',
-    description: 'We believe in fostering a culture of collaboration and teamwork among our franchisees. Our comprehensive training program ensures you have the knowledge and skills to run a successful fuel station business.',
+    description: 'We believe in fostering a culture of collaboration and teamwork among our station opportunity partners. Our comprehensive training program ensures you have the knowledge and skills to run a successful fuel station business.',
     features: [
       'Operational training for fuel handling and safety',
       'Customer service excellence programs',
@@ -120,13 +130,13 @@ const fallbackFranchisingData = {
       'Health, safety, and compliance certification',
     ],
     image: '/images/atlas-fuel-hero-1b.webp',
-    imageAlt: 'Atlas Fuel franchise training and support',
+    imageAlt: 'Atlas Fuel station opportunity training and support',
   },
   investment: {
     heading: 'Investment Overview',
     description: 'Transparent investment structure with no hidden costs',
     points: [
-      { label: 'Franchise Fee', value: 'Competitive rates' },
+      { label: 'Station Opportunity Fee', value: 'Competitive rates' },
       { label: 'Initial Investment', value: 'Site dependent' },
       { label: 'Ongoing Royalty', value: 'Industry standard' },
       { label: 'Marketing Fund', value: 'Shared cost' },
@@ -215,12 +225,19 @@ export default async function FranchisingPage() {
     },
   }
 
-  const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
+  const applicationFormUrl = sanityFileUrl(sanity?.ctaBanner?.applicationFormFile)
+
+  const settings = {
+    ...mapPageCta(sanity, siteSettings, fallbackSiteSettings),
+    ...(applicationFormUrl
+      ? { ctaBannerButtonText: 'Download Form', ctaBannerButtonLink: applicationFormUrl }
+      : {}),
+  }
 
   return (
     <>
       
-        <ServiceHero data={hero} />
+        <ServiceHero data={hero} showOverlay={false} />
         <FranchisingClient franchisingData={franchisingData} siteSettings={settings} />
       
     </>

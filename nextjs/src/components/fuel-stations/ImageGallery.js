@@ -40,8 +40,8 @@ export default function ImageGallery({ data = {} }) {
             return (
             <div
               key={image?._key || imageUrl || index}
-              className={`relative overflow-hidden ${
-                index === 0 ? 'col-span-2 md:col-span-2 row-span-2' : ''
+              className={`relative overflow-hidden aspect-square ${
+                index === 0 ? 'col-span-2 md:col-span-2' : ''
               }`}
             >
               <CmsImage
@@ -50,7 +50,8 @@ export default function ImageGallery({ data = {} }) {
                 alt={imageAlt}
                 fill
                 sizes="(min-width: 768px) 33vw, 50vw"
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                ratio="1/1"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
               />
             </div>
             )

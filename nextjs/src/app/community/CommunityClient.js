@@ -120,6 +120,7 @@ export default function CommunityClient({ data, siteSettings }) {
           eyebrowStyle={hero.subtitleStyle}
           titleStyle={hero.titleStyle}
           descriptionStyle={hero.descriptionStyle}
+          showOverlay={false}
         />
         
         {/* Initiatives Section */}
@@ -145,7 +146,8 @@ export default function CommunityClient({ data, siteSettings }) {
                         alt={initiative.imageAlt ?? initiative.alt ?? initiative.title}
                         fill
                         sizes="64px"
-                        className="object-cover"
+                        ratio="1/1"
+          className="object-cover"
                       />
                     </div>
                   ) : initiative.icon ? (
@@ -185,13 +187,14 @@ export default function CommunityClient({ data, siteSettings }) {
                   {data.genderEqualityDescription}
                 </p>
               </div>
-              <div className="relative h-[400px] overflow-hidden">
+              <div className="relative aspect-[3/2] overflow-hidden">
                 <CmsImage
                   value={data.genderEqualityImage ?? data.genderEqualityImageUrl}
                   alt={data.genderEqualityImageAlt ?? data.genderEqualityImageUrlAlt ?? data.genderEqualityHeading}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
+                  ratio="3/2"
+          className="object-cover"
                 />
               </div>
             </div>
@@ -223,13 +226,14 @@ export default function CommunityClient({ data, siteSettings }) {
         <section className="py-16 lg:py-24 bg-cream">
           <div className="max-w-7xl mx-auto px-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="relative h-[400px] overflow-hidden">
+              <div className="relative aspect-[3/2] overflow-hidden">
                 <CmsImage
                   value={data.supportingLocalsImage ?? data.supportingLocalsImageUrl}
                   alt={data.supportingLocalsImageAlt ?? data.supportingLocalsImageUrlAlt ?? data.supportingLocalsHeading}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
+                  ratio="3/2"
+          className="object-cover"
                 />
               </div>
               <div>
@@ -290,7 +294,8 @@ export default function CommunityClient({ data, siteSettings }) {
                     alt={item.alt ?? item.imageAlt ?? ''}
                     fill
                     sizes="(min-width: 768px) 33vw, 100vw"
-                    className="object-cover"
+                    ratio="3/2"
+          className="object-cover"
                   />
                 </div>
               ))}
@@ -316,13 +321,14 @@ export default function CommunityClient({ data, siteSettings }) {
                   {story.content}
                 </p>
               </div>
-              <div className="relative h-[400px] bg-gray-100 overflow-hidden">
+              <div className="relative aspect-[3/2] bg-gray-100 overflow-hidden">
                 <CmsImage
                   value={story.image}
                   alt={story.imageAlt}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
+                  ratio="3/2"
+          className="object-cover"
                 />
               </div>
             </div>

@@ -16,7 +16,7 @@ export default function TopRibbon({ siteSettings = {} }) {
 
   const phone = siteSettings.phone ?? '+61 8 6377 7644'
   const email = siteSettings.email ?? 'info@atlasfuel.com.au'
-  const address = siteSettings.address ?? '1 Mandurah Rd, Kwinana WA 6167'
+  const address = siteSettings.address ?? '5 Mandurah Rd, Kwinana WA 6167'
   const contactText = siteSettings.topRibbonContactText ?? 'Contact Us'
   const contactLink = siteSettings.topRibbonContactLink ?? '/contact'
   const facebookUrl = siteSettings.facebookUrl ?? '#'

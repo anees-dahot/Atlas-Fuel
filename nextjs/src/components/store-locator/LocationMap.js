@@ -4,6 +4,7 @@ import {useEffect, useMemo, useRef, useState} from 'react'
 import gsap from 'gsap'
 import {ScrollTrigger} from 'gsap/ScrollTrigger'
 import CmsImage from '@/components/common/CmsImage'
+import {cn} from '@/lib/utils'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
@@ -21,8 +22,10 @@ const directionsHref = (location) =>
 export default function LocationMap({data, locationsData}) {
   const sectionRef = useRef(null)
   const mapNodeRef = useRef(null)
+  const mapInstanceRef = useRef(null)
   const [selectedLocation, setSelectedLocation] = useState(null)
   const [mapReady, setMapReady] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
 
   const locations = useMemo(
     () => (Array.isArray(locationsData?.locations) ? locationsData.locations : []),
@@ -44,6 +47,24 @@ export default function LocationMap({data, locationsData}) {
       ),
     [locations]
   )
+
+  const filteredLocations = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase()
+    if (!query) return mappableLocations
+    return mappableLocations.filter((location) =>
+      [location.name, location.address, location.badge]
+        .filter(Boolean)
+        .some((field) => String(field).toLowerCase().includes(query))
+    )
+  }, [mappableLocations, searchQuery])
+
+  const handleSelectLocation = (location) => {
+    setSelectedLocation(location)
+    const map = mapInstanceRef.current
+    if (map && location.latitude !== null && location.longitude !== null) {
+      map.flyTo([location.latitude, location.longitude], Math.max(map.getZoom(), 16), {duration: 0.6})
+    }
+  }
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -78,6 +99,7 @@ export default function LocationMap({data, locationsData}) {
         scrollWheelZoom: false,
         zoomControl: true,
       })
+      mapInstanceRef.current = map
 
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19,
@@ -107,10 +129,36 @@ export default function LocationMap({data, locationsData}) {
 
       if (bounds.length > 1) {
         map.fitBounds(bounds, {padding: [70, 70], maxZoom: zoom})
+      } else if (bounds.length === 1) {
+        map.setView(bounds[0], zoom)
       }
 
       setMapReady(true)
-      window.setTimeout(() => map?.invalidateSize(), 50)
+
+      // Keep the map's internal canvas in sync with its container size —
+      // the reveal animation and responsive layout can resize the
+      // container after Leaflet's initial measurement, which otherwise
+      // leaves the tiles cropped/off-center.
+      const resync = () => {
+        if (!map) return
+        map.invalidateSize()
+        if (bounds.length > 1) {
+          map.fitBounds(bounds, {padding: [70, 70], maxZoom: zoom})
+        } else if (bounds.length === 1) {
+          map.setView(bounds[0], zoom)
+        }
+      }
+
+      window.setTimeout(resync, 50)
+      window.setTimeout(resync, 400)
+
+      let resizeObserver
+      if (typeof ResizeObserver !== 'undefined' && mapNodeRef.current) {
+        resizeObserver = new ResizeObserver(() => resync())
+        resizeObserver.observe(mapNodeRef.current)
+      }
+
+      setupMap._cleanup = () => resizeObserver?.disconnect()
     }
 
     setupMap()
@@ -118,7 +166,9 @@ export default function LocationMap({data, locationsData}) {
     return () => {
       cancelled = true
       setMapReady(false)
+      setupMap._cleanup?.()
       map?.remove()
+      if (mapInstanceRef.current === map) mapInstanceRef.current = null
     }
   }, [data?.defaultZoom, mappableLocations])
 
@@ -142,42 +192,89 @@ export default function LocationMap({data, locationsData}) {
             )}
           </div>
 
-          <div
-            className="atlas-location-map relative min-h-[520px] lg:min-h-[640px] overflow-hidden border border-gray-200 bg-gray-100 shadow-[0_24px_70px_rgba(15,35,24,0.12)]"
-            aria-label={data?.mapAriaLabel || 'Atlas Fuel store locations map'}
-          >
-            {mappableLocations.length ? (
-              <>
-                <div ref={mapNodeRef} className="absolute inset-0" />
-                {!mapReady && (
-                  <div className="absolute inset-0 z-[500] grid place-items-center bg-gray-100 text-gray-600">
-                    {data?.mapLoadingText || 'Loading interactive map...'}
-                  </div>
-                )}
-                {data?.markerHintText && (
-                  <div className="absolute left-4 top-4 z-[600] max-w-[260px] bg-black/80 px-4 py-3 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
-                    {data.markerHintText}
-                  </div>
-                )}
-              </>
-            ) : (
-              <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-gray-100 to-gray-200 px-6 text-center">
-                <div>
-                  <MapPinIcon className="mx-auto mb-5 h-14 w-14 text-primary" />
-                  <p className="max-w-md text-lg font-semibold text-gray-700">
-                    {data?.mapUnavailableText || 'No store coordinates are available yet.'}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            {selectedLocation && (
-              <StoreDialog
-                location={selectedLocation}
-                labels={locationsData}
-                onClose={() => setSelectedLocation(null)}
+          {/* Search bar */}
+          <div className="mx-auto mb-6 max-w-2xl">
+            <div className="relative">
+              <SearchIcon className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={data?.searchPlaceholder || 'Search by suburb or station name'}
+                aria-label={data?.searchPlaceholder || 'Search by suburb or station name'}
+                className="w-full rounded-full border-2 border-gray-200 bg-white py-4 pl-12 pr-5 text-base text-gray-900 shadow-sm placeholder:text-gray-400 focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/15"
               />
-            )}
+            </div>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
+            {/* Location list */}
+            <div className="order-2 flex max-h-[420px] flex-col overflow-y-auto border border-gray-200 bg-white shadow-sm lg:order-1 lg:max-h-[640px]">
+              {filteredLocations.length ? (
+                filteredLocations.map((location) => (
+                  <button
+                    key={location._key ?? `${location.name}-${location.latitude}`}
+                    type="button"
+                    onClick={() => handleSelectLocation(location)}
+                    className={cn(
+                      'border-b border-gray-100 px-5 py-4 text-left transition hover:bg-gray-50',
+                      selectedLocation?.name === location.name && selectedLocation?.address === location.address
+                        ? 'bg-primary/5'
+                        : ''
+                    )}
+                  >
+                    <p className="font-heading text-sm font-bold uppercase tracking-wide text-gray-900">
+                      {location.name}
+                    </p>
+                    {location.address && <p className="mt-1 text-xs leading-relaxed text-gray-500">{location.address}</p>}
+                    {location.phone && <p className="mt-1 text-xs font-semibold text-primary">{location.phone}</p>}
+                  </button>
+                ))
+              ) : (
+                <p className="px-5 py-6 text-sm text-gray-500">
+                  {data?.noResultsText || 'No stations found. Try another search.'}
+                </p>
+              )}
+            </div>
+
+            {/* Map */}
+            <div
+              className="atlas-location-map relative order-1 min-h-[420px] overflow-hidden border border-gray-200 bg-gray-100 shadow-[0_24px_70px_rgba(15,35,24,0.12)] lg:order-2 lg:min-h-[640px]"
+              aria-label={data?.mapAriaLabel || 'Atlas Fuel store locations map'}
+            >
+              {mappableLocations.length ? (
+                <>
+                  <div ref={mapNodeRef} className="absolute inset-0" />
+                  {!mapReady && (
+                    <div className="absolute inset-0 z-[500] grid place-items-center bg-gray-100 text-gray-600">
+                      {data?.mapLoadingText || 'Loading interactive map...'}
+                    </div>
+                  )}
+                  {data?.markerHintText && (
+                    <div className="absolute left-4 top-4 z-[600] max-w-[260px] bg-black/80 px-4 py-3 text-sm font-semibold text-white shadow-lg backdrop-blur-sm">
+                      {data.markerHintText}
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-gray-100 to-gray-200 px-6 text-center">
+                  <div>
+                    <MapPinIcon className="mx-auto mb-5 h-14 w-14 text-primary" />
+                    <p className="max-w-md text-lg font-semibold text-gray-700">
+                      {data?.mapUnavailableText || 'No store coordinates are available yet.'}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {selectedLocation && (
+                <StoreDialog
+                  location={selectedLocation}
+                  labels={locationsData}
+                  onClose={() => setSelectedLocation(null)}
+                />
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -210,7 +307,8 @@ function StoreDialog({location, labels, onClose}) {
             alt={location.image?.alt || location.name}
             fill
             sizes="(max-width: 640px) 100vw, 430px"
-            className="object-cover"
+            ratio="8/3"
+          className="object-cover"
           />
         </div>
       )}
@@ -296,6 +394,10 @@ function DialogRow({icon, label, value, href}) {
 }
 
 const iconProps = {viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: 1.8}
+
+function SearchIcon({className = 'h-5 w-5'}) {
+  return <svg className={className} {...iconProps}><circle cx="11" cy="11" r="7" /><path d="m21 21-4.3-4.3" /></svg>
+}
 
 function MapPinIcon({className = 'h-5 w-5'}) {
   return <svg className={className} {...iconProps}><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z" /><circle cx="12" cy="10" r="2.5" /></svg>

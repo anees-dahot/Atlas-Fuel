@@ -28,7 +28,7 @@ export default async function MiningFuelPage() {
   }
 
   const fallbackFeatures = {
-    title: 'One Stop Shop for Miners',
+    title: 'Everything Your Mining Operation Needs',
     subtitle: 'Nationwide Fuel Solutions for Australia\'s Mining Industry',
     features: [
       {
@@ -130,6 +130,18 @@ export default async function MiningFuelPage() {
     secondaryCta: { text: 'Learn More', link: '/fuel-prices' },
   }
 
+  const fallbackGallery = {
+    heading: 'Mining Fuel in Action',
+    images: [
+      { imageUrl: '/images/placeholders/gallery-placeholder-1.png', alt: 'Add your mining site photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-2.png', alt: 'Add your mining site photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-3.png', alt: 'Add your mining site photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-4.png', alt: 'Add your mining site photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-5.png', alt: 'Add your mining site photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-6.png', alt: 'Add your mining site photo here' },
+    ],
+  }
+
   // Merge Sanity data with fallbacks - include all styling fields
   const hero = mergeWithFallback(fallbackHero, sanity?.heroSection)
   const features = mergeWithFallback(fallbackFeatures, sanity?.featuresSection)
@@ -141,6 +153,7 @@ export default async function MiningFuelPage() {
   const fleet = mergeWithFallback(fallbackFleet, sanity?.fleetComplianceSection)
   const drivers = mergeWithFallback(fallbackDrivers, sanity?.driversComplianceSection)
   const excellence = mergeWithFallback(fallbackExcellence, sanity?.excellenceSection)
+  const gallery = mergeWithFallback(fallbackGallery, sanity?.gallerySection)
 
   const enquire = {
     ...mergeWithFallback(fallbackEnquire, sanity?.enquireSection),
@@ -163,6 +176,7 @@ export default async function MiningFuelPage() {
         drivers={drivers}
         excellence={excellence}
         enquire={enquire}
+        gallery={gallery}
         siteSettings={siteSettings}
       />
     </>

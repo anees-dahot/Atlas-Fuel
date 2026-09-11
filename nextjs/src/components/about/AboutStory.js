@@ -199,24 +199,26 @@ export default function AboutStory({ data = {} }) {
           {/* Images */}
           <div className="ast-images relative">
             <TiltCard tiltAmount={5} className="relative z-10">
-              <div className="ast-image relative h-80 overflow-hidden shadow-lg">
+              <div className="ast-image relative aspect-[3/2] overflow-hidden shadow-lg">
                 <CmsImage
                   value={data.image1 ?? data.image1Image ?? image1Url}
                   alt={data.image1Alt ?? 'Atlas Fuel Operations'}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="w-full h-full object-cover"
+                  ratio="3/2"
+          className="w-full h-full object-cover"
                 />
               </div>
             </TiltCard>
             <TiltCard tiltAmount={8} className="absolute -bottom-8 -left-8 w-48 z-20">
-              <div className="ast-image relative h-32 overflow-hidden shadow-lg border-4 border-white">
+              <div className="ast-image relative aspect-[4/1] overflow-hidden shadow-lg border-4 border-white">
                 <CmsImage
                   value={data.image2 ?? data.image2Image ?? image2Url}
                   alt={data.image2Alt ?? 'Atlas Fuel Fleet'}
                   fill
                   sizes="192px"
-                  className="w-full h-full object-cover"
+                  ratio="4/1"
+          className="w-full h-full object-cover"
                 />
               </div>
             </TiltCard>

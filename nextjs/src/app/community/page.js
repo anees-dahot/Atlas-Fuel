@@ -16,7 +16,7 @@ export function generateMetadata() {
 
 const fallbackData = {
   heroSubtitle: 'Community',
-  heroSubtitleColor: 'var(--cms-primary)',
+  heroSubtitleColor: 'var(--cms-background)',
   heroSubtitleSize: '14px',
   heroSubtitleBorderEnabled: false,
   heroSubtitleBorderColor: 'var(--cms-text)',

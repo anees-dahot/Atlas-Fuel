@@ -2,7 +2,7 @@
 import PageHero from "@/components/shared/PageHero";
 
 export default function FranchisingHero({ data = {} }) {
-  const eyebrow = data.subtitle ?? 'FRANCHISING';
+  const eyebrow = data.subtitle ?? 'STATION OPPORTUNITIES';
   const title = data.title ?? 'Own and Operate An Atlas Fuel Station';
   const description = data.description ?? "Build a successful fuel retail business with the backing of Australia's fastest-growing fuel network.";
   const backgroundImage =
@@ -22,6 +22,7 @@ export default function FranchisingHero({ data = {} }) {
       backgroundImage={backgroundImage}
       backgroundAlt={data.heroImageAlt ?? data.heroImageUrlAlt ?? title}
       ctaButtons={ctaButtons}
+      showOverlay={false}
     />
   );
 }

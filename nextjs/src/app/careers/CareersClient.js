@@ -149,17 +149,6 @@ export default function CareersClient({ data, siteSettings }) {
         })
       })
 
-      // Hero parallax effect
-      gsap.to('.hero-image', {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
     }, pageRef)
 
     return () => ctx.revert()
@@ -182,17 +171,19 @@ export default function CareersClient({ data, siteSettings }) {
     <>
       <main ref={pageRef}>
         {/* Hero Section */}
-        <section className="hero-section relative flex items-center overflow-hidden" style={{ minHeight: '80svh' }}>
-          <div className="absolute inset-0 -z-10">
+        <section className="hero-section relative isolate flex items-center overflow-hidden" style={{ minHeight: '80svh' }}>
+          <div className="absolute inset-0 z-0">
             <CmsImage
               value={data.heroImage}
               src={data.heroImageUrl}
               fallbackSrc="/images/work-with-us.jpg"
               alt={data.heroImageUrlAlt || data.heroImageAlt || data.heroTitle || 'Atlas Fuel Careers'}
+              width={2400}
+              fit="min"
               fill
               priority
               sizes="100vw"
-              className="hero-image object-cover"
+              className="hero-image object-cover object-center"
             />
           </div>
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 pb-4">
@@ -319,7 +310,8 @@ export default function CareersClient({ data, siteSettings }) {
                       alt={benefit.imageAlt ?? benefit.alt ?? benefit.image?.alt ?? benefit.title ?? ''}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      ratio="16/9"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                   <div className="p-6">
@@ -387,9 +379,7 @@ export default function CareersClient({ data, siteSettings }) {
                     {column.map((image, imageIndex) => (
                       <div
                         key={image._key || image.imageUrl || image.url || imageIndex}
-                        className={`gallery-item relative overflow-hidden shadow-lg ${
-                          (imageIndex + columnIndex) % 2 === 0 ? 'aspect-[4/3]' : 'aspect-[4/5]'
-                        }`}
+                        className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg"
                       >
                         <CmsImage
                           value={image.image || image}
@@ -397,7 +387,8 @@ export default function CareersClient({ data, siteSettings }) {
                           alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
                           fill
                           sizes="(min-width: 1024px) 25vw, 50vw"
-                          className="object-cover hover:scale-105 transition-transform duration-700"
+                          ratio="4/3"
+          className="object-cover hover:scale-105 transition-transform duration-700"
                         />
                       </div>
                     ))}
@@ -436,7 +427,8 @@ export default function CareersClient({ data, siteSettings }) {
                       alt={job.imageAlt ?? job.alt ?? job.image?.alt ?? job.title ?? ''}
                       fill
                       sizes="(min-width: 768px) 50vw, 100vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-700"
+                      ratio="16/9"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                     <div className="absolute top-4 right-4">
                       <span className="px-3 py-1 bg-primary text-white text-xs font-bold uppercase tracking-wide">
@@ -481,7 +473,8 @@ export default function CareersClient({ data, siteSettings }) {
                     alt={data.talentRisingImageAlt ?? data.talentRisingImage?.alt ?? data.talentHeading ?? ''}
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
+                    ratio="4/5"
+          className="object-cover"
                   />
                 </div>
                 <div className="absolute -bottom-6 -right-6 bg-primary text-white p-8 shadow-xl max-w-xs">
@@ -571,13 +564,7 @@ export default function CareersClient({ data, siteSettings }) {
                     .map((image, imageIndex) => (
                       <div
                         key={image._key || image.imageUrl || image.url || imageIndex}
-                        className={`gallery-item relative overflow-hidden shadow-lg ${
-                          columnIndex === 2
-                            ? 'aspect-square'
-                            : (imageIndex + columnIndex) % 2 === 0
-                              ? 'aspect-[4/3]'
-                              : 'aspect-[3/4]'
-                        }`}
+                        className="gallery-item relative aspect-[4/3] overflow-hidden shadow-lg"
                       >
                         <CmsImage
                           value={image.image || image}
@@ -585,7 +572,8 @@ export default function CareersClient({ data, siteSettings }) {
                           alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
                           fill
                           sizes="(min-width: 768px) 25vw, 50vw"
-                          className="object-cover hover:scale-105 transition-transform duration-500"
+                          ratio="4/3"
+          className="object-cover hover:scale-105 transition-transform duration-500"
                         />
                       </div>
                     ))}
@@ -635,7 +623,8 @@ export default function CareersClient({ data, siteSettings }) {
                     alt={item.imageAlt ?? item.alt ?? item.image?.alt ?? item.title ?? ''}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    ratio="4/3"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -688,7 +677,8 @@ export default function CareersClient({ data, siteSettings }) {
                     alt={image.imageAlt ?? image.alt ?? image.image?.alt ?? ''}
                     fill
                     sizes="(min-width: 768px) 25vw, 50vw"
-                    className="object-cover hover:scale-105 transition-transform duration-500"
+                    ratio="1/1"
+          className="object-cover hover:scale-105 transition-transform duration-500"
                   />
                 </div>
               ))}
@@ -736,7 +726,8 @@ export default function CareersClient({ data, siteSettings }) {
                     alt={item.imageAlt ?? item.alt ?? item.image?.alt ?? item.title ?? ''}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    ratio="4/3"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">

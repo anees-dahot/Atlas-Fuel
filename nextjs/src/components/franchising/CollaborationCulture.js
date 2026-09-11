@@ -24,10 +24,10 @@ export default function CollaborationCulture() {
           <h2 className="text-4xl md:text-5xl font-heading font-bold text-gray-900 uppercase tracking-tight mb-8">Sustainable, Reliable & Affordable Fuel Company</h2>
           <div className="space-y-6">
             <p className="text-lg text-gray-600 leading-relaxed">
-              We provide opportunities for franchisees to connect and share best practices, enabling them to learn from each other and grow their businesses together.
+              We provide opportunities for station opportunity partners to connect and share best practices, enabling them to learn from each other and grow their businesses together.
             </p>
             <p className="text-lg text-gray-600 leading-relaxed">
-              If you are interested in becoming an Atlas Fuel franchisee, we encourage you to reach out to us using the form on our franchising opportunities page. We are always looking for motivated individuals who are passionate about customer service and eager to run their own successful businesses.
+              If you are interested in becoming an Atlas Fuel station opportunity partner, we encourage you to reach out to us using the form on our station opportunities page. We are always looking for motivated individuals who are passionate about customer service and eager to run their own successful businesses.
             </p>
           </div>
         </div>

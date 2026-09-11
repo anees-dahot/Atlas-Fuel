@@ -33,8 +33,6 @@ export default function StationService({ data = {} }) {
   const questionShadowColor = data.questionShadowColor ?? ''
 
   const imageUrl = data.imageUrl ?? '/images/agriculture.jpg'
-  const statValue = data.statValue ?? '99.5%'
-  const statLabel = data.statLabel ?? 'Customer Satisfaction'
 
   useEffect(() => {
     const ctx = gsap.context(() => {
@@ -147,13 +145,10 @@ export default function StationService({ data = {} }) {
                 alt={data.imageAlt ?? 'Atlas Fuel Service'}
                 fill
                 sizes="(min-width: 1024px) 50vw, 100vw"
-                className="w-full h-full object-cover"
+                ratio="4/3"
+          className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/20 to-transparent" />
-            </div>
-            <div className="absolute -bottom-6 -right-6 bg-white p-6 shadow-xl border border-gray-100">
-              <div className="text-4xl font-bold text-primary mb-1">{statValue}</div>
-              <div className="text-sm text-gray-600 uppercase tracking-wider">{statLabel}</div>
             </div>
           </div>
         </div>

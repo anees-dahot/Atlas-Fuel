@@ -5,20 +5,30 @@ import {loadPageMetadata} from '@/lib/metadata'
 import FranchisingHero from '@/components/franchising/FranchisingHero'
 import FranchisingClient from '@/components/franchising/FranchisingClient'
 
+function sanityFileUrl(fileField) {
+  const ref = fileField?.asset?._ref
+  const match = ref?.match(/^file-([a-f0-9]+)-(\w+)$/)
+  if (!match) return null
+  const [, id, ext] = match
+  const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
+  const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
+  return `https://cdn.sanity.io/files/${projectId}/${dataset}/${id}.${ext}`
+}
+
 export function generateMetadata() {
   return loadPageMetadata({
     getPage: getFuelStationEnquiryPage,
     getSiteSettings,
     path: '/fuel-station-enquiry',
     fallbackTitle: 'Fuel Station Enquiry | Atlas Fuel Australia',
-    fallbackDescription: 'Enquire about fuel station franchising opportunities with Atlas Fuel. Join a trusted brand with proven business model and comprehensive support.',
+    fallbackDescription: 'Enquire about fuel station station opportunities with Atlas Fuel. Join a trusted brand with proven business model and comprehensive support.',
   })
 }
 
 const fallbackData = {
   heroSubtitle: 'Fuel Station Enquiry',
   heroTitle: 'Own Your Own Atlas Fuel Station',
-  heroDescription: 'Atlas Fuel Australia offers a unique franchise opportunity with a proven business model and comprehensive support. Partnering with Atlas Fuel means joining a trusted brand that values community and excellence.',
+  heroDescription: 'Atlas Fuel Australia offers a unique station opportunity with a proven business model and comprehensive support. Partnering with Atlas Fuel means joining a trusted brand that values community and excellence.',
   heroImageUrl: '/images/independent-fuel-stations.jpg',
   heroImageAlt: 'Atlas Fuel independent fuel station',
   ctaButtons: [
@@ -29,18 +39,18 @@ const fallbackData = {
 
 const fallbackSiteSettings = {
   ctaBannerHeading: 'Ready to Start Your Journey?',
-  ctaBannerText: 'Contact us today to learn more about franchise opportunities and take the first step toward owning your own fuel station.',
+  ctaBannerText: 'Contact us today to learn more about station opportunities and take the first step toward owning your own fuel station.',
   ctaBannerButtonText: 'Enquire Now',
   ctaBannerButtonLink: '/contact',
 }
 
 const fallbackSections = {
   intro: {
-    eyebrow: 'Franchise',
-    heading: 'Atlas Franchise',
-    description: 'Atlas Fuel Australia offers a unique franchise opportunity with a proven business model and comprehensive support. Our focus on innovation, sustainability, and customer satisfaction ensures franchisees thrive in a competitive market.',
+    eyebrow: 'Station Opportunity',
+    heading: 'Atlas Station Opportunity',
+    description: 'Atlas Fuel Australia offers a unique station opportunity with a proven business model and comprehensive support. Our focus on innovation, sustainability, and customer satisfaction ensures station opportunity partners thrive in a competitive market.',
     image: '/images/what-we-do-retail.webp',
-    imageAlt: 'Atlas Fuel franchise station',
+    imageAlt: 'Atlas Fuel station opportunity',
   },
   benefitsHeading: 'Why Choose Atlas Fuel?',
   benefitsDescription: 'We provide everything you need to build a successful fuel station business.',
@@ -51,10 +61,10 @@ const fallbackSections = {
   ],
   journey: {
     heading: 'Success Journey',
-    description: 'Your path to franchise success',
+    description: 'Your path to station opportunity success',
     steps: [
       {step: '01', title: 'Initial Enquiry', description: 'Contact our team to discuss your goals, experience, and preferred location.'},
-      {step: '02', title: 'Application and Assessment', description: 'Complete the franchise application and suitability assessment.'},
+      {step: '02', title: 'Application and Assessment', description: 'Complete the station opportunity application and suitability assessment.'},
       {step: '03', title: 'Site and Training', description: 'Select the right site and complete comprehensive operational training.'},
       {step: '04', title: 'Launch and Support', description: 'Open your Atlas Fuel station with ongoing marketing and operational support.'},
     ],
@@ -64,13 +74,13 @@ const fallbackSections = {
     description: 'Our comprehensive program covers operations, safety, customer service, inventory, marketing, and financial management.',
     features: ['Fuel handling and safety', 'Customer service excellence', 'Inventory and supply management', 'Marketing support', 'Financial reporting', 'Compliance certification'],
     image: '/images/atlas-fuel-hero-1b.webp',
-    imageAlt: 'Atlas Fuel franchise training',
+    imageAlt: 'Atlas Fuel station opportunity training',
   },
   investment: {
     heading: 'Investment Overview',
     description: 'A transparent structure tailored to the site and opportunity.',
     points: [
-      {label: 'Franchise Fee', value: 'Competitive rates'},
+      {label: 'Station Opportunity Fee', value: 'Competitive rates'},
       {label: 'Initial Investment', value: 'Site dependent'},
       {label: 'Training', value: 'Included'},
       {label: 'Support', value: '24/7 Available'},
@@ -93,7 +103,13 @@ export default async function FuelStationEnquiryPage() {
   ])
 
   const data = mergeWithFallback(fallbackData, sanity)
-  const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
+  const applicationFormUrl = sanityFileUrl(sanity?.ctaBanner?.applicationFormFile)
+  const settings = {
+    ...mapPageCta(sanity, siteSettings, fallbackSiteSettings),
+    ...(applicationFormUrl
+      ? { ctaBannerButtonText: 'Download Form', ctaBannerButtonLink: applicationFormUrl }
+      : {}),
+  }
 
   const heroData = {
     subtitle: data.heroSubtitle,

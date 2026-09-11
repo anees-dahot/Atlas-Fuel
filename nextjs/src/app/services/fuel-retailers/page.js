@@ -30,7 +30,7 @@ export default async function FuelRetailersPage() {
   const fallbackRetailerHero = {
     subtitle: 'Fuel Retailers',
     title: 'Servicing Local Retailers across Australia',
-    description: 'Atlas Fuel proudly partners with local fuel retailers across the nation, delivering tailored supply solutions, operational support, and brand flexibility that help them thrive in a competitive market. With a deep understanding of regional challenges and a commitment to reliability, we empower independents to stay strong, profitable, and locally focused — no matter where they operate.',
+    description: 'Atlas Fuel proudly partners with local fuel retailers across the nation, delivering tailored supply solutions, operational support, and brand flexibility that help them thrive in a competitive market.\n\nWith a deep understanding of regional challenges and a commitment to reliability, we empower independents to stay strong, profitable, and locally focused — no matter where they operate.',
     heroImageUrl: '/images/what-we-do-retail.webp',
   }
 

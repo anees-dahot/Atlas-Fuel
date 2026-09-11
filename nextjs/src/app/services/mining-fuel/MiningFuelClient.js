@@ -5,7 +5,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import MiningSector from '@/components/services/MiningSector'
-import MiningStats from '@/components/services/MiningStats'
 import ServiceFeatures from '@/components/services/ServiceFeatures'
 import ExcellenceSection from '@/components/services/ExcellenceSection'
 import SafetySection from '@/components/services/SafetySection'
@@ -14,10 +13,11 @@ import FleetCompliance from '@/components/services/FleetCompliance'
 import DriversCompliance from '@/components/services/DriversCompliance'
 import ProcessTimeline from '@/components/services/ProcessTimeline'
 import EnquireSection from '@/components/services/EnquireSection'
+import ImageGallery from '@/components/fuel-stations/ImageGallery'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function MiningFuelClient({ hero, features, miningSector, stats, safety, compliance, process, fleet, drivers, excellence, enquire, siteSettings }) {
+export default function MiningFuelClient({ hero, features, miningSector, stats, safety, compliance, process, fleet, drivers, excellence, enquire, gallery, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -74,9 +74,8 @@ export default function MiningFuelClient({ hero, features, miningSector, stats, 
   return (
     <>
       <main ref={pageRef}>
-        <ServiceHero data={hero} />
+        <ServiceHero data={hero} showOverlay={false} />
         <MiningSector data={miningSector} />
-        <MiningStats data={stats} />
         <ServiceFeatures data={features} />
         <ProcessTimeline data={process} />
         <ExcellenceSection data={excellence} />
@@ -84,6 +83,7 @@ export default function MiningFuelClient({ hero, features, miningSector, stats, 
         <ComplianceSection data={compliance} />
         <FleetCompliance data={fleet} />
         <DriversCompliance data={drivers} />
+        <ImageGallery data={gallery} />
         <EnquireSection data={enquire} />
         <CTABanner data={siteSettings} />
       </main>

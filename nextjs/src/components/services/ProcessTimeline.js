@@ -128,6 +128,7 @@ export default function ProcessTimeline({ data = {} }) {
                       alt={step.imageAlt ?? step.imageUrlAlt ?? step.title ?? `Process step ${index + 1}`}
                       width={800}
                       height={600}
+                      ratio="4/3"
                       fill
                       sizes="(min-width: 1024px) 25vw, (min-width: 768px) 50vw, 100vw"
                       className="object-cover"

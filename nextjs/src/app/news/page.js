@@ -18,10 +18,10 @@ const fallbackData = {
   heroSubtitleColor: 'var(--cms-primary)',
   heroSubtitleSize: '14px',
   heroTitle: 'Latest Updates',
-  heroTitleColor: 'var(--cms-text)',
+  heroTitleColor: 'var(--cms-background)',
   heroTitleSize: '72px',
   heroDescription: 'Stay informed about Atlas Fuel\'s expansion, industry insights, and community initiatives across Australia.',
-  heroDescriptionColor: 'var(--cms-muted)',
+  heroDescriptionColor: 'var(--cms-background)',
   heroDescriptionSize: '18px',
   heroImageUrl: '/images/atlas-fuel-hero-1.webp',
   heroImageAlt: 'Atlas Fuel news and updates',
@@ -215,7 +215,8 @@ export default async function NewsPage({searchParams}) {
                       alt={article.imageAlt || article.mainImageAlt || article.mainImage?.alt || article.title || ''}
                       fill
                       sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      ratio="2/1"
+          className="object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                   <div className="p-6">

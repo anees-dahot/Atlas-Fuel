@@ -2,7 +2,6 @@
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import CmsImage from "@/components/common/CmsImage";
-import CmsVideo from "@/components/common/CmsVideo";
 
 const defaultQuickLinks = [
   { name: "Atlas Fuel Prices", href: "/fuel-prices", icon: "dollar" },
@@ -149,12 +148,6 @@ export default function Hero({ data, siteSettings }) {
   const ctaSecondary = data?.ctaSecondary ?? "New Bulk Fuel Enquiry";
   const ctaSecondaryLink =
     data?.ctaSecondaryLink ?? "mailto:info@atlasfuel.com.au";
-  const videoTitle = data?.videoTitle ?? "Watch our video";
-  const videoSubtitle =
-    data?.videoSubtitle ?? "Learn about Atlas Fuel Australia";
-  const video = data?.video ?? {};
-  const activeVideoUrl = video.url ?? data?.videoUrl;
-  const videoUploadUrl = video.uploadUrl ?? video.file?.asset?.url;
 
   const sourceQuickLinks = Array.isArray(data?.quickLinks)
     ? data.quickLinks
@@ -232,19 +225,21 @@ export default function Hero({ data, siteSettings }) {
   };
 
   return (
-    <section className="relative flex items-start" style={{ minHeight: '80svh' }}>
+    <section className="relative flex flex-col overflow-hidden" style={{ minHeight: '80svh' }}>
       <div className="absolute inset-0 -z-10 overflow-hidden">
         <CmsImage
           value={data?.heroImage ?? imageUrl}
           alt={data?.heroImageAlt ?? "Atlas Fuel"}
+          width={2400}
+          fit="min"
           fill
           priority
           sizes="100vw"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-cover object-center"
           style={{ objectPosition: '50% 85%' }}
         />
       </div>
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-20 sm:pt-28 pb-56">
+      <div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-14 sm:pt-20 lg:pt-24 pb-8 sm:pb-10">
         <div className="max-w-2xl lg:max-w-3xl">
           <div className="flex items-center gap-3 sm:gap-4 mb-2">
             <div className="h-0.5 w-12 sm:w-16 bg-primary" />
@@ -255,13 +250,13 @@ export default function Hero({ data, siteSettings }) {
           <h1 className="mt-0 space-y-1 sm:space-y-0 font-heading">
             {lines.map((word, i) => {
               const titleStyle = i === 0 ? titleLine1Style : i === 1 ? titleLine2Style : titleLine3Style;
-              const titleColor = i === 0 ? data?.titleLine1Color : i === 1 ? data?.titleLine2Color : data?.titleLine3Color;
+              const titleColor = i === 1 ? data?.titleLine2Color : "text-white";
               return (
                 <span
                   key={i}
                   className={cn(
                     "block text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl font-bold leading-[1.1] sm:leading-[0.9] uppercase tracking-tight",
-                    titleColor || (i === 1 ? "text-primary" : "text-gray-900"),
+                    titleColor || "text-primary",
                   )}
                   style={titleStyle}
                 >
@@ -276,7 +271,7 @@ export default function Hero({ data, siteSettings }) {
           >
             {desc}
           </p>
-          <div className="mt-4 sm:mt-6 flex flex-col sm:flex-wrap sm:flex-row gap-3 sm:gap-4">
+          <div className="mt-4 sm:mt-6 flex flex-row flex-wrap gap-3 sm:gap-4">
             {ctaPrimary && ctaPrimaryLink && (
               <Link
                 href={ctaPrimaryLink}
@@ -314,44 +309,9 @@ export default function Hero({ data, siteSettings }) {
               </a>
             )}
           </div>
-          <div className="mt-4 sm:mt-6">
-            <CmsVideo
-              url={activeVideoUrl}
-              uploadUrl={videoUploadUrl}
-              poster={video.poster}
-              title={video.title ?? videoTitle}
-              caption={video.caption}
-              transcript={video.transcript}
-              transcriptLabel={video.transcriptLabel}
-              autoplay={video.autoplay ?? true}
-              muted={video.muted ?? false}
-              loop={video.loop ?? false}
-              className="group flex items-center gap-4 text-white/80 hover:text-white transition-colors duration-300"
-            >
-              <span className="relative w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-primary group-hover:border-primary transition-all duration-300 shrink-0">
-                <svg
-                  className="w-5 h-5 text-white ml-0.5"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <polygon points="5 3 19 12 5 21 5 3" />
-                </svg>
-                <span className="absolute inset-0 rounded-full border-2 border-white/30 animate-pulse-ring" />
-              </span>
-              <div className="text-left">
-                <span className="block text-sm font-semibold uppercase tracking-wider">
-                  {video.title ?? videoTitle}
-                </span>
-                <span className="block text-xs text-white/60">
-                  {videoSubtitle}
-                </span>
-              </div>
-            </CmsVideo>
-          </div>
         </div>
       </div>
-      {/* Quick links + Sectors — anchored at very bottom */}
-      <div className="absolute bottom-0 left-0 right-0 z-20">
+      <div className="relative z-20 w-full mt-auto">
         {/* Glassmorphism grid boxes */}
         <div className="max-w-7xl mx-auto px-6 pb-6 pt-6">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
@@ -363,13 +323,15 @@ export default function Hero({ data, siteSettings }) {
                   "group flex items-center gap-3 px-4 py-3 transition-all duration-300",
                   link.isEmergency
                     ? "bg-red-600 text-white hover:bg-red-700"
-                    : "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:border-white text-white hover:text-black",
+                    : link.isPrimary
+                      ? "bg-primary text-white hover:bg-primary-dark"
+                      : "bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:border-white text-white hover:text-black",
                 )}
               >
                 <div
                   className={cn(
                     "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors duration-300",
-                    link.isEmergency
+                    link.isEmergency || link.isPrimary
                       ? "bg-white/20"
                       : "bg-primary/20 group-hover:bg-primary",
                   )}
@@ -377,7 +339,7 @@ export default function Hero({ data, siteSettings }) {
                   <span
                     className={cn(
                       "transition-colors duration-200",
-                      link.isEmergency
+                      link.isEmergency || link.isPrimary
                         ? "text-white"
                         : "text-primary group-hover:text-white",
                     )}

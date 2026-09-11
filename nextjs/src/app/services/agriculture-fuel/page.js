@@ -101,13 +101,6 @@ export default async function AgricultureFuelPage() {
     content: `From tractors to tankers, we keep your farm moving without missing a beat. Our reliable diesel fuels every season, from planting to harvest with power you can count on. No delays, no downtime, just smooth, strong energy delivering results where it matters most.`,
   }
 
-  const fallbackSustainableFueling = {
-    heading: 'Sustainable Fueling for a Greener Future',
-    content: `At Atlas Fuel, we are committed to supporting sustainable agriculture through eco-friendly fuel options and responsible delivery practices. Our low-emission fuels and efficient supply chains help you reduce your environmental footprint while maintaining high productivity on the farm. Partner with Atlas to not only power your fields today, but also protect the land for generations to come.`,
-    ctaText: 'Read More →',
-    ctaLink: '/about',
-  }
-
   const fallbackEquipmentGrowth = {
     content: `Your equipment is the engine of your growth—and Atlas Fuel is the energy behind your success. From planting to harvest, our reliable fuel solutions help you scale up production and embrace new opportunities. With Atlas, you can focus on cultivating your future, confident that your energy needs are in expert hands.`,
   }
@@ -130,6 +123,18 @@ export default async function AgricultureFuelPage() {
     ],
   }
 
+  const fallbackGallery = {
+    heading: 'Agriculture Fuel in Action',
+    images: [
+      { imageUrl: '/images/placeholders/gallery-placeholder-1.png', alt: 'Add your farm photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-2.png', alt: 'Add your farm photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-3.png', alt: 'Add your farm photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-4.png', alt: 'Add your farm photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-5.png', alt: 'Add your farm photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-6.png', alt: 'Add your farm photo here' },
+    ],
+  }
+
   // Merge Sanity data with fallbacks - include all styling fields
   const hero = mergeWithFallback(fallbackHero, sanity?.heroSection)
   const agricultureSection = mergeWithFallback(fallbackAgricultureSection, sanity?.agricultureSection)
@@ -138,11 +143,11 @@ export default async function AgricultureFuelPage() {
   const excellence = mergeWithFallback(fallbackExcellence, sanity?.excellenceSection)
   const equipmentGrowth = mergeWithFallback(fallbackEquipmentGrowth, sanity?.equipmentGrowthSection)
   const dieselHarvests = mergeWithFallback(fallbackDieselHarvests, sanity?.dieselHarvestsSection)
-  const sustainableFueling = mergeWithFallback(fallbackSustainableFueling, sanity?.sustainableFuelingSection)
   const safety = mergeWithFallback(fallbackSafety, sanity?.safetySection)
   const compliance = mergeWithFallback(fallbackCompliance, sanity?.complianceSection)
   const fleet = mergeWithFallback(fallbackFleet, sanity?.fleetComplianceSection)
   const drivers = mergeWithFallback(fallbackDrivers, sanity?.driversComplianceSection)
+  const gallery = mergeWithFallback(fallbackGallery, sanity?.gallerySection)
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 
   return (
@@ -155,11 +160,11 @@ export default async function AgricultureFuelPage() {
         excellence={excellence}
         equipmentGrowth={equipmentGrowth}
         dieselHarvests={dieselHarvests}
-        sustainableFueling={sustainableFueling}
         safety={safety}
         compliance={compliance}
         fleet={fleet}
         drivers={drivers}
+        gallery={gallery}
         siteSettings={siteSettings}
       />
     </>

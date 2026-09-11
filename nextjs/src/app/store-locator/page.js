@@ -5,7 +5,6 @@ import {loadPageMetadata} from '@/lib/metadata'
 import CTABanner from '@/components/shared/CTABanner'
 import LocatorHero from '@/components/store-locator/LocatorHero'
 import LocationMap from '@/components/store-locator/LocationMap'
-import LocationDetail from '@/components/store-locator/LocationDetail'
 import ContactSection from '@/components/store-locator/ContactSection'
 
 export function generateMetadata() {
@@ -54,14 +53,14 @@ const fallbackData = {
       badge: 'Atlas Fuel Station',
       summary: 'Convenient fuel, fleet and commercial services at our Kwinana Beach location.',
       imageUrl: '/images/store-locator.jpg',
-      address: '1 Mandurah Road, Kwinana WA 6167',
+      address: '5 Mandurah Road, Kwinana WA 6167',
       latitude: -32.2358956,
       longitude: 115.7805562,
       showOnMap: true,
       phone: '+61-8-6377-7644',
       email: 'info@atlasfuel.com.au',
       hours: 'Mon-Fri: 8am - 7pm',
-      mapLink: 'https://maps.google.com/?q=1+Mandurah+Road,+Kwinana+WA+6167',
+      mapLink: 'https://maps.google.com/?q=5+Mandurah+Road,+Kwinana+WA+6167',
       features: [
         { label: 'Fuel Types', value: 'Diesel, Premium Diesel, Unleaded' },
         { label: 'Services', value: 'On-site refueling, Bulk delivery' },
@@ -73,10 +72,10 @@ const fallbackData = {
   contactSection: {
     eyebrow: 'Headquarters',
     heading: 'Contact Us',
-    description: 'Reach out to our team for any inquiries about fuel supply, franchising opportunities, or general questions.',
+    description: 'Reach out to our team for any inquiries about fuel supply, station opportunities, or general questions.',
     offices: [
-      {title: 'Corporate Office', address: '1 Mandurah Rd, Kwinana Beach WA 6167, Australia', phone: '+61 8 6377 7644', email: 'info@atlasfuel.com.au'},
-      {title: 'Australia Office', address: '1 Mandurah Rd, Kwinana Beach WA 6167, Australia', phone: '+61 8 6377 7644', email: 'info@atlasfuel.com.au'},
+      {title: 'Corporate Office', address: '5 Mandurah Rd, Kwinana Beach WA 6167, Australia', phone: '+61 8 6377 7644', email: 'info@atlasfuel.com.au'},
+      {title: 'Australia Office', address: '5 Mandurah Rd, Kwinana Beach WA 6167, Australia', phone: '+61 8 6377 7644', email: 'info@atlasfuel.com.au'},
     ],
   },
 }
@@ -110,7 +109,6 @@ export default async function StoreLocatorPage() {
       
         <LocatorHero data={heroData} />
         <LocationMap data={data.mapSection} locationsData={data.locationsSection} />
-        <LocationDetail data={data.locationsSection} />
         <ContactSection data={data.contactSection} />
         <CTABanner data={settings} />
       

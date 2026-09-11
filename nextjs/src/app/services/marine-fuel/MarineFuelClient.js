@@ -12,10 +12,11 @@ import MarineDriversCompliance from '@/components/marine/MarineDriversCompliance
 import EnquireSection from '@/components/services/EnquireSection'
 import MarineHero from '@/components/marine/MarineHero'
 import ProcessTimeline from '@/components/services/ProcessTimeline'
+import ImageGallery from '@/components/fuel-stations/ImageGallery'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function MarineFuelClient({ hero, features, intro, commercial, compliance, process, enquire, fleet, drivers, siteSettings }) {
+export default function MarineFuelClient({ hero, features, intro, commercial, compliance, process, enquire, fleet, drivers, gallery, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export default function MarineFuelClient({ hero, features, intro, commercial, co
         <MarineFleetCompliance data={fleet} />
         <MarineDriversCompliance data={drivers} />
         <ProcessTimeline data={process} />
+        <ImageGallery data={gallery} />
         <EnquireSection data={enquire} />
         <CTABanner data={siteSettings} />
       </main>

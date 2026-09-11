@@ -124,6 +124,18 @@ export default async function MarineFuelPage() {
     secondaryCta: { text: 'Learn More', link: '/fuel-prices' },
   }
 
+  const fallbackGallery = {
+    heading: 'Marine Fuel in Action',
+    images: [
+      { imageUrl: '/images/placeholders/gallery-placeholder-1.png', alt: 'Add your marine/port photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-2.png', alt: 'Add your marine/port photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-3.png', alt: 'Add your marine/port photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-4.png', alt: 'Add your marine/port photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-5.png', alt: 'Add your marine/port photo here' },
+      { imageUrl: '/images/placeholders/gallery-placeholder-6.png', alt: 'Add your marine/port photo here' },
+    ],
+  }
+
   // Merge Sanity data with fallbacks - include all styling fields
   const hero = mergeWithFallback(fallbackHero, sanity?.heroSection)
   const features = mergeWithFallback(fallbackFeatures, sanity?.featuresSection)
@@ -147,6 +159,7 @@ export default async function MarineFuelPage() {
     heading: 'Drivers Compliance',
     content: 'Every Atlas Fuel driver meets the highest industry standards. Our rigorous training and certification programs ensure your fuel is transported by qualified professionals who prioritize safety above all else.',
   }, sanity?.driversComplianceSection)
+  const gallery = mergeWithFallback(fallbackGallery, sanity?.gallerySection)
   const siteSettings = mapPageCta(sanity, globalSettings, fallbackSiteSettings)
 
   return (
@@ -161,6 +174,7 @@ export default async function MarineFuelPage() {
         enquire={enquire}
         fleet={fleet}
         drivers={drivers}
+        gallery={gallery}
         siteSettings={siteSettings}
       />
     </>

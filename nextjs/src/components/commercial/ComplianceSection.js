@@ -85,7 +85,8 @@ export default function ComplianceSection({ data = {} }) {
                       alt={tab.imageAlt}
                       fill
                       sizes="(min-width: 1024px) 50vw, 100vw"
-                      className="object-contain"
+                      ratio="3/2"
+          className="object-contain"
                     />
                   </div>
                 )}

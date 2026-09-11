@@ -30,12 +30,12 @@ const fallbackData = {
   heroSubtitleColor: 'var(--cms-primary)',
   heroSubtitleSize: '14px',
   heroTitle: 'Powering Your Business with Reliable Fuel Solutions',
-  heroTitleColor: 'var(--cms-text)',
+  heroTitleColor: 'var(--cms-background)',
   heroTitleSize: '72px',
   heroDescription: 'Atlas Fuel Australia delivers high-quality diesel and fuel solutions to power industries, businesses, and communities across Australia. From mining and agriculture to transport and marine, our services are customized to meet every sector\'s needs.',
-  heroDescriptionColor: 'var(--cms-muted)',
+  heroDescriptionColor: 'var(--cms-background)',
   heroDescriptionSize: '18px',
-  heroImageUrl: '/images/atlas-fuel-hero-1c.webp',
+  heroImageUrl: '/images/atlas-fuel-hero-2.webp',
   heroImageAlt: 'Atlas Fuel commercial diesel delivery',
   industriesHeading: 'Industries We Serve',
   industriesHeadingColor: 'var(--cms-text)',
@@ -59,7 +59,7 @@ const fallbackData = {
   bunkerImageUrl: '/images/marine-bunkering.jpg',
   bunkerEyebrow: 'Marine Services',
   bunkerImageAlt: 'Marine Refueling',
-  ownStationTagline: 'Franchise Opportunity',
+  ownStationTagline: 'Station Opportunity',
   ownStationHeading: 'Own a Fuel Station?',
   ownStationHeadingColor: 'var(--cms-text)',
   ownStationHeadingSize: '48px',
@@ -213,7 +213,7 @@ export default async function CommercialDieselPage() {
     headingColor: data.industriesHeadingColor,
     headingSize: data.industriesHeadingSize,
     eyebrow: data.industriesEyebrow,
-    industries: data.industries ?? fallbackIndustries.industries,
+    industries: Array.isArray(data.industries) && data.industries.length > 0 ? data.industries : fallbackIndustries.industries,
   }
 
   const sectors = {

@@ -48,7 +48,7 @@ export default function VisionMissionGoals() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="vmg-header text-center mb-16">
           <span className="text-primary text-sm font-bold uppercase tracking-[0.2em] mb-4 block">Our Direction</span>
-          <h2 className="text-4xl md:text-5xl font-heading font-bold uppercase tracking-tight text-gray-900">We're Turning Passion Into Profits For Our Franchisees</h2>
+          <h2 className="text-4xl md:text-5xl font-heading font-bold uppercase tracking-tight text-gray-900">We're Turning Passion Into Profits For Our Station Opportunity Partners</h2>
         </div>
 
         <div className="vmg-grid grid grid-cols-1 md:grid-cols-3 gap-6">

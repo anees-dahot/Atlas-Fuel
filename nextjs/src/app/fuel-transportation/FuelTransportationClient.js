@@ -54,16 +54,6 @@ export default function FuelTransportationClient({ data, siteSettings }) {
         })
       })
 
-      gsap.to('.hero-image', {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: true,
-        },
-      })
     }, pageRef)
 
     return () => ctx.revert()
@@ -73,15 +63,17 @@ export default function FuelTransportationClient({ data, siteSettings }) {
     <>
       <main ref={pageRef}>
         {/* Hero Section */}
-        <section className="hero-section relative flex items-center overflow-hidden" style={{ minHeight: '80svh' }}>
-          <div className="absolute inset-0 -z-10">
+        <section className="hero-section relative isolate flex items-center overflow-hidden h-[80svh] max-lg:min-h-[560px] lg:h-[clamp(560px,calc(100vw/2.222),80svh)]">
+          <div className="absolute inset-0 z-0">
             <CmsImage
               value={data.heroImage ?? data.heroImageUrl}
               alt={data.heroImageAlt ?? ''}
+              width={2400}
+              fit="min"
               fill
               priority
               sizes="100vw"
-              className="hero-image w-full h-full object-cover"
+              className="hero-image w-full h-full object-cover object-center"
             />
           </div>
           <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-12 pb-4">
@@ -94,7 +86,7 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                     color: data.heroSubtitleColor,
                     fontSize: data.heroSubtitleSize,
                     border: data.heroSubtitleBorderEnabled ? `${data.heroSubtitleBorderWidth} solid ${data.heroSubtitleBorderColor}` : 'none',
-                    textShadow: data.heroSubtitleShadowColor ? `0 2px 4px ${data.heroSubtitleShadowColor}` : 'none',
+                    textShadow: data.heroSubtitleShadowColor ? `0 2px 4px ${data.heroSubtitleShadowColor}` : undefined,
                   }}
                 >
                   {data.heroSubtitle}
@@ -106,10 +98,19 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                   color: data.heroTitleColor,
                   fontSize: data.heroTitleSize,
                   border: data.heroTitleBorderEnabled ? `${data.heroTitleBorderWidth} solid ${data.heroTitleBorderColor}` : 'none',
-                  textShadow: data.heroTitleShadowColor ? `0 2px 4px ${data.heroTitleShadowColor}` : 'none',
                 }}
               >
-                {data.heroTitle}
+                {String(data.heroTitle ?? '').split(' ').map((word, wordIndex) => (
+                  <span
+                    key={wordIndex}
+                    className="text-white"
+                    style={{
+                      textShadow: data.heroTitleShadowColor ? `0 2px 4px ${data.heroTitleShadowColor}` : undefined,
+                    }}
+                  >
+                    {word}{' '}
+                  </span>
+                ))}
               </h1>
               <p
                 className="leading-relaxed mb-8 max-w-xl"
@@ -117,7 +118,7 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                   color: data.heroDescriptionColor,
                   fontSize: data.heroDescriptionSize,
                   border: data.heroDescriptionBorderEnabled ? `${data.heroDescriptionBorderWidth} solid ${data.heroDescriptionBorderColor}` : 'none',
-                  textShadow: data.heroDescriptionShadowColor ? `0 2px 4px ${data.heroDescriptionShadowColor}` : 'none',
+                  textShadow: data.heroDescriptionShadowColor ? `0 2px 4px ${data.heroDescriptionShadowColor}` : undefined,
                 }}
               >
                 {data.heroDescription}
@@ -139,19 +140,6 @@ export default function FuelTransportationClient({ data, siteSettings }) {
             </div>
           </div>
 
-          {/* Quick Links Bar */}
-          {data.heroStats.length > 0 && <div className="absolute bottom-0 left-0 right-0 z-20 bg-white">
-            <div className="max-w-7xl mx-auto px-6 py-3">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                {data.heroStats.map((stat) => (
-                  <div key={stat._key ?? stat.label} className="flex flex-col items-center gap-1 px-4 py-3 bg-white border border-gray-100">
-                    <div className="text-2xl font-heading font-bold text-primary">{stat.value}</div>
-                    <div className="text-[10px] font-semibold uppercase tracking-wide text-gray-600">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>}
         </section>
 
         {/* Fleet Overview */}
@@ -196,7 +184,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                     alt={item.imageAlt ?? item.alt ?? item.title ?? ''}
                     fill
                     sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    ratio="4/3"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   <div className="absolute bottom-0 left-0 right-0 p-6">
@@ -237,7 +226,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                       alt={service.imageAlt ?? service.alt ?? service.title ?? ''}
                       fill
                       sizes="(min-width: 768px) 50vw, 100vw"
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      ratio="16/9"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                   <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase mb-3">{service.title}</h3>
@@ -290,7 +280,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                       alt={area.imageAlt ?? area.alt ?? area.region ?? ''}
                       fill
                       sizes="(min-width: 1024px) 33vw, 100vw"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                      ratio="4/3"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                   <div className="p-8">
@@ -378,7 +369,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                       alt={item.imageAlt ?? item.alt ?? ''}
                       fill
                       sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                      ratio="4/3"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                 ))}
@@ -409,25 +401,14 @@ export default function FuelTransportationClient({ data, siteSettings }) {
               </h2>
             </div>
 
-            <div className="space-y-16">
+            <div className="space-y-12 max-w-3xl mx-auto">
               {data.processSteps.map((item) => (
-                <div key={item._key ?? item.step} className={`content-block grid lg:grid-cols-2 gap-8 lg:gap-16 items-center ${item.reverse ? 'lg:flex-row-reverse' : ''}`}>
-                  <div className={item.reverse ? 'lg:order-2' : ''}>
-                    <div className="flex items-center gap-3 mb-4">
-                      <span className="w-14 h-14 bg-primary text-white flex items-center justify-center text-xl font-heading font-bold">{item.step}</span>
-                      <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase">{item.title}</h3>
-                    </div>
-                    <p className="text-gray-600 text-lg leading-relaxed pl-[4.5rem]">{item.description}</p>
+                <div key={item._key ?? item.step} className="content-block">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="w-14 h-14 bg-primary text-white flex items-center justify-center text-xl font-heading font-bold">{item.step}</span>
+                    <h3 className="text-2xl font-heading font-bold text-gray-900 uppercase">{item.title}</h3>
                   </div>
-                  <div className={`gallery-item relative aspect-video overflow-hidden shadow-lg ${item.reverse ? 'lg:order-1' : ''}`}>
-                    <CmsImage
-                      value={item.image ?? item.imageUrl}
-                      alt={item.imageAlt ?? item.alt ?? item.title ?? ''}
-                      fill
-                      sizes="(min-width: 1024px) 50vw, 100vw"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
-                    />
-                  </div>
+                  <p className="text-gray-600 text-lg leading-relaxed pl-[4.5rem]">{item.description}</p>
                 </div>
               ))}
             </div>
@@ -445,7 +426,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                     alt={data.safetyImageAlt ?? ''}
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="w-full h-full object-cover"
+                    ratio="4/5"
+          className="w-full h-full object-cover"
                   />
                 </div>
                 <div className="absolute -bottom-6 -right-6 bg-primary text-white p-8 shadow-xl max-w-xs">
@@ -531,7 +513,8 @@ export default function FuelTransportationClient({ data, siteSettings }) {
                       alt={item.imageAlt ?? item.alt ?? ''}
                       fill
                       sizes="(min-width: 768px) 25vw, 50vw"
-                      className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
+                      ratio="4/3"
+          className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                     />
                   </div>
                 )

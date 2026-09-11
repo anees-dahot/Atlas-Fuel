@@ -29,25 +29,13 @@ export default function PageHero({
   ctaButtons = null,
   eyebrowStyle = null,
   titleStyle = null,
-  descriptionStyle = null
+  descriptionStyle = null,
+  showOverlay = true
 }) {
   const sectionRef = useRef(null);
-  const bgRef = useRef(null);
 
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Parallax background
-      gsap.to(bgRef.current, {
-        yPercent: 18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
       // Entrance animations
       const tl = gsap.timeline({
         delay: 0.15,
@@ -93,52 +81,69 @@ export default function PageHero({
   return (
     <section
       ref={sectionRef}
-      className="relative flex items-start overflow-hidden"
-      style={{ minHeight: '80svh' }}
+      className="relative isolate flex items-start overflow-hidden h-[80svh] max-lg:min-h-[560px] lg:h-[clamp(560px,calc(100vw/2.222),80svh)]"
     >
       {/* Background Image */}
-      <div className="absolute inset-0 -z-10 overflow-hidden">
-        <div ref={bgRef} className="absolute -inset-[10%]">
-          <CmsImage
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <CmsImage
           value={backgroundImage}
           fallbackSrc="/images/truck-new.jpg"
           alt={backgroundAlt}
-          width={1920}
-          height={1080}
+          width={2400}
+          fit="min"
           fill
           priority
           sizes="100vw"
-          className="object-cover"
-          />
-        </div>
+          className="object-cover object-center"
+          style={{ objectPosition: '50% 80%' }}
+        />
       </div>
+
+      {/* Readability overlay */}
+      {showOverlay && (
+        <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/80 via-black/40 to-black/10 pointer-events-none" />
+      )}
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-32 pb-12">
         {/* Eyebrow / Slug */}
         {eyebrow && (
           <div className="hero-eyebrow flex items-center gap-4 mb-4">
-            <div className="w-14 h-0.5 bg-white" />
-            <span className="text-white font-bold uppercase tracking-[0.2em] text-sm" style={eyebrowStyle || undefined}>
+            <div
+              className={eyebrowStyle?.color ? '' : 'w-14 h-0.5 bg-primary'}
+              style={eyebrowStyle?.color ? { width: '3.5rem', height: '2px', backgroundColor: eyebrowStyle.color } : undefined}
+            />
+            <span
+              className="text-white font-bold uppercase tracking-[0.2em] text-sm"
+              style={{
+                ...(eyebrowStyle || {}),
+                textShadow: eyebrowStyle?.textShadow || undefined,
+              }}
+            >
               {eyebrow}
             </span>
           </div>
         )}
 
-        {/* Title - Large, alternating black/white words */}
+        {/* Title - Large, alternating black/white words when overlaid; solid white with a glow when the image shows through */}
         {title && (
           <h1 className="hero-title space-y-2 font-heading mb-6 max-w-5xl text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl 2xl:text-8xl">
             {titleLines.map((line, lineIndex) => (
               <span key={lineIndex} className="block">
                 {line.map((word, wordIndex) => {
                   const globalIndex = titleLines.slice(0, lineIndex).flat().length + wordIndex;
-                  const isWhite = globalIndex % 2 === 1; // Alternate: black, white, black, white...
+                  const isWhite = !showOverlay || globalIndex % 2 === 1;
 
                   return (
                     <span
                       key={wordIndex}
-                      style={titleStyle || undefined}
+                      style={{
+                        ...(titleStyle || {}),
+                        textShadow:
+                          titleStyle?.textShadow ||
+                          (showOverlay ? '2px 2px 6px rgba(0,0,0,0.5)' : undefined),
+                      }}
                       className={`inline-block font-bold leading-[0.9] uppercase tracking-tight mr-3 ${
-                        isWhite ? 'text-white' : 'text-gray-900'
+                        isWhite ? 'text-white' : 'text-primary'
                       }`}
                     >
                       {word}
@@ -153,10 +158,12 @@ export default function PageHero({
         {/* Description */}
         {description && (
           <p
-            className="hero-desc text-white max-w-xl leading-relaxed mb-8 font-semibold text-base md:text-lg"
+            className="hero-desc text-white max-w-xl leading-relaxed mb-8 font-semibold text-base md:text-lg whitespace-pre-line"
             style={{
-              textShadow: '1px 1px 3px rgba(0,0,0,0.3)',
               ...(descriptionStyle || {}),
+              textShadow:
+                descriptionStyle?.textShadow ||
+                (showOverlay ? '1px 1px 3px rgba(0,0,0,0.3)' : undefined),
             }}
           >
             {description}
@@ -189,18 +196,18 @@ export default function PageHero({
             {stats.map((stat, i) => (
               <div key={stat._key ?? `${stat.label}-${i}`} className="hero-stat group">
                 <div
-                  className="text-3xl md:text-4xl font-heading font-light text-gray-900 mb-2 tracking-tight group-hover:text-primary transition-colors duration-300"
+                  className="text-3xl md:text-4xl font-heading font-light text-white mb-2 tracking-tight group-hover:text-primary transition-colors duration-300"
                   style={{
-                    textShadow: '1px 1px 2px rgba(255,255,255,0.7)',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.6)',
                     ...stat.valueStyle,
                   }}
                 >
                   {stat.value}
                 </div>
                 <div
-                  className="text-gray-600 text-xs font-semibold uppercase tracking-widest"
+                  className="text-white/80 text-xs font-semibold uppercase tracking-widest"
                   style={{
-                    textShadow: '1px 1px 2px rgba(255,255,255,0.7)',
+                    textShadow: '1px 1px 3px rgba(0,0,0,0.6)',
                     ...stat.labelStyle,
                   }}
                 >

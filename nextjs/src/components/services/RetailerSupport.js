@@ -20,6 +20,7 @@ export default function RetailerSupport({ data = {} }) {
     : [
         { imageUrl: '/images/fuel-stations.jpg', imageAlt: 'Fuel Station' },
         { imageUrl: '/images/hero-truck.jpg', imageAlt: 'Fuel Truck' },
+        { imageUrl: '/images/independent-fuel-stations.jpg', imageAlt: 'Independent Fuel Retailer' },
       ]
   const stats = Array.isArray(data.stats)
     ? data.stats
@@ -130,9 +131,17 @@ export default function RetailerSupport({ data = {} }) {
                     className="object-cover"
                   />
                 </div>
-                <div className="bg-primary/10 p-6 flex flex-col justify-center">
-                  <div className="text-3xl font-bold text-primary mb-2" style={cmsTextStyle(stats[0], 'value', '#2db234', '30px')}>{stats[0]?.value}</div>
-                  <div className="text-gray-600 text-sm" style={cmsTextStyle(stats[0], 'label', '#4b5563', '14px')}>{stats[0]?.label}</div>
+                <div className="relative bg-gray-100 aspect-[4/3] overflow-hidden">
+                  <CmsImage
+                    value={images[2]?.image ?? images[2]?.imageImage ?? images[2]?.imageUrl ?? images[0]?.image ?? images[0]?.imageImage ?? images[0]?.imageUrl}
+                    fallbackSrc="/images/independent-fuel-stations.jpg"
+                    alt={images[2]?.imageAlt ?? images[2]?.imageUrlAlt ?? 'Independent Fuel Retailer'}
+                    width={800}
+                    height={600}
+                    fill
+                    sizes="(min-width: 1024px) 25vw, 50vw"
+                    className="object-cover"
+                  />
                 </div>
               </div>
               <div className="space-y-4 pt-8">

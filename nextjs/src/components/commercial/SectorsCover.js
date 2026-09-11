@@ -38,7 +38,8 @@ export default function SectorsCover({ data = {} }) {
               alt={data.imageAlt ?? heading}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="w-full h-full object-cover"
+              ratio="3/2"
+          className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
           </div>

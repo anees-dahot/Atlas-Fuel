@@ -34,11 +34,6 @@ export default async function LocalFuelDistributorsPage() {
     ctaLink: '/contact',
   }
 
-  const fallbackService = {
-    heading: 'Servicing Local distributors across Australia',
-    content: `Atlas Fuel is reshaping how local distributors access and deliver fuel by combining national reach with local focus. Through a smart supply network and strong industry alliances, we empower independent distributors with seamless logistics, real-time support, and scalable fuel solutions. From coast to outback, we're not just delivering fuel — we're building the backbone of Australia's local energy economy.`,
-  }
-
   const fallbackFeatures = {
     features: [
     {
@@ -140,7 +135,6 @@ export default async function LocalFuelDistributorsPage() {
 
   const hero = mergeWithFallback(fallbackHero, sanity?.heroSection)
   const intro = mergeWithFallback(fallbackIntro, sanity?.introSection ?? sanity?.distributorSection)
-  const service = mergeWithFallback(fallbackService, sanity?.serviceSection ?? sanity?.distributorSection)
   const features = mergeWithFallback(fallbackFeatures, sanity?.featuresSection)
   const process = mergeWithFallback(fallbackProcess, sanity?.processTimelineSection)
   const partnership = mergeWithFallback(fallbackPartnership, sanity?.partnershipSection)
@@ -162,7 +156,6 @@ export default async function LocalFuelDistributorsPage() {
       <LocalFuelDistributorsClient
         hero={hero}
         intro={intro}
-        service={service}
         features={features}
         process={process}
         partnership={partnership}

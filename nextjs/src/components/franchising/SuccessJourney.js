@@ -11,16 +11,16 @@ const journeyItems = [
     description: 'Atlas Fuel Australia has led the fuel retailing industry for over two decades, with a strong foundation of service, reliability, and community engagement. We\'re constantly expanding our network to serve more customers across various regions.',
   },
   {
-    title: 'Supportive Franchise Partnership',
-    description: 'Investing in an Atlas Fuel Australia franchise means entering a smooth, rewarding journey. We\'re dedicated to helping you succeed and grow your business while fostering a bright future together.',
+    title: 'Supportive Station Opportunity Partnership',
+    description: 'Investing in an Atlas Fuel Australia station opportunity means entering a smooth, rewarding journey. We\'re dedicated to helping you succeed and grow your business while fostering a bright future together.',
   },
   {
     title: 'Training and Brand Recognition',
-    description: 'Atlas Fuel provides thorough training and ongoing support to ensure franchisee success. With strong brand recognition and a respected reputation, franchisees can leverage this trust to build their own thriving businesses.',
+    description: 'Atlas Fuel provides thorough training and ongoing support to ensure station opportunity partner success. With strong brand recognition and a respected reputation, station opportunity partners can leverage this trust to build their own thriving businesses.',
   },
   {
     title: 'Exclusive Products and Innovation',
-    description: 'Franchisees gain access to exclusive products, services, and cutting-edge technology, keeping them ahead of industry trends. Our focus on innovation and customer service helps franchisees stay competitive in the fuel market.',
+    description: 'Station Opportunity Partners gain access to exclusive products, services, and cutting-edge technology, keeping them ahead of industry trends. Our focus on innovation and customer service helps station opportunity partners stay competitive in the fuel market.',
   }
 ]
 

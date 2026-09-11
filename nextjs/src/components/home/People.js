@@ -205,13 +205,14 @@ className="py-16 lg:py-24 bg-white"
           <div ref={cardRef}>
             <div className="bg-white shadow-lg overflow-hidden border border-gray-200">
               {/* Card Image */}
-              <div className="relative h-64 overflow-hidden">
+              <div className="relative aspect-video overflow-hidden">
                 <CmsImage
                   value={content.cardImage || content.cardImageUrl}
                   alt={content.cardImageAlt || content.cardHeading || 'Careers at Atlas Fuel'}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
-                  className="object-cover"
+                  ratio="16/9"
+          className="object-cover object-center"
                 />
                 {/* Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />

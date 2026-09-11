@@ -9,7 +9,7 @@ if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
 export default function OwnStation({ data = {} }) {
   const sectionRef = useRef(null)
-  const tagline = data.tagline ?? 'Franchise Opportunity'
+  const tagline = data.tagline ?? 'Station Opportunity'
   const heading = data.heading ?? 'Own a Fuel Station?'
   const content = data.content ?? 'If you own a fuel station, Atlas Fuel can provide you with Atlas Fuel branding, services tailored to enhance your station\'s visibility and appeal. Enquiring about Atlas Fuel branding can offer you a range of benefits, from distinctive branding that attracts more customers to operational support that helps streamline your business.\n\nExplore how Atlas Fuel branding can elevate your station\'s presence and customer satisfaction today by reaching out to inquire about their specialized services.'
   const ctaText = data.ctaText ?? 'Learn More'
@@ -51,7 +51,8 @@ export default function OwnStation({ data = {} }) {
               alt={data.imageAlt ?? heading}
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
-              className="w-full h-full object-cover"
+              ratio="3/2"
+          className="w-full h-full object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent" />
           </div>

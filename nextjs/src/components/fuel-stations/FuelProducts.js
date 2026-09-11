@@ -58,7 +58,8 @@ export default function FuelProducts({ products }) {
                   alt={product.imageAlt ?? product.name ?? ''}
                   fill
                   sizes="(min-width: 768px) 50vw, 100vw"
-                  className="w-full h-full object-cover"
+                  ratio="4/3"
+          className="w-full h-full object-cover"
                 />
               </div>
             </div>

@@ -33,6 +33,7 @@ export default function StationHero({ data = {} }) {
           ? [{ text: data.ctaText, href: data.ctaLink }]
           : null
       }
+      showOverlay={false}
     />
   );
 }

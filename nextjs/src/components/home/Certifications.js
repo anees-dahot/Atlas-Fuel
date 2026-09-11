@@ -262,6 +262,7 @@ export default function Certifications({ data }) {
                       fill
                       sizes="(min-width: 640px) 25vw, 50vw"
                       className="object-contain p-3"
+                      style={{ objectFit: 'contain' }}
                       fit="max"
                     />
                   </button>
@@ -315,6 +316,7 @@ export default function Certifications({ data }) {
               fill
               sizes="100vw"
               className="object-contain p-4 sm:p-8"
+              style={{ objectFit: 'contain' }}
               fit="max"
               priority
             />

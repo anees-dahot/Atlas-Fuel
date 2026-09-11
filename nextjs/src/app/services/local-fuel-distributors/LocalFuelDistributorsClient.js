@@ -5,7 +5,6 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import DistributorIntro from '@/components/services/DistributorIntro'
-import DistributorService from '@/components/services/DistributorService'
 import DistributorFeatures from '@/components/services/DistributorFeatures'
 import PartnershipSection from '@/components/services/PartnershipSection'
 import BusyTimesSection from '@/components/services/BusyTimesSection'
@@ -18,7 +17,7 @@ import EnquireSection from '@/components/services/EnquireSection'
 
 if (typeof window !== 'undefined') gsap.registerPlugin(ScrollTrigger)
 
-export default function LocalFuelDistributorsClient({ hero, intro, service, features, process, partnership, busyTimes, safety, compliance, fleet, drivers, enquire, siteSettings }) {
+export default function LocalFuelDistributorsClient({ hero, intro, features, process, partnership, busyTimes, safety, compliance, fleet, drivers, enquire, siteSettings }) {
   const pageRef = useRef(null)
 
   useEffect(() => {
@@ -75,9 +74,8 @@ export default function LocalFuelDistributorsClient({ hero, intro, service, feat
   return (
     <>
       <main ref={pageRef}>
-        <ServiceHero data={hero} />
+        <ServiceHero data={hero} showOverlay={false} />
         <DistributorIntro data={intro} />
-        <DistributorService data={service} />
         <DistributorFeatures data={features} />
         <ProcessTimeline data={process} />
         <PartnershipSection data={partnership} />

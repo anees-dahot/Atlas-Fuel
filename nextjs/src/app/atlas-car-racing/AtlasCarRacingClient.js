@@ -174,10 +174,12 @@ export default function AtlasCarRacingClient({ data, siteSettings }) {
       <main>
 
         {/* ── HERO ─────────────────────────────────────────────── */}
-        <section ref={heroRef} className="relative flex items-end overflow-hidden" style={{ minHeight: '80svh' }}>
+        <section ref={heroRef} className="relative flex items-end overflow-hidden h-[80svh] max-lg:min-h-[560px] lg:h-[clamp(560px,calc(100vw/2.222),80svh)]">
           <CmsImage
             value={data.heroImage ?? data.heroImageUrl}
             alt={data.heroImageAlt ?? data.heroImageUrlAlt ?? data.heroTitle}
+            width={2400}
+            fit="min"
             fill
             priority
             sizes="100vw"
@@ -190,10 +192,17 @@ export default function AtlasCarRacingClient({ data, siteSettings }) {
               <div className="h-px w-10 bg-primary" />
               <span className="text-primary text-xs sm:text-sm font-bold uppercase tracking-[0.2em]" style={textStyle(data, 'heroTag')}>{data.heroTag}</span>
             </div>
-            <h1 className="hero-h1 font-heading font-bold uppercase text-gray-900 leading-none mb-6" style={textStyle(data, 'heroTitle')}>
-              {data.heroTitle}
+            <h1 className="hero-h1 font-heading font-bold uppercase leading-none mb-6" style={textStyle(data, 'heroTitle')}>
+              {String(data.heroTitle ?? '').split(' ').map((word, wordIndex) => (
+                <span
+                  key={wordIndex}
+                  className={wordIndex % 2 === 1 ? 'text-primary' : 'text-white'}
+                >
+                  {word}{' '}
+                </span>
+              ))}
             </h1>
-            <p className="hero-sub text-gray-700 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed mb-8 font-semibold" style={{ ...textStyle(data, 'heroSubtitle'), textShadow: '1px 1px 3px rgba(255,255,255,0.8), 0.5px 0.5px 1px rgba(255,255,255,0.6)' }}>
+            <p className="hero-sub text-white/90 text-sm sm:text-base md:text-lg max-w-xl leading-relaxed mb-8 font-semibold" style={textStyle(data, 'heroSubtitle')}>
               {data.heroSubtitle}
             </p>
             {(data.heroPlateLabel || data.heroPlate) && (
@@ -262,7 +271,8 @@ export default function AtlasCarRacingClient({ data, siteSettings }) {
                       alt={item.alt ?? item.imageAlt ?? data.meetGtrHeading}
                       fill
                       sizes="(min-width: 1024px) 25vw, 50vw"
-                      className="object-cover hover:scale-105 transition-transform duration-700"
+                      ratio="1/1"
+          className="object-cover hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                 ))}
@@ -291,7 +301,8 @@ export default function AtlasCarRacingClient({ data, siteSettings }) {
                     alt={item.alt ?? item.imageAlt ?? item.caption ?? data.galleryHeading}
                     fill
                     sizes={(item.featured ?? (index === 0)) ? '(min-width: 1024px) 66vw, 100vw' : '(min-width: 1024px) 33vw, 50vw'}
-                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    ratio="16/9"
+          className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                   <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
@@ -390,7 +401,8 @@ export default function AtlasCarRacingClient({ data, siteSettings }) {
                     alt={data.pradoImageAlt ?? data.pradoImageUrlAlt ?? data.pradoHeading}
                     fill
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
+                    ratio="16/9"
+          className="object-cover"
                   />
                 </div>
                 <p className="text-gray-600 leading-relaxed mb-4" style={textStyle(data, 'pradoDescription')}>

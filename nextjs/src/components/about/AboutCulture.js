@@ -118,13 +118,14 @@ export default function AboutCulture({ data = {} }) {
               {heading}
             </h2>
             <p className={`${descriptionColor} text-lg leading-relaxed font-light mb-8`} style={descriptionStyle}>{description}</p>
-            <div className="relative h-[250px] overflow-hidden shadow-xl">
+            <div className="relative aspect-[4/1] overflow-hidden shadow-xl">
               <CmsImage
                 value={data.image ?? data.imageImage ?? imageUrl}
                 alt={data.imageAlt ?? 'Our Team'}
                 fill
                 sizes="(min-width: 1024px) 33vw, 100vw"
-                className="w-full h-full object-cover"
+                ratio="4/1"
+          className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-white/30 to-transparent" />
             </div>
@@ -201,13 +202,14 @@ export default function AboutCulture({ data = {} }) {
                       )}
                     </div>
                     {item.imageUrl && (
-                      <div className="hidden sm:block w-48 h-32 flex-shrink-0 overflow-hidden">
+                      <div className="relative hidden sm:block w-48 aspect-[3/2] flex-shrink-0 overflow-hidden">
                         <CmsImage
                           value={item.image ?? item.imageImage ?? item.imageUrl}
                           alt={item.imageAlt ?? item.title ?? ''}
                           fill
                           sizes="192px"
-                          className="w-full h-full object-cover"
+                          ratio="3/2"
+          className="w-full h-full object-cover"
                         />
                       </div>
                     )}

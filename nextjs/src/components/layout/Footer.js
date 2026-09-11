@@ -24,7 +24,9 @@ const defaultServicesLinks = [
 const defaultSupportLinks = [
   { label: 'Store Locator', href: '/store-locator' },
   { label: 'Fuel Pricing', href: '/fuel-prices' },
-  { label: 'Franchise Enquiry', href: '/franchising' },
+  { label: 'Fuel Card', href: '/fuel-card' },
+  { label: 'Fuel Testing Laboratory', href: '/fuel-testing-laboratory' },
+  { label: 'Station Opportunities', href: '/station-opportunities' },
   { label: 'Fuel Station Enquiry', href: '/fuel-station-enquiry' },
 ]
 
@@ -37,7 +39,7 @@ export default function Footer({ data = {}, footerNavigation, siteSettings }) {
   const phone = siteSettings?.phone ?? data?.phone ?? '+61 8 6377 7644'
   const emergencyPhone = siteSettings?.emergencyPhone ?? data?.emergencyPhone ?? ''
   const email = siteSettings?.email ?? data?.email ?? 'info@atlasfuel.com.au'
-  const address = siteSettings?.address ?? data?.address ?? '1 Mandurah Rd, Kwinana WA 6167'
+  const address = siteSettings?.address ?? data?.address ?? '5 Mandurah Rd, Kwinana WA 6167'
   const description = siteSettings?.footerDescription ?? data?.footerDescription ?? "Australia's trusted fuel partner. Delivering reliable, efficient fuel solutions nationwide since 2010."
   const fb = siteSettings?.facebookUrl ?? data?.facebookUrl ?? ''
   const ig = siteSettings?.instagramUrl ?? data?.instagramUrl ?? ''
@@ -84,6 +86,7 @@ export default function Footer({ data = {}, footerNavigation, siteSettings }) {
                 alt={siteSettings?.logoAlt ?? siteSettings?.logo?.alt ?? siteSettings?.siteName ?? 'Atlas Fuel'}
                 width={140}
                 height={56}
+                fit="max"
                 className="h-14 w-auto"
               />
             </div>

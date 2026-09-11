@@ -48,7 +48,8 @@ export default function VisionSection({ data = {} }) {
         alt={video.poster?.alt ?? data?.videoImageAlt ?? "Atlas Fuel Operations"}
         fill
         sizes="(min-width: 1024px) 50vw, 100vw"
-        className="object-cover group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700"
+        ratio="16/9"
+          className="object-cover object-center group-hover:scale-110 group-hover:rotate-1 transition-transform duration-700"
       />
 
       {hasVideo && (
