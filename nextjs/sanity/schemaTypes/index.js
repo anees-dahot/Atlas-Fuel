@@ -6566,6 +6566,215 @@ export const fuelStationEnquiryPage = {
   ],
 }
 
+export const fuelCardPage = {
+  name: 'fuelCardPage',
+  type: 'document',
+  title: 'Fuel Card Page',
+  fields: [
+    { name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' },
+    { name: 'heroSubtitleColor', title: 'Hero Subtitle Color', type: 'string', options: { list: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#000000', '#ffffff'] } },
+    { name: 'heroSubtitleSize', title: 'Hero Subtitle Size', type: 'string', options: { list: ['12px', '14px', '16px'] } },
+    { name: 'heroTitle', title: 'Hero Title', type: 'string' },
+    { name: 'heroTitleColor', title: 'Hero Title Color', type: 'string', options: { list: ['#000000', '#ffffff', '#10b981', '#3b82f6'] } },
+    { name: 'heroTitleSize', title: 'Hero Title Size', type: 'string', options: { list: ['48px', '60px', '72px', '84px'] } },
+    { name: 'heroDescription', title: 'Hero Description', type: 'text' },
+    { name: 'heroDescriptionColor', title: 'Hero Description Color', type: 'string', options: { list: ['#000000', '#ffffff', '#666666'] } },
+    { name: 'heroDescriptionSize', title: 'Hero Description Size', type: 'string', options: { list: ['16px', '18px', '20px'] } },
+    { name: 'heroImageUrl', title: 'Hero Image', type: 'image' },
+
+    { name: 'introHeading', title: 'Intro Heading', type: 'string' },
+    { name: 'introDescription', title: 'Intro Description', type: 'text' },
+    {
+      name: 'benefits', title: 'Benefits', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'title', title: 'Title', type: 'string' },
+        { name: 'description', title: 'Description', type: 'text', rows: 2 },
+      ] }],
+    },
+
+    { name: 'cardsHeading', title: 'Card Range Heading', type: 'string' },
+    {
+      name: 'cards', title: 'Card Types', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'variant', title: 'Visual Style', type: 'string', options: { list: [
+          { title: 'Fleet', value: 'fleet' },
+          { title: 'Business', value: 'business' },
+          { title: 'Driver', value: 'driver' },
+        ] } },
+        { name: 'name', title: 'Card Name', type: 'string' },
+        { name: 'description', title: 'Description', type: 'text', rows: 2 },
+      ] }],
+    },
+
+    {
+      name: 'equipmentShowcase', title: 'Equipment Showcase Section', type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'body', title: 'Body Text', type: 'text', rows: 3 },
+        { name: 'points', title: 'Checklist Points', type: 'array', of: [{ type: 'string' }] },
+        { name: 'image1', title: 'Image 1', type: 'image' },
+        { name: 'equipment1Value', title: 'Equipment 1 Name', type: 'string' },
+        { name: 'equipment1Label', title: 'Equipment 1 Caption', type: 'string' },
+        { name: 'image2', title: 'Image 2', type: 'image' },
+        { name: 'equipment2Value', title: 'Equipment 2 Name', type: 'string' },
+        { name: 'equipment2Label', title: 'Equipment 2 Caption', type: 'string' },
+        { name: 'ctaText', title: 'Link Text', type: 'string' },
+        { name: 'ctaLink', title: 'Link URL', type: 'string' },
+      ],
+    },
+
+    {
+      name: 'networkHighlight', title: 'Highlight Card Section', type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        { name: 'tag', title: 'Eyebrow Tag', type: 'string' },
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'description', title: 'Description', type: 'text', rows: 3 },
+        { name: 'ctaText', title: 'Link Text', type: 'string' },
+        { name: 'ctaLink', title: 'Link URL', type: 'string' },
+        { name: 'cardBadge', title: 'Card Badge', type: 'string' },
+        { name: 'cardImage', title: 'Card Image', type: 'image' },
+        { name: 'cardHeading', title: 'Card Heading', type: 'string' },
+        { name: 'cardDescription', title: 'Card Description', type: 'text', rows: 3 },
+        {
+          name: 'stats', title: 'Stats', type: 'array',
+          of: [{ type: 'object', fields: [
+            { name: 'value', title: 'Value', type: 'string' },
+            { name: 'label', title: 'Label', type: 'string' },
+          ] }],
+        },
+        { name: 'cardCtaText', title: 'Card Button Text', type: 'string' },
+        { name: 'cardCtaLink', title: 'Card Button URL', type: 'string' },
+      ],
+    },
+
+    { name: 'applyHeading', title: 'Apply Section Heading', type: 'string' },
+    { name: 'applyDescription', title: 'Apply Section Description', type: 'text' },
+
+    { name: 'faqsHeading', title: 'FAQ Heading', type: 'string' },
+    {
+      name: 'faqs', title: 'FAQs', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'question', title: 'Question', type: 'string' },
+        { name: 'answer', title: 'Answer', type: 'text', rows: 3 },
+      ] }],
+    },
+
+    {
+      name: 'ctaBanner', title: 'CTA Banner', type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'text', title: 'Body Text', type: 'text' },
+        { name: 'buttonText', title: 'Button Text', type: 'string' },
+        { name: 'buttonLink', title: 'Button Link', type: 'string' },
+      ],
+    },
+  ],
+}
+
+export const fuelTestingPage = {
+  name: 'fuelTestingPage',
+  type: 'document',
+  title: 'Fuel Testing Laboratory Page',
+  fields: [
+    { name: 'heroSubtitle', title: 'Hero Subtitle', type: 'string' },
+    { name: 'heroSubtitleColor', title: 'Hero Subtitle Color', type: 'string', options: { list: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#000000', '#ffffff'] } },
+    { name: 'heroSubtitleSize', title: 'Hero Subtitle Size', type: 'string', options: { list: ['12px', '14px', '16px'] } },
+    { name: 'heroTitle', title: 'Hero Title', type: 'string' },
+    { name: 'heroTitleColor', title: 'Hero Title Color', type: 'string', options: { list: ['#000000', '#ffffff', '#10b981', '#3b82f6'] } },
+    { name: 'heroTitleSize', title: 'Hero Title Size', type: 'string', options: { list: ['48px', '60px', '72px', '84px'] } },
+    { name: 'heroDescription', title: 'Hero Description', type: 'text' },
+    { name: 'heroDescriptionColor', title: 'Hero Description Color', type: 'string', options: { list: ['#000000', '#ffffff', '#666666'] } },
+    { name: 'heroDescriptionSize', title: 'Hero Description Size', type: 'string', options: { list: ['16px', '18px', '20px'] } },
+    { name: 'heroImageUrl', title: 'Hero Image', type: 'image' },
+    {
+      name: 'heroStats', title: 'Hero Stats', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'value', title: 'Value', type: 'string' },
+        { name: 'label', title: 'Label', type: 'string' },
+      ] }],
+    },
+
+    { name: 'stepsHeading', title: 'Process Section Heading', type: 'string' },
+    {
+      name: 'steps', title: 'Process Steps', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'number', title: 'Step Number', type: 'string' },
+        { name: 'title', title: 'Title', type: 'string' },
+        { name: 'description', title: 'Description', type: 'text', rows: 2 },
+      ] }],
+    },
+
+    { name: 'parametersHeading', title: 'Parameters Section Heading', type: 'string' },
+    {
+      name: 'parameters', title: 'Test Parameters', type: 'array',
+      of: [{ type: 'object', fields: [
+        { name: 'name', title: 'Parameter Name', type: 'string' },
+        { name: 'detail', title: 'Detail', type: 'text', rows: 2 },
+      ] }],
+    },
+
+    {
+      name: 'equipmentShowcase', title: 'Equipment Showcase Section', type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'body', title: 'Body Text', type: 'text', rows: 3 },
+        { name: 'points', title: 'Checklist Points', type: 'array', of: [{ type: 'string' }] },
+        { name: 'image1', title: 'Image 1', type: 'image' },
+        { name: 'equipment1Value', title: 'Equipment 1 Name', type: 'string' },
+        { name: 'equipment1Label', title: 'Equipment 1 Caption', type: 'string' },
+        { name: 'image2', title: 'Image 2', type: 'image' },
+        { name: 'equipment2Value', title: 'Equipment 2 Name', type: 'string' },
+        { name: 'equipment2Label', title: 'Equipment 2 Caption', type: 'string' },
+        { name: 'ctaText', title: 'Link Text', type: 'string' },
+        { name: 'ctaLink', title: 'Link URL', type: 'string' },
+      ],
+    },
+
+    {
+      name: 'resultsHighlight', title: 'Highlight Card Section', type: 'object',
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        { name: 'tag', title: 'Eyebrow Tag', type: 'string' },
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'description', title: 'Description', type: 'text', rows: 3 },
+        { name: 'ctaText', title: 'Link Text', type: 'string' },
+        { name: 'ctaLink', title: 'Link URL', type: 'string' },
+        { name: 'cardBadge', title: 'Card Badge', type: 'string' },
+        { name: 'cardImage', title: 'Card Image', type: 'image' },
+        { name: 'cardHeading', title: 'Card Heading', type: 'string' },
+        { name: 'cardDescription', title: 'Card Description', type: 'text', rows: 3 },
+        {
+          name: 'stats', title: 'Stats', type: 'array',
+          of: [{ type: 'object', fields: [
+            { name: 'value', title: 'Value', type: 'string' },
+            { name: 'label', title: 'Label', type: 'string' },
+          ] }],
+        },
+        { name: 'cardCtaText', title: 'Card Button Text', type: 'string' },
+        { name: 'cardCtaLink', title: 'Card Button URL', type: 'string' },
+      ],
+    },
+
+    { name: 'requestHeading', title: 'Request Section Heading', type: 'string' },
+    { name: 'requestDescription', title: 'Request Section Description', type: 'text' },
+
+    {
+      name: 'ctaBanner', title: 'CTA Banner', type: 'object',
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        { name: 'heading', title: 'Heading', type: 'string' },
+        { name: 'text', title: 'Body Text', type: 'text' },
+        { name: 'buttonText', title: 'Button Text', type: 'string' },
+        { name: 'buttonLink', title: 'Button Link', type: 'string' },
+      ],
+    },
+  ],
+}
+
 export const productsPage = {
   name: 'productsPage',
   type: 'document',
@@ -9167,6 +9376,8 @@ const marketingPages = [
   atlasCarRacingPage,
   commercialDieselPage,
   fuelStationEnquiryPage,
+  fuelCardPage,
+  fuelTestingPage,
   productsPage,
   storeLocatorPage,
   franchisingPage,
@@ -9344,6 +9555,8 @@ const allSchemaTypes = [
   atlasCarRacingPage,
   commercialDieselPage,
   fuelStationEnquiryPage,
+  fuelCardPage,
+  fuelTestingPage,
   productsPage,
   storeLocatorPage,
   franchisingPage,

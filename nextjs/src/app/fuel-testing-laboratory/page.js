@@ -1,21 +1,17 @@
 import Link from 'next/link'
-import {getSiteSettings} from '@/lib/sanity'
+import {getFuelTestingPage, getSiteSettings} from '@/lib/sanity'
 import {mapPageCta} from '@/lib/contentFallbacks'
-import {buildPageMetadata} from '@/lib/metadata'
+import {mergeWithFallback} from '@/lib/fallback'
+import {loadPageMetadata} from '@/lib/metadata'
 import CmsImage from '@/components/common/CmsImage'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
 import FuelTestingEnquiryForm from '@/components/fuel-testing/FuelTestingEnquiryForm'
 
-// NOTE: Content is hard-coded for client review. Once the page is signed off it
-// will be moved into Sanity behind a `fuelTestingPage` document, matching the
-// other pages in this app.
-
-export async function generateMetadata() {
-  const siteSettings = await getSiteSettings({stega: false}).catch(() => null)
-
-  return buildPageMetadata({
-    siteSettings,
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelTestingPage,
+    getSiteSettings,
     path: '/fuel-testing-laboratory',
     fallbackTitle: 'Atlas Fuel Testing Laboratory | Atlas Fuel Australia',
     fallbackDescription:
@@ -24,45 +20,88 @@ export async function generateMetadata() {
   })
 }
 
-const hero = {
-  subtitle: 'Atlas Fuel Testing Laboratory',
-  title: 'Know Exactly What Is In Your Fuel',
-  description:
+const fallbackData = {
+  heroSubtitle: 'Atlas Fuel Testing Laboratory',
+  heroTitle: 'Know Exactly What Is In Your Fuel',
+  heroDescription:
     'Independent fuel quality testing and compliance certification, backed by fast turnaround and a team that understands what a bad batch of fuel can cost your operation.',
   heroImageUrl: '/images/atlas-fuel-hero-2.webp',
   heroImageAlt: 'Atlas Fuel testing laboratory sample analysis',
-  stats: [
+  heroStats: [
     {value: 'Independent', label: 'Lab Analysis'},
     {value: '48hr', label: 'Standard Turnaround'},
     {value: 'AS/NZS', label: 'Standards Tested'},
     {value: 'Certified', label: 'Report Issued'},
   ],
+
+  stepsHeading: 'How Testing Works',
+  steps: [
+    {
+      number: '01',
+      title: 'Submit a Sample',
+      description: 'Send a sample to our lab, or request an Atlas technician collect it on-site.',
+    },
+    {
+      number: '02',
+      title: 'Lab Analysis',
+      description: 'We test against Australian fuel quality standards for contamination and composition.',
+    },
+    {
+      number: '03',
+      title: 'Certified Report',
+      description: 'You receive a documented certificate of analysis, ready for audit or supplier follow-up.',
+    },
+  ],
+
+  parametersHeading: 'What We Test For',
+  parameters: [
+    {name: 'Water Content', detail: 'Detects moisture contamination that causes engine damage and corrosion.'},
+    {name: 'Particulate & Microbial', detail: 'Screens for debris and microbial growth that can block filters and injectors.'},
+    {name: 'Cetane / Octane Rating', detail: 'Confirms the fuel meets the combustion performance it is sold on.'},
+    {name: 'Sulphur Content', detail: 'Checks compliance with Australian fuel quality regulations.'},
+  ],
+
+  // Placeholder imagery/copy — swap for real lab/equipment photos once signed off.
+  equipmentShowcase: {
+    heading: 'Lab-Grade Equipment, Every Step',
+    body: 'From on-site sample collection to certified lab analysis, every step uses equipment calibrated to Australian fuel quality standards.',
+    points: [
+      'Calibrated sample collection kits',
+      'AS/NZS-standard analysis instruments',
+      'Documented chain of custody',
+    ],
+    image1Url: '/images/what-we-do-onsite-diesel.webp',
+    equipment1Value: 'Sample Collection Kits',
+    equipment1Label: 'On-Site Technician Visits',
+    image2Url: '/images/fuel-logistics.jpg',
+    equipment2Value: 'Analysis Instruments',
+    equipment2Label: 'AS/NZS Standards Testing',
+    ctaText: 'Request Testing',
+    ctaLink: '#request',
+  },
+
+  resultsHighlight: {
+    tag: 'Fast & Certified',
+    heading: 'Results You Can Act On',
+    description: 'Every report is documented and ready for audit, supplier follow-up, or your own compliance file — no guesswork.',
+    ctaText: 'Talk to Our Team',
+    ctaLink: '/contact',
+    cardBadge: 'Fuel Testing',
+    cardImageUrl: '/images/fuel-stations.jpg',
+    cardHeading: '48-Hour Turnaround',
+    cardDescription: 'Submit a sample and receive a certified report fast enough to act before a bad batch causes damage.',
+    stats: [
+      {value: '48hr', label: 'Turnaround'},
+      {value: 'AS/NZS', label: 'Standards'},
+      {value: '100%', label: 'Certified Reports'},
+    ],
+    cardCtaText: 'Request Testing',
+    cardCtaLink: '#request',
+  },
+
+  requestHeading: 'Request Testing',
+  requestDescription: 'Tell us what you need tested and we will confirm sample requirements and turnaround before you send anything in.',
 }
-
-const steps = [
-  {
-    number: '01',
-    title: 'Submit a Sample',
-    description: 'Send a sample to our lab, or request an Atlas technician collect it on-site.',
-  },
-  {
-    number: '02',
-    title: 'Lab Analysis',
-    description: 'We test against Australian fuel quality standards for contamination and composition.',
-  },
-  {
-    number: '03',
-    title: 'Certified Report',
-    description: 'You receive a documented certificate of analysis, ready for audit or supplier follow-up.',
-  },
-]
-
-const parameters = [
-  {name: 'Water Content', detail: 'Detects moisture contamination that causes engine damage and corrosion.'},
-  {name: 'Particulate & Microbial', detail: 'Screens for debris and microbial growth that can block filters and injectors.'},
-  {name: 'Cetane / Octane Rating', detail: 'Confirms the fuel meets the combustion performance it is sold on.'},
-  {name: 'Sulphur Content', detail: 'Checks compliance with Australian fuel quality regulations.'},
-]
 
 const fallbackSiteSettings = {
   ctaBannerHeading: 'Need Your Fuel Tested?',
@@ -71,49 +110,31 @@ const fallbackSiteSettings = {
   ctaBannerButtonLink: '/contact',
 }
 
-// Placeholder imagery/copy for client review — swap for real lab/equipment photos once signed off.
-const equipmentShowcase = {
-  heading: 'Lab-Grade Equipment, Every Step',
-  body: 'From on-site sample collection to certified lab analysis, every step uses equipment calibrated to Australian fuel quality standards.',
-  points: [
-    'Calibrated sample collection kits',
-    'AS/NZS-standard analysis instruments',
-    'Documented chain of custody',
-  ],
-  image1Url: '/images/what-we-do-onsite-diesel.webp',
-  image1Alt: 'Atlas Fuel technician collecting a fuel sample',
-  equipment1Value: 'Sample Collection Kits',
-  equipment1Label: 'On-Site Technician Visits',
-  image2Url: '/images/fuel-logistics.jpg',
-  image2Alt: 'Atlas Fuel fleet supporting lab logistics',
-  equipment2Value: 'Analysis Instruments',
-  equipment2Label: 'AS/NZS Standards Testing',
-  ctaText: 'Request Testing',
-  ctaLink: '#request',
-}
-
-const resultsHighlight = {
-  tag: 'Fast & Certified',
-  heading: 'Results You Can Act On',
-  description: 'Every report is documented and ready for audit, supplier follow-up, or your own compliance file — no guesswork.',
-  ctaText: 'Talk to Our Team',
-  ctaLink: '/contact',
-  cardBadge: 'Fuel Testing',
-  cardImageUrl: '/images/fuel-stations.jpg',
-  cardHeading: '48-Hour Turnaround',
-  cardDescription: 'Submit a sample and receive a certified report fast enough to act before a bad batch causes damage.',
-  stats: [
-    {value: '48hr', label: 'Turnaround'},
-    {value: 'AS/NZS', label: 'Standards'},
-    {value: '100%', label: 'Certified Reports'},
-  ],
-  cardCtaText: 'Request Testing',
-  cardCtaLink: '#request',
-}
-
 export default async function FuelTestingLaboratoryPage() {
-  const siteSettings = await getSiteSettings().catch(() => null)
-  const settings = mapPageCta(null, siteSettings, fallbackSiteSettings)
+  const [sanity, siteSettings] = await Promise.all([
+    getFuelTestingPage().catch(() => null),
+    getSiteSettings().catch(() => null),
+  ])
+
+  const data = mergeWithFallback(fallbackData, sanity)
+  const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
+
+  const hero = {
+    subtitle: data.heroSubtitle,
+    subtitleColor: data.heroSubtitleColor,
+    subtitleSize: data.heroSubtitleSize,
+    title: data.heroTitle,
+    titleColor: data.heroTitleColor,
+    titleSize: data.heroTitleSize,
+    description: data.heroDescription,
+    descriptionColor: data.heroDescriptionColor,
+    descriptionSize: data.heroDescriptionSize,
+    heroImageUrl: data.heroImageUrl,
+    heroImageAlt: data.heroImageUrl?.alt ?? data.heroTitle,
+    stats: data.heroStats,
+  }
+
+  const {equipmentShowcase, resultsHighlight} = data
 
   return (
     <>
@@ -123,11 +144,11 @@ export default async function FuelTestingLaboratoryPage() {
       <section className="bg-gray-900 py-16 text-white lg:py-20">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
           <h2 className="mb-10 text-center font-heading text-2xl font-bold uppercase tracking-wide lg:text-4xl">
-            How Testing Works
+            {data.stepsHeading}
           </h2>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {steps.map((step) => (
+            {data.steps.map((step) => (
               <div key={step.number} className="border-t-2 border-primary pt-5">
                 <div className="mb-2 font-heading text-4xl font-bold text-primary">{step.number}</div>
                 <h3 className="mb-2 font-heading text-lg font-bold uppercase tracking-wide">
@@ -144,11 +165,11 @@ export default async function FuelTestingLaboratoryPage() {
       <section className="bg-white py-16 lg:py-20">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
           <h2 className="mb-10 text-center font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-            What We Test For
+            {data.parametersHeading}
           </h2>
 
           <div className="divide-y divide-gray-200 border-y border-gray-200">
-            {parameters.map((parameter) => (
+            {data.parameters.map((parameter) => (
               <div
                 key={parameter.name}
                 className="grid grid-cols-1 gap-2 py-5 sm:grid-cols-[minmax(0,240px)_1fr] sm:items-center sm:gap-8"
@@ -199,6 +220,7 @@ export default async function FuelTestingLaboratoryPage() {
               <div className="space-y-4">
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
+                    value={equipmentShowcase.image1}
                     src={equipmentShowcase.image1Url}
                     alt={equipmentShowcase.image1Alt}
                     fill
@@ -219,6 +241,7 @@ export default async function FuelTestingLaboratoryPage() {
                 </div>
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
+                    value={equipmentShowcase.image2}
                     src={equipmentShowcase.image2Url}
                     alt={equipmentShowcase.image2Alt}
                     fill
@@ -263,6 +286,7 @@ export default async function FuelTestingLaboratoryPage() {
             <div className="overflow-hidden border border-gray-200 bg-white shadow-lg">
               <div className="relative aspect-video overflow-hidden">
                 <CmsImage
+                  value={resultsHighlight.cardImage}
                   src={resultsHighlight.cardImageUrl}
                   alt={resultsHighlight.cardHeading}
                   fill
@@ -306,12 +330,9 @@ export default async function FuelTestingLaboratoryPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
             <div>
               <h2 className="mb-4 font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-                Request Testing
+                {data.requestHeading}
               </h2>
-              <p className="mb-6 leading-relaxed text-gray-600">
-                Tell us what you need tested and we will confirm sample requirements and
-                turnaround before you send anything in.
-              </p>
+              <p className="mb-6 leading-relaxed text-gray-600">{data.requestDescription}</p>
               <div className="space-y-4 border-l-2 border-primary pl-5">
                 <div>
                   <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">

@@ -1,7 +1,8 @@
 import Link from 'next/link'
-import {getSiteSettings} from '@/lib/sanity'
+import {getFuelCardPage, getSiteSettings} from '@/lib/sanity'
 import {mapPageCta} from '@/lib/contentFallbacks'
-import {buildPageMetadata} from '@/lib/metadata'
+import {mergeWithFallback} from '@/lib/fallback'
+import {loadPageMetadata} from '@/lib/metadata'
 import CmsImage from '@/components/common/CmsImage'
 import CTABanner from '@/components/shared/CTABanner'
 import ServiceHero from '@/components/services/ServiceHero'
@@ -9,15 +10,10 @@ import FuelCardVisual from '@/components/fuel-card/FuelCardVisual'
 import FuelCardApplyForm from '@/components/fuel-card/FuelCardApplyForm'
 import FuelCardFaq from '@/components/fuel-card/FuelCardFaq'
 
-// NOTE: Content is hard-coded for client review. Once the page is signed off it
-// will be moved into Sanity behind a `fuelCardPage` document, matching the other
-// pages in this app.
-
-export async function generateMetadata() {
-  const siteSettings = await getSiteSettings({stega: false}).catch(() => null)
-
-  return buildPageMetadata({
-    siteSettings,
+export function generateMetadata() {
+  return loadPageMetadata({
+    getPage: getFuelCardPage,
+    getSiteSettings,
     path: '/fuel-card',
     fallbackTitle: 'Atlas Fuel Card | Fleet & Business Fuel Cards | Atlas Fuel Australia',
     fallbackDescription:
@@ -26,44 +22,90 @@ export async function generateMetadata() {
   })
 }
 
-const hero = {
-  subtitle: 'Atlas Fuel Card',
-  title: 'One Card for Your Entire Fleet',
-  description:
+const fallbackData = {
+  heroSubtitle: 'Atlas Fuel Card',
+  heroTitle: 'One Card for Your Entire Fleet',
+  heroDescription:
     'Cut fuel admin, control every litre, and keep your vehicles moving with competitive pricing, driver-level controls, and one invoice each month.',
   heroImageUrl: '/images/atlas-fuel-hero-2.webp',
   heroImageAlt: 'Atlas Fuel tanker on an Australian highway',
+
+  introHeading: 'Less Paperwork. More Control.',
+  introDescription:
+    'Replace loose receipts and cash advances with one account, one statement, and complete visibility over every litre your business buys.',
+  benefits: [
+    {title: 'Competitive Pricing', description: 'Cents-per-litre savings against Terminal Gate Pricing.'},
+    {title: 'Full Purchase Control', description: 'Cap spend, restrict to fuel only, or lock a card to one vehicle.'},
+    {title: 'One Monthly Invoice', description: 'Every transaction in a single, easy-to-reconcile statement.'},
+  ],
+
+  cardsHeading: 'Choose the Card That Fits',
+  cards: [
+    {variant: 'fleet', name: 'Fleet Card', description: 'For businesses running multiple vehicles or drivers.'},
+    {variant: 'business', name: 'Business Card', description: 'Simple fuel accounting for small businesses and tradies.'},
+    {variant: 'driver', name: 'Driver Card', description: 'For owner-drivers who fuel up on the road.'},
+  ],
+
+  // Placeholder imagery/copy — swap for real product photos once signed off.
+  equipmentShowcase: {
+    heading: 'Built For The Way Your Fleet Fuels',
+    body: 'From a single ute to a full fleet, the right card is already in the driver’s hand at every Atlas Fuel site — no separate terminals, no reconciling receipts.',
+    points: [
+      'Chip-secured fleet cards',
+      'PIN-protected driver cards',
+      'Accepted at every Atlas Fuel site',
+    ],
+    image1Url: '/images/truck-new.jpg',
+    equipment1Value: 'Fleet Cards',
+    equipment1Label: 'Multi-Vehicle Access',
+    image2Url: '/images/hero-truck.jpg',
+    equipment2Value: 'Driver Cards',
+    equipment2Label: 'PIN-Protected, On the Road',
+    ctaText: 'Apply Now',
+    ctaLink: '#apply',
+  },
+
+  networkHighlight: {
+    tag: 'Simple By Design',
+    heading: 'One Card. Every Atlas Site.',
+    description: 'No separate EFTPOS terminal and no manual reconciliation — tap your card at the pump and every litre lands on one monthly statement.',
+    ctaText: 'Talk to Our Team',
+    ctaLink: '/contact',
+    cardBadge: 'Fuel Card',
+    cardImageUrl: '/images/fuel-stations.jpg',
+    cardHeading: 'Ready When You Are',
+    cardDescription: 'Apply online in minutes and start fuelling on account as soon as your account is approved.',
+    stats: [
+      {value: '150+', label: 'Accepting Sites'},
+      {value: '24/7', label: 'Pump Access'},
+      {value: '1', label: 'Monthly Invoice'},
+    ],
+    cardCtaText: 'Apply Now',
+    cardCtaLink: '#apply',
+  },
+
+  applyHeading: 'Apply for a Fuel Card',
+  applyDescription: 'Fill in the form and an account manager will call you to confirm pricing, limits, and card setup.',
+
+  faqsHeading: 'Fuel Card FAQs',
+  faqs: [
+    {
+      question: 'Who can apply for an Atlas Fuel Card?',
+      answer:
+        'Any Australian business with a valid ABN can apply, from a single ute through to a large fleet. Applications are subject to a standard credit assessment.',
+    },
+    {
+      question: 'Where can I use the card?',
+      answer:
+        'The card is accepted across the Atlas Fuel station network. Talk to us if your operation also needs on-site bulk diesel delivery on the same account.',
+    },
+    {
+      question: 'How long does approval take?',
+      answer:
+        'Most applications receive a decision within one to two business days, with cards typically dispatched within five business days.',
+    },
+  ],
 }
-
-const benefits = [
-  {title: 'Competitive Pricing', description: 'Cents-per-litre savings against Terminal Gate Pricing.'},
-  {title: 'Full Purchase Control', description: 'Cap spend, restrict to fuel only, or lock a card to one vehicle.'},
-  {title: 'One Monthly Invoice', description: 'Every transaction in a single, easy-to-reconcile statement.'},
-]
-
-const cards = [
-  {variant: 'fleet', name: 'Fleet Card', description: 'For businesses running multiple vehicles or drivers.'},
-  {variant: 'business', name: 'Business Card', description: 'Simple fuel accounting for small businesses and tradies.'},
-  {variant: 'driver', name: 'Driver Card', description: 'For owner-drivers who fuel up on the road.'},
-]
-
-const faqs = [
-  {
-    question: 'Who can apply for an Atlas Fuel Card?',
-    answer:
-      'Any Australian business with a valid ABN can apply, from a single ute through to a large fleet. Applications are subject to a standard credit assessment.',
-  },
-  {
-    question: 'Where can I use the card?',
-    answer:
-      'The card is accepted across the Atlas Fuel station network. Talk to us if your operation also needs on-site bulk diesel delivery on the same account.',
-  },
-  {
-    question: 'How long does approval take?',
-    answer:
-      'Most applications receive a decision within one to two business days, with cards typically dispatched within five business days.',
-  },
-]
 
 const fallbackSiteSettings = {
   ctaBannerHeading: 'Ready to Take Control of Your Fuel Spend?',
@@ -72,49 +114,30 @@ const fallbackSiteSettings = {
   ctaBannerButtonLink: '/contact',
 }
 
-// Placeholder imagery/copy for client review — swap for real product photos once signed off.
-const equipmentShowcase = {
-  heading: 'Built For The Way Your Fleet Fuels',
-  body: 'From a single ute to a full fleet, the right card is already in the driver’s hand at every Atlas Fuel site — no separate terminals, no reconciling receipts.',
-  points: [
-    'Chip-secured fleet cards',
-    'PIN-protected driver cards',
-    'Accepted at every Atlas Fuel site',
-  ],
-  image1Url: '/images/truck-new.jpg',
-  image1Alt: 'Atlas Fuel tanker truck',
-  equipment1Value: 'Fleet Cards',
-  equipment1Label: 'Multi-Vehicle Access',
-  image2Url: '/images/hero-truck.jpg',
-  image2Alt: 'Atlas Fuel truck on the highway',
-  equipment2Value: 'Driver Cards',
-  equipment2Label: 'PIN-Protected, On the Road',
-  ctaText: 'Apply Now',
-  ctaLink: '#apply',
-}
-
-const networkHighlight = {
-  tag: 'Simple By Design',
-  heading: 'One Card. Every Atlas Site.',
-  description: 'No separate EFTPOS terminal and no manual reconciliation — tap your card at the pump and every litre lands on one monthly statement.',
-  ctaText: 'Talk to Our Team',
-  ctaLink: '/contact',
-  cardBadge: 'Fuel Card',
-  cardImageUrl: '/images/fuel-stations.jpg',
-  cardHeading: 'Ready When You Are',
-  cardDescription: 'Apply online in minutes and start fuelling on account as soon as your account is approved.',
-  stats: [
-    {value: '150+', label: 'Accepting Sites'},
-    {value: '24/7', label: 'Pump Access'},
-    {value: '1', label: 'Monthly Invoice'},
-  ],
-  cardCtaText: 'Apply Now',
-  cardCtaLink: '#apply',
-}
-
 export default async function FuelCardPage() {
-  const siteSettings = await getSiteSettings().catch(() => null)
-  const settings = mapPageCta(null, siteSettings, fallbackSiteSettings)
+  const [sanity, siteSettings] = await Promise.all([
+    getFuelCardPage().catch(() => null),
+    getSiteSettings().catch(() => null),
+  ])
+
+  const data = mergeWithFallback(fallbackData, sanity)
+  const settings = mapPageCta(sanity, siteSettings, fallbackSiteSettings)
+
+  const hero = {
+    subtitle: data.heroSubtitle,
+    subtitleColor: data.heroSubtitleColor,
+    subtitleSize: data.heroSubtitleSize,
+    title: data.heroTitle,
+    titleColor: data.heroTitleColor,
+    titleSize: data.heroTitleSize,
+    description: data.heroDescription,
+    descriptionColor: data.heroDescriptionColor,
+    descriptionSize: data.heroDescriptionSize,
+    heroImageUrl: data.heroImageUrl,
+    heroImageAlt: data.heroImageUrl?.alt ?? data.heroTitle,
+  }
+
+  const {equipmentShowcase, networkHighlight} = data
 
   return (
     <>
@@ -125,16 +148,13 @@ export default async function FuelCardPage() {
         <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
           <div className="mx-auto mb-12 max-w-2xl text-center">
             <h2 className="mb-4 font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-              Less Paperwork. More Control.
+              {data.introHeading}
             </h2>
-            <p className="text-lg leading-relaxed text-gray-600">
-              Replace loose receipts and cash advances with one account, one statement, and
-              complete visibility over every litre your business buys.
-            </p>
+            <p className="text-lg leading-relaxed text-gray-600">{data.introDescription}</p>
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {benefits.map((benefit) => (
+            {data.benefits.map((benefit) => (
               <div key={benefit.title} className="text-center">
                 <h3 className="mb-2 font-heading text-lg font-bold uppercase tracking-wide text-gray-900">
                   {benefit.title}
@@ -150,11 +170,11 @@ export default async function FuelCardPage() {
       <section className="bg-gray-50 py-16 lg:py-20">
         <div className="mx-auto max-w-[1200px] px-6 lg:px-8">
           <h2 className="mb-10 text-center font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-            Choose the Card That Fits
+            {data.cardsHeading}
           </h2>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-            {cards.map((card) => (
+            {data.cards.map((card) => (
               <div key={card.name} className="flex flex-col items-center text-center">
                 <FuelCardVisual variant={card.variant} className="mb-5" />
                 <h3 className="mb-2 font-heading text-lg font-bold uppercase tracking-wide text-gray-900">
@@ -203,6 +223,7 @@ export default async function FuelCardPage() {
               <div className="space-y-4">
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
+                    value={equipmentShowcase.image1}
                     src={equipmentShowcase.image1Url}
                     alt={equipmentShowcase.image1Alt}
                     fill
@@ -223,6 +244,7 @@ export default async function FuelCardPage() {
                 </div>
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
+                    value={equipmentShowcase.image2}
                     src={equipmentShowcase.image2Url}
                     alt={equipmentShowcase.image2Alt}
                     fill
@@ -267,6 +289,7 @@ export default async function FuelCardPage() {
             <div className="overflow-hidden border border-gray-200 bg-white shadow-lg">
               <div className="relative aspect-video overflow-hidden">
                 <CmsImage
+                  value={networkHighlight.cardImage}
                   src={networkHighlight.cardImageUrl}
                   alt={networkHighlight.cardHeading}
                   fill
@@ -310,12 +333,9 @@ export default async function FuelCardPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.4fr)] lg:gap-16">
             <div>
               <h2 className="mb-4 font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-                Apply for a Fuel Card
+                {data.applyHeading}
               </h2>
-              <p className="mb-6 leading-relaxed text-gray-600">
-                Fill in the form and an account manager will call you to confirm pricing, limits,
-                and card setup.
-              </p>
+              <p className="mb-6 leading-relaxed text-gray-600">{data.applyDescription}</p>
               <div className="space-y-4 border-l-2 border-primary pl-5">
                 <div>
                   <div className="mb-1 text-[11px] font-bold uppercase tracking-[0.16em] text-gray-500">
@@ -353,9 +373,9 @@ export default async function FuelCardPage() {
       <section className="bg-gray-50 py-16 lg:py-20">
         <div className="mx-auto max-w-3xl px-6 lg:px-8">
           <h2 className="mb-8 text-center font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-            Fuel Card FAQs
+            {data.faqsHeading}
           </h2>
-          <FuelCardFaq items={faqs} />
+          <FuelCardFaq items={data.faqs} />
         </div>
       </section>
 

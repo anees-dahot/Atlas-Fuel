@@ -112,6 +112,12 @@ export default function structure(S) {
       title: 'Fuel Station Enquiry',
       schemaType: 'fuelStationEnquiryPage',
     }),
+    singleton(S, {title: 'Fuel Card', schemaType: 'fuelCardPage', icon: PackageIcon}),
+    singleton(S, {
+      title: 'Fuel Testing Laboratory',
+      schemaType: 'fuelTestingPage',
+      icon: PackageIcon,
+    }),
     singleton(S, {title: 'Products', schemaType: 'productsPage'}),
     singleton(S, {title: 'Franchising', schemaType: 'franchisingPage'}),
     singleton(S, {title: 'Fuel Prices', schemaType: 'fuelPricesPage'}),

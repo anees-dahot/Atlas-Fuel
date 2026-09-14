@@ -33,6 +33,8 @@ const singletonIds = {
   atlasCarRacingPage: 'atlasCarRacingPage',
   commercialDieselPage: 'commercialDieselPage',
   fuelStationEnquiryPage: 'fuelStationEnquiryPage',
+  fuelCardPage: 'fuelCardPage',
+  fuelTestingPage: 'fuelTestingPage',
   productsPage: 'productsPage',
   storeLocatorPage: 'storeLocatorPage',
   franchisingPage: 'franchisingPage',
@@ -342,6 +344,14 @@ export async function getCommercialDieselPage(options = {}) {
 
 export async function getFuelStationEnquiryPage(options = {}) {
   return getSingleton('fuelStationEnquiryPage', {...options, flatten: true})
+}
+
+export async function getFuelCardPage(options) {
+  return getSingleton('fuelCardPage', options)
+}
+
+export async function getFuelTestingPage(options) {
+  return getSingleton('fuelTestingPage', options)
 }
 
 export async function getProductsPage(options = {}) {

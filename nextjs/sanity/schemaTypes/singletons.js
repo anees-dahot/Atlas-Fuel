@@ -21,6 +21,8 @@ export const SINGLETON_ITEMS = Object.freeze([
   {type: 'atlasCarRacingPage', id: 'atlasCarRacingPage', title: 'Atlas Car Racing Page'},
   {type: 'commercialDieselPage', id: 'commercialDieselPage', title: 'Commercial Diesel Page'},
   {type: 'fuelStationEnquiryPage', id: 'fuelStationEnquiryPage', title: 'Fuel Station Enquiry Page'},
+  {type: 'fuelCardPage', id: 'fuelCardPage', title: 'Fuel Card Page'},
+  {type: 'fuelTestingPage', id: 'fuelTestingPage', title: 'Fuel Testing Laboratory Page'},
   {type: 'productsPage', id: 'productsPage', title: 'Products Page'},
   {type: 'storeLocatorPage', id: 'storeLocatorPage', title: 'Store Locator Page'},
   {type: 'franchisingPage', id: 'franchisingPage', title: 'Franchising Page'},
