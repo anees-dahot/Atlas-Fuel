@@ -33,62 +33,62 @@ const fallbackData = {
   introHeading: 'Less Paperwork. More Control.',
   introDescription:
     'Replace loose receipts and cash advances with one account, one statement, and complete visibility over every litre your business buys.',
-  benefits: [
+  introBenefits: [
     {title: 'Competitive Pricing', description: 'Cents-per-litre savings against Terminal Gate Pricing.'},
     {title: 'Full Purchase Control', description: 'Cap spend, restrict to fuel only, or lock a card to one vehicle.'},
     {title: 'One Monthly Invoice', description: 'Every transaction in a single, easy-to-reconcile statement.'},
   ],
 
   cardsHeading: 'Choose the Card That Fits',
-  cards: [
+  cardsList: [
     {variant: 'fleet', name: 'Fleet Card', description: 'For businesses running multiple vehicles or drivers.'},
     {variant: 'business', name: 'Business Card', description: 'Simple fuel accounting for small businesses and tradies.'},
     {variant: 'driver', name: 'Driver Card', description: 'For owner-drivers who fuel up on the road.'},
   ],
 
-  // Placeholder imagery/copy — swap for real product photos once signed off.
-  equipmentShowcase: {
-    heading: 'Built For The Way Your Fleet Fuels',
-    body: 'From a single ute to a full fleet, the right card is already in the driver’s hand at every Atlas Fuel site — no separate terminals, no reconciling receipts.',
-    points: [
-      'Chip-secured fleet cards',
-      'PIN-protected driver cards',
-      'Accepted at every Atlas Fuel site',
-    ],
-    image1Url: '/images/truck-new.jpg',
-    equipment1Value: 'Fleet Cards',
-    equipment1Label: 'Multi-Vehicle Access',
-    image2Url: '/images/hero-truck.jpg',
-    equipment2Value: 'Driver Cards',
-    equipment2Label: 'PIN-Protected, On the Road',
-    ctaText: 'Apply Now',
-    ctaLink: '#apply',
-  },
+  // Placeholder imagery — swap for real product photos in Sanity once signed off.
+  equipmentHeading: 'Built For The Way Your Fleet Fuels',
+  equipmentBody:
+    'From a single ute to a full fleet, the right card is already in the driver\u2019s hand at every Atlas Fuel site \u2014 no separate terminals, no reconciling receipts.',
+  equipmentPoints: [
+    'Chip-secured fleet cards',
+    'PIN-protected driver cards',
+    'Accepted at every Atlas Fuel site',
+  ],
+  equipmentImage1Url: '/images/truck-new.jpg',
+  equipmentItem1Value: 'Fleet Cards',
+  equipmentItem1Label: 'Multi-Vehicle Access',
+  equipmentImage2Url: '/images/hero-truck.jpg',
+  equipmentItem2Value: 'Driver Cards',
+  equipmentItem2Label: 'PIN-Protected, On the Road',
+  equipmentCtaText: 'Apply Now',
+  equipmentCtaLink: '#apply',
 
-  networkHighlight: {
-    tag: 'Simple By Design',
-    heading: 'One Card. Every Atlas Site.',
-    description: 'No separate EFTPOS terminal and no manual reconciliation — tap your card at the pump and every litre lands on one monthly statement.',
-    ctaText: 'Talk to Our Team',
-    ctaLink: '/contact',
-    cardBadge: 'Fuel Card',
-    cardImageUrl: '/images/fuel-stations.jpg',
-    cardHeading: 'Ready When You Are',
-    cardDescription: 'Apply online in minutes and start fuelling on account as soon as your account is approved.',
-    stats: [
-      {value: '150+', label: 'Accepting Sites'},
-      {value: '24/7', label: 'Pump Access'},
-      {value: '1', label: 'Monthly Invoice'},
-    ],
-    cardCtaText: 'Apply Now',
-    cardCtaLink: '#apply',
-  },
+  highlightTag: 'Simple By Design',
+  highlightHeading: 'One Card. Every Atlas Site.',
+  highlightDescription:
+    'No separate EFTPOS terminal and no manual reconciliation \u2014 tap your card at the pump and every litre lands on one monthly statement.',
+  highlightCtaText: 'Talk to Our Team',
+  highlightCtaLink: '/contact',
+  highlightCardBadge: 'Fuel Card',
+  highlightCardImageUrl: '/images/fuel-stations.jpg',
+  highlightCardHeading: 'Ready When You Are',
+  highlightCardDescription:
+    'Apply online in minutes and start fuelling on account as soon as your account is approved.',
+  highlightStats: [
+    {value: '150+', label: 'Accepting Sites'},
+    {value: '24/7', label: 'Pump Access'},
+    {value: '1', label: 'Monthly Invoice'},
+  ],
+  highlightCardCtaText: 'Apply Now',
+  highlightCardCtaLink: '#apply',
 
   applyHeading: 'Apply for a Fuel Card',
-  applyDescription: 'Fill in the form and an account manager will call you to confirm pricing, limits, and card setup.',
+  applyDescription:
+    'Fill in the form and an account manager will call you to confirm pricing, limits, and card setup.',
 
   faqsHeading: 'Fuel Card FAQs',
-  faqs: [
+  faqsList: [
     {
       question: 'Who can apply for an Atlas Fuel Card?',
       answer:
@@ -125,19 +125,11 @@ export default async function FuelCardPage() {
 
   const hero = {
     subtitle: data.heroSubtitle,
-    subtitleColor: data.heroSubtitleColor,
-    subtitleSize: data.heroSubtitleSize,
     title: data.heroTitle,
-    titleColor: data.heroTitleColor,
-    titleSize: data.heroTitleSize,
     description: data.heroDescription,
-    descriptionColor: data.heroDescriptionColor,
-    descriptionSize: data.heroDescriptionSize,
     heroImageUrl: data.heroImageUrl,
-    heroImageAlt: data.heroImageUrl?.alt ?? data.heroTitle,
+    heroImageAlt: data.heroImageUrl?.alt ?? data.heroImageAlt ?? data.heroTitle,
   }
-
-  const {equipmentShowcase, networkHighlight} = data
 
   return (
     <>
@@ -154,7 +146,7 @@ export default async function FuelCardPage() {
           </div>
 
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            {data.benefits.map((benefit) => (
+            {data.introBenefits.map((benefit) => (
               <div key={benefit.title} className="text-center">
                 <h3 className="mb-2 font-heading text-lg font-bold uppercase tracking-wide text-gray-900">
                   {benefit.title}
@@ -174,9 +166,22 @@ export default async function FuelCardPage() {
           </h2>
 
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
-            {data.cards.map((card) => (
+            {data.cardsList.map((card) => (
               <div key={card.name} className="flex flex-col items-center text-center">
-                <FuelCardVisual variant={card.variant} className="mb-5" />
+                {card.image ? (
+                  <div className="relative mb-5 aspect-[1.586/1] w-full max-w-[320px] overflow-hidden rounded-lg shadow-lg">
+                    <CmsImage
+                      value={card.image}
+                      alt={card.image?.alt ?? card.name}
+                      fill
+                      sizes="(min-width: 640px) 33vw, 100vw"
+                      ratio="1.586/1"
+                      className="object-cover object-center"
+                    />
+                  </div>
+                ) : (
+                  <FuelCardVisual variant={card.variant} className="mb-5" />
+                )}
                 <h3 className="mb-2 font-heading text-lg font-bold uppercase tracking-wide text-gray-900">
                   {card.name}
                 </h3>
@@ -193,11 +198,11 @@ export default async function FuelCardPage() {
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             <div>
               <h2 className="mb-4 font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-                {equipmentShowcase.heading}
+                {data.equipmentHeading}
               </h2>
-              <p className="mb-6 leading-relaxed text-gray-600">{equipmentShowcase.body}</p>
+              <p className="mb-6 leading-relaxed text-gray-600">{data.equipmentBody}</p>
               <ul className="mb-8 space-y-3">
-                {equipmentShowcase.points.map((point) => (
+                {data.equipmentPoints.map((point) => (
                   <li key={point} className="flex items-center gap-3">
                     <svg className="h-5 w-5 flex-shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
@@ -208,10 +213,10 @@ export default async function FuelCardPage() {
                 ))}
               </ul>
               <Link
-                href={equipmentShowcase.ctaLink}
+                href={data.equipmentCtaLink}
                 className="group inline-flex items-center gap-2 font-bold uppercase tracking-wide text-primary transition-all hover:gap-4"
               >
-                {equipmentShowcase.ctaText}
+                {data.equipmentCtaText}
                 <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="5" y1="12" x2="19" y2="12" />
                   <polyline points="12 5 19 12 12 19" />
@@ -223,9 +228,9 @@ export default async function FuelCardPage() {
               <div className="space-y-4">
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
-                    value={equipmentShowcase.image1}
-                    src={equipmentShowcase.image1Url}
-                    alt={equipmentShowcase.image1Alt}
+                    value={data.equipmentImage1}
+                    src={data.equipmentImage1Url}
+                    alt={data.equipmentImage1?.alt ?? data.equipmentItem1Value}
                     fill
                     sizes="(min-width: 1024px) 25vw, 50vw"
                     ratio="4/5"
@@ -233,20 +238,20 @@ export default async function FuelCardPage() {
                   />
                 </div>
                 <div className="bg-primary p-6 text-white">
-                  <div className="mb-1 font-heading text-2xl font-bold">{equipmentShowcase.equipment1Value}</div>
-                  <div className="text-sm text-white/80">{equipmentShowcase.equipment1Label}</div>
+                  <div className="mb-1 font-heading text-2xl font-bold">{data.equipmentItem1Value}</div>
+                  <div className="text-sm text-white/80">{data.equipmentItem1Label}</div>
                 </div>
               </div>
               <div className="space-y-4 pt-8">
                 <div className="bg-gray-900 p-6 text-white">
-                  <div className="mb-1 font-heading text-2xl font-bold">{equipmentShowcase.equipment2Value}</div>
-                  <div className="text-sm text-white/70">{equipmentShowcase.equipment2Label}</div>
+                  <div className="mb-1 font-heading text-2xl font-bold">{data.equipmentItem2Value}</div>
+                  <div className="text-sm text-white/70">{data.equipmentItem2Label}</div>
                 </div>
                 <div className="relative aspect-[4/5] overflow-hidden shadow-lg">
                   <CmsImage
-                    value={equipmentShowcase.image2}
-                    src={equipmentShowcase.image2Url}
-                    alt={equipmentShowcase.image2Alt}
+                    value={data.equipmentImage2}
+                    src={data.equipmentImage2Url}
+                    alt={data.equipmentImage2?.alt ?? data.equipmentItem2Value}
                     fill
                     sizes="(min-width: 1024px) 25vw, 50vw"
                     ratio="4/5"
@@ -267,18 +272,18 @@ export default async function FuelCardPage() {
               <div className="mb-4 flex items-center gap-3">
                 <div className="h-0.5 w-10 flex-shrink-0 bg-primary" />
                 <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-primary">
-                  {networkHighlight.tag}
+                  {data.highlightTag}
                 </span>
               </div>
               <h2 className="mb-4 font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
-                {networkHighlight.heading}
+                {data.highlightHeading}
               </h2>
-              <p className="mb-6 max-w-xl leading-relaxed text-gray-600">{networkHighlight.description}</p>
+              <p className="mb-6 max-w-xl leading-relaxed text-gray-600">{data.highlightDescription}</p>
               <Link
-                href={networkHighlight.ctaLink}
+                href={data.highlightCtaLink}
                 className="inline-flex items-center gap-2 font-semibold text-primary transition-colors hover:text-primary-dark"
               >
-                {networkHighlight.ctaText}
+                {data.highlightCtaText}
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14" />
                   <path d="m12 5 7 7-7 7" />
@@ -289,9 +294,9 @@ export default async function FuelCardPage() {
             <div className="overflow-hidden border border-gray-200 bg-white shadow-lg">
               <div className="relative aspect-video overflow-hidden">
                 <CmsImage
-                  value={networkHighlight.cardImage}
-                  src={networkHighlight.cardImageUrl}
-                  alt={networkHighlight.cardHeading}
+                  value={data.highlightCardImage}
+                  src={data.highlightCardImageUrl}
+                  alt={data.highlightCardImage?.alt ?? data.highlightCardHeading}
                   fill
                   sizes="(min-width: 1024px) 50vw, 100vw"
                   ratio="16/9"
@@ -300,15 +305,15 @@ export default async function FuelCardPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-white/60 via-white/20 to-transparent" />
                 <div className="absolute left-4 top-4">
                   <span className="bg-white/90 px-3 py-1.5 text-sm font-medium text-gray-800">
-                    {networkHighlight.cardBadge}
+                    {data.highlightCardBadge}
                   </span>
                 </div>
               </div>
               <div className="space-y-4 p-6">
-                <h3 className="text-2xl font-bold text-gray-900">{networkHighlight.cardHeading}</h3>
-                <p className="leading-relaxed text-gray-600">{networkHighlight.cardDescription}</p>
+                <h3 className="text-2xl font-bold text-gray-900">{data.highlightCardHeading}</h3>
+                <p className="leading-relaxed text-gray-600">{data.highlightCardDescription}</p>
                 <div className="grid grid-cols-3 gap-4 pt-2">
-                  {networkHighlight.stats.map((stat) => (
+                  {data.highlightStats.map((stat) => (
                     <div key={stat.label} className="flex flex-col items-center justify-center border border-gray-100 p-4">
                       <span className="text-xl font-bold text-gray-900">{stat.value}</span>
                       <span className="text-sm text-gray-500">{stat.label}</span>
@@ -316,10 +321,10 @@ export default async function FuelCardPage() {
                   ))}
                 </div>
                 <Link
-                  href={networkHighlight.cardCtaLink}
+                  href={data.highlightCardCtaLink}
                   className="flex w-full items-center justify-center bg-primary px-6 py-3 text-sm font-bold uppercase tracking-wider text-white transition-colors hover:bg-primary-dark"
                 >
-                  {networkHighlight.cardCtaText}
+                  {data.highlightCardCtaText}
                 </Link>
               </div>
             </div>
@@ -375,7 +380,7 @@ export default async function FuelCardPage() {
           <h2 className="mb-8 text-center font-heading text-2xl font-bold uppercase tracking-wide text-gray-900 lg:text-4xl">
             {data.faqsHeading}
           </h2>
-          <FuelCardFaq items={data.faqs} />
+          <FuelCardFaq items={data.faqsList} />
         </div>
       </section>
 

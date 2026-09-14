@@ -44,6 +44,25 @@ const singletonIds = {
 
 const legacySectionOrder = {
   contactPage: ['heroSection', 'infoSection', 'formSection', 'ctaBanner'],
+  fuelCardPage: [
+    'heroSection',
+    'introSection',
+    'cardsSection',
+    'equipmentSection',
+    'highlightSection',
+    'applySection',
+    'faqsSection',
+    'ctaBanner',
+  ],
+  fuelTestingPage: [
+    'heroSection',
+    'processSection',
+    'parametersSection',
+    'equipmentSection',
+    'resultsSection',
+    'requestSection',
+    'ctaBanner',
+  ],
   careersPage: [
     'heroSection',
     'whyWorkSection',
@@ -346,12 +365,12 @@ export async function getFuelStationEnquiryPage(options = {}) {
   return getSingleton('fuelStationEnquiryPage', {...options, flatten: true})
 }
 
-export async function getFuelCardPage(options) {
-  return getSingleton('fuelCardPage', options)
+export async function getFuelCardPage(options = {}) {
+  return getSingleton('fuelCardPage', {...options, flatten: true})
 }
 
-export async function getFuelTestingPage(options) {
-  return getSingleton('fuelTestingPage', options)
+export async function getFuelTestingPage(options = {}) {
+  return getSingleton('fuelTestingPage', {...options, flatten: true})
 }
 
 export async function getProductsPage(options = {}) {
